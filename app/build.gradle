@@ -1,6 +1,11 @@
 plugins {
+    // basic apply
     id 'com.android.application'
     id 'kotlin-android'
+
+    // add realm
+    id 'kotlin-kapt'
+    id 'realm-android'
 }
 
 android {
@@ -42,4 +47,16 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // 리사이클러 뷰
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    // 코루틴
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+
+    // rxjava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.8"
+
+    // Event Bus
+    implementation 'org.greenrobot:eventbus:3.2.0'
 }
