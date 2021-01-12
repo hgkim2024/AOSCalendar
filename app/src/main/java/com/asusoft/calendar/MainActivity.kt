@@ -1,9 +1,10 @@
 package com.asusoft.calendar
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +22,10 @@ class MainActivity : AppCompatActivity() {
 //        setContentView(CalendarUIUtil.getMonthUI(baseContext, ArrayList<View>()))
 
         val weekHeader = findViewById<ConstraintLayout>(R.id.week_header)
-        weekHeader.addView(CalendarUIUtil.getWeekHeader(baseContext))
+        weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(baseContext))
 
         val monthCalendar = findViewById<ConstraintLayout>(R.id.month_calendar)
-        monthCalendar.addView(CalendarUIUtil.getMonthUI(baseContext, ArrayList()))
+        val date = Date().getToday()
+        monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(baseContext, date.prevMonth.startOfMonth, ArrayList()))
     }
 }

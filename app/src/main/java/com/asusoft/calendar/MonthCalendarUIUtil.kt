@@ -9,18 +9,22 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import java.util.*
+import kotlin.collections.ArrayList
 
-object CalendarUIUtil {
+object MonthCalendarUIUtil {
     private const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
     fun getOneWeekUI(
         context: Context,
+        currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
         val inflater = LayoutInflater.from(context)
         val weekLayout = ConstraintLayout(context)
         val rate: Float = 1.0F / WEEK
+        var date = currentDate
 
         weekLayout.layoutParams = ConstraintLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -31,6 +35,9 @@ object CalendarUIUtil {
             val v = inflater.inflate(R.layout.item_one_week, null, false)
             v.id = View.generateViewId()
             weekLayout.addView(v)
+
+            val tv = v.findViewById<TextView>(R.id.title)
+            tv.text = date.calendarDay.toString()
 
             v.findViewById<ConstraintLayout>(R.id.day_layout)
             v.layoutParams = ConstraintLayout.LayoutParams(
@@ -56,6 +63,7 @@ object CalendarUIUtil {
 
             set.applyTo(weekLayout)
             dayViewList.add(v)
+            date = date.tomorrow
         }
 
         return weekLayout
@@ -63,11 +71,11 @@ object CalendarUIUtil {
 
     fun getMonthUI(
         context: Context,
+        currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
-        // TODO: - 추후에 row 입력 받도록 수정 - 계산해서 넣기
-        val row = 6
-
+        var row = getMonthRow(currentDate)
+        var date = currentDate.startOfMonth.startOfWeek
         val monthLayout = LinearLayout(context)
         monthLayout.weightSum = WEIGHT_SUM
         monthLayout.orientation = LinearLayout.VERTICAL
@@ -78,7 +86,7 @@ object CalendarUIUtil {
         )
 
         for (idx in 0 until row) {
-            val weekLayout = getOneWeekUI(context, dayViewList)
+            val weekLayout = getOneWeekUI(context, date, dayViewList)
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
@@ -86,6 +94,8 @@ object CalendarUIUtil {
                 0,
                 WEIGHT_SUM / row
             )
+
+            date = date.nextWeek
         }
 
         return monthLayout
@@ -129,5 +139,18 @@ object CalendarUIUtil {
         }
 
         return weekHeaderLayout
+    }
+
+    private fun getMonthRow(date: Date): Int {
+        val currentDate = date.startOfMonth
+        var row = 5
+        var day = currentDate.weekOfDay - 1
+        day += currentDate.endOfMonth.calendarDay
+
+        if(day > WEEK * 5) {
+            row = 6
+        }
+
+        return row
     }
 }
