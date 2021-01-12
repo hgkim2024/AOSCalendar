@@ -124,6 +124,8 @@ object MonthCalendarUIUtil {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 WEIGHT_SUM / WEEK
             )
+            val leftPadding = CalculatorUtil.dpToPx(context, 10.0F)
+            tv.setPadding(leftPadding, 0, 0, 0)
 
             when(idx % 7) {
                 0 -> tv.text = "일"
@@ -137,7 +139,7 @@ object MonthCalendarUIUtil {
 
             tv.setTextColor(ContextCompat.getColor(context, R.color.font))
             tv.textSize = 12.0F
-            tv.gravity = Gravity.CENTER
+            tv.gravity = Gravity.CENTER_VERTICAL
         }
 
         return weekHeaderLayout
