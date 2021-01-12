@@ -1,4 +1,4 @@
-package com.asusoft.calendar
+package com.asusoft.calendar.util
 
 import java.util.*
 

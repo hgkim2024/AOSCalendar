@@ -1,4 +1,4 @@
-package com.asusoft.calendar
+package com.asusoft.calendar.util.`object`
 
 import android.content.Context
 import android.view.Gravity
@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.asusoft.calendar.R
+import com.asusoft.calendar.util.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -74,7 +76,7 @@ object MonthCalendarUIUtil {
         currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
-        var row = getMonthRow(currentDate)
+        val row = getMonthRow(currentDate)
         var date = currentDate.startOfMonth.startOfWeek
         val monthLayout = LinearLayout(context)
         monthLayout.weightSum = WEIGHT_SUM
