@@ -10,8 +10,11 @@ class TimeUtilTest {
     @Test
     fun getDay() {
         val today = Date().getToday()
-        print("day: ${today.calendarDay}")
-        print("month: ${today.calendarMonth}")
+        println("day: ${today.calendarDay}")
+        println("month: ${today.calendarMonth}")
+
+        val str = TimeUtil.toString(Date(today.time))
+        println(str)
     }
 
     @Test

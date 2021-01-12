@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
+import java.text.SimpleDateFormat
 import java.util.*
 
 class FragmentMonthCalendar: Fragment() {
@@ -17,10 +19,11 @@ class FragmentMonthCalendar: Fragment() {
     var dayViewList = ArrayList<View>()
 
     companion object {
-        fun newInstance(date: Date): FragmentMonthCalendar {
+        fun newInstance(time: Long): FragmentMonthCalendar {
             val f = FragmentMonthCalendar()
             val args = Bundle()
-            args.putSerializable("date", date)
+            args.putLong("time", time)
+            f.arguments = args
             return f
         }
     }
@@ -29,7 +32,8 @@ class FragmentMonthCalendar: Fragment() {
         super.onCreate(savedInstanceState)
 
         val args = arguments!!
-        date = args.getSerializable("data") as Date
+        val time = args.getLong("time")
+        date = Date(time)
     }
 
 
@@ -44,5 +48,14 @@ class FragmentMonthCalendar: Fragment() {
         monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val sdf = SimpleDateFormat("yyyy.MM")
+        val title = sdf.format(date)
+
+        (activity as ActivityStart).setTitle(title)
     }
 }

@@ -71,7 +71,7 @@ val Date.startOfWeek: Date
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = this
         calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-        return calendar.time
+        return getStartOfDay(calendar)
     }
 
 
@@ -97,7 +97,7 @@ val Date.startOfMonth: Date
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = this
         calendar.set(Calendar.DAY_OF_MONTH, 1)
-        return calendar.time
+        return getStartOfDay(calendar)
     }
 
 
@@ -199,6 +199,18 @@ fun Date.getNextDay(count: Int): Date {
     val calendar: Calendar = Calendar.getInstance()
     calendar.time = this
     calendar.add(Calendar.DAY_OF_YEAR, count)
+    return getStartOfDay(calendar)
+}
+
+
+/*
+*
+해당 달의 count 만큼 이동한 달을 반환
+*/
+fun Date.getNextMonth(count: Int): Date {
+    val calendar: Calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.add(Calendar.MONTH, count)
     return getStartOfDay(calendar)
 }
 
