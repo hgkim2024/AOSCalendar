@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
+import com.asusoft.calendar.fragment.month.WeekOfDayType
 import com.asusoft.calendar.util.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,6 +41,7 @@ object MonthCalendarUIUtil {
 
             val tv = v.findViewById<TextView>(R.id.title)
             tv.text = date.calendarDay.toString()
+            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
 
             v.findViewById<ConstraintLayout>(R.id.day_layout)
             v.layoutParams = ConstraintLayout.LayoutParams(
@@ -54,13 +56,8 @@ object MonthCalendarUIUtil {
             set.connect(v.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
 
             when(idx) {
-                0 -> {
-                    set.connect(v.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                }
-
-                else -> {
-                    set.connect(v.id, ConstraintSet.START, dayViewList.last().id, ConstraintSet.END)
-                }
+                0 -> set.connect(v.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                else -> set.connect(v.id, ConstraintSet.START, dayViewList.last().id, ConstraintSet.END)
             }
 
             set.applyTo(weekLayout)
@@ -115,6 +112,8 @@ object MonthCalendarUIUtil {
             LinearLayout.LayoutParams.MATCH_PARENT
         )
 
+        val days = WeekOfDayType.values()
+
         for (idx in 0 until WEEK) {
             val tv = TextView(context)
             weekHeaderLayout.addView(tv)
@@ -127,17 +126,9 @@ object MonthCalendarUIUtil {
             val leftPadding = CalculatorUtil.dpToPx(context, 10.0F)
             tv.setPadding(leftPadding, 0, 0, 0)
 
-            when(idx % 7) {
-                0 -> tv.text = "일"
-                1 -> tv.text = "월"
-                2 -> tv.text = "화"
-                3 -> tv.text = "수"
-                4 -> tv.text = "목"
-                5 -> tv.text = "금"
-                6 -> tv.text = "토"
-            }
+            tv.text = days[idx].getShortTitle()
+            tv.setTextColor(days[idx].getFontColor(context))
 
-            tv.setTextColor(ContextCompat.getColor(context, R.color.font))
             tv.textSize = 12.0F
             tv.gravity = Gravity.CENTER_VERTICAL
         }
