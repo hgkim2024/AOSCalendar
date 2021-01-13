@@ -10,6 +10,9 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,8 +44,12 @@ class FragmentMonthPage: Fragment() {
         val context = this.context!!
         val view = inflater.inflate(R.layout.fragment_month_calender, container, false)
 
-        val monthCalendar = view.findViewById<ConstraintLayout>(R.id.month_calendar)
-        monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
+        GlobalScope.async {
+            view.post {
+                val monthCalendar = view.findViewById<ConstraintLayout>(R.id.month_calendar)
+                monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
+            }
+        }
 
         return view
     }

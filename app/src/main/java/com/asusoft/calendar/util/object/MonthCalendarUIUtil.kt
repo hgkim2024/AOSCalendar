@@ -1,6 +1,7 @@
 package com.asusoft.calendar.util.`object`
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
 import com.asusoft.calendar.util.*
@@ -19,12 +19,74 @@ object MonthCalendarUIUtil {
     private const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
+    fun setCalendarDate(
+            context: Context,
+            currentDate: Date,
+            dayViewList: ArrayList<View>
+    ) {
+        var date = currentDate.startOfMonth.startOfWeek
+        val row = getMonthRow(currentDate)
+
+        for (weekIdx in 0 until row) {
+            for(dayIdx in 0 until WEEK) {
+                val v = dayViewList[(weekIdx * 7) + dayIdx]
+                val tv = v.findViewById<TextView>(R.id.title)
+                tv.text = date.calendarDay.toString()
+                tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+                date = date.tomorrow
+            }
+            date = date.nextWeek
+        }
+    }
+
+    fun getOneDay(
+            context: Context,
+            currentDate: Date
+    ): View {
+        val dayLayout = ConstraintLayout(context)
+        val tv = TextView(context)
+        tv.id = View.generateViewId()
+
+        dayLayout.addView(tv)
+        val tvLayout = ConstraintLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val widthMargin = CalculatorUtil.dpToPx(context, 10.0F)
+        tvLayout.setMargins(widthMargin, 0, widthMargin, 0)
+        tv.layoutParams = tvLayout
+        tv.textSize = 12.0F
+        tv.text = currentDate.calendarDay.toString()
+        tv.setTextColor(WeekOfDayType.fromInt(currentDate.weekOfDay).getFontColor(context))
+
+        val linearLayout = LinearLayout(context)
+        linearLayout.id = View.generateViewId()
+
+        dayLayout.addView(linearLayout)
+        linearLayout.layoutParams = ConstraintLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0
+        )
+
+        val set = ConstraintSet()
+        set.clone(dayLayout)
+
+        set.connect(tv.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        set.connect(tv.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+        set.connect(linearLayout.id, ConstraintSet.TOP, tv.id, ConstraintSet.BOTTOM)
+        set.connect(linearLayout.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+
+        set.applyTo(dayLayout)
+        return dayLayout
+    }
+
     fun getOneWeekUI(
         context: Context,
         currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
-        val inflater = LayoutInflater.from(context)
+//        val inflater = LayoutInflater.from(context)
         val weekLayout = ConstraintLayout(context)
         val rate: Float = 1.0F / WEEK
         var date = currentDate
@@ -35,15 +97,15 @@ object MonthCalendarUIUtil {
         )
 
         for(idx in 0 until WEEK) {
-            val v = inflater.inflate(R.layout.item_one_week, null, false)
+//            val v = inflater.inflate(R.layout.item_one_week, null, false)
+            val v = getOneDay(context, date)
             v.id = View.generateViewId()
             weekLayout.addView(v)
 
-            val tv = v.findViewById<TextView>(R.id.title)
-            tv.text = date.calendarDay.toString()
-            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+//            val tv = v.findViewById<TextView>(R.id.title)
+//            tv.text = date.calendarDay.toString()
+//            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
 
-            v.findViewById<ConstraintLayout>(R.id.day_layout)
             v.layoutParams = ConstraintLayout.LayoutParams(
                 0,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -73,6 +135,7 @@ object MonthCalendarUIUtil {
         currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
+        val start = System.currentTimeMillis()
         val row = getMonthRow(currentDate)
         var date = currentDate.startOfMonth.startOfWeek
         val monthLayout = LinearLayout(context)
@@ -97,6 +160,8 @@ object MonthCalendarUIUtil {
             date = date.nextWeek
         }
 
+        val diff = System.currentTimeMillis() - start
+        Log.d("Asu", "diff: $diff")
         return monthLayout
     }
 
