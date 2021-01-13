@@ -1,6 +1,7 @@
 package com.asusoft.calendar.fragment.month
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,6 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import java.text.SimpleDateFormat
@@ -20,6 +20,8 @@ class FragmentMonthPage: Fragment() {
 
     lateinit var date: Date
     var dayViewList = ArrayList<View>()
+    lateinit var page: View
+    var monthCalendar: ConstraintLayout? = null
 
     companion object {
         fun newInstance(time: Long): FragmentMonthPage {
@@ -41,17 +43,15 @@ class FragmentMonthPage: Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val sdf = SimpleDateFormat("yyyy.MM")
+        val title = sdf.format(date)
+        Log.d("Asu", "onCreateView date: $title")
+
         val context = this.context!!
-        val view = inflater.inflate(R.layout.fragment_month_calender, container, false)
+        val inflater = LayoutInflater.from(context)
+        page = inflater.inflate(R.layout.fragment_month_calender, null, false)
 
-        GlobalScope.async {
-            view.post {
-                val monthCalendar = view.findViewById<ConstraintLayout>(R.id.month_calendar)
-                monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
-            }
-        }
-
-        return view
+        return page
     }
 
     override fun onResume() {
@@ -61,5 +61,16 @@ class FragmentMonthPage: Fragment() {
         val title = sdf.format(date)
 
         (activity as ActivityStart).setTitle(title)
+        Log.d("Asu", "onResume date: $title")
+
+        val context = this.context!!
+        GlobalScope.async {
+            page.post {
+                monthCalendar = page.findViewById(R.id.month_calendar)
+                if (monthCalendar?.childCount == 0) {
+                    monthCalendar?.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
+                }
+            }
+        }
     }
 }

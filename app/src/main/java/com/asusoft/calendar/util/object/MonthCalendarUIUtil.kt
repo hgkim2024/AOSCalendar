@@ -20,10 +20,10 @@ object MonthCalendarUIUtil {
     private const val WEIGHT_SUM = 100.0F
 
     fun setCalendarDate(
-            context: Context,
             currentDate: Date,
             dayViewList: ArrayList<View>
     ) {
+        if (dayViewList.isEmpty()) return
         var date = currentDate.startOfMonth.startOfWeek
         val row = getMonthRow(currentDate)
 
@@ -32,53 +32,10 @@ object MonthCalendarUIUtil {
                 val v = dayViewList[(weekIdx * 7) + dayIdx]
                 val tv = v.findViewById<TextView>(R.id.title)
                 tv.text = date.calendarDay.toString()
-                tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
                 date = date.tomorrow
             }
             date = date.nextWeek
         }
-    }
-
-    fun getOneDay(
-            context: Context,
-            currentDate: Date
-    ): View {
-        val dayLayout = ConstraintLayout(context)
-        val tv = TextView(context)
-        tv.id = View.generateViewId()
-
-        dayLayout.addView(tv)
-        val tvLayout = ConstraintLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        val widthMargin = CalculatorUtil.dpToPx(context, 10.0F)
-        tvLayout.setMargins(widthMargin, 0, widthMargin, 0)
-        tv.layoutParams = tvLayout
-        tv.textSize = 12.0F
-        tv.text = currentDate.calendarDay.toString()
-        tv.setTextColor(WeekOfDayType.fromInt(currentDate.weekOfDay).getFontColor(context))
-
-        val linearLayout = LinearLayout(context)
-        linearLayout.id = View.generateViewId()
-
-        dayLayout.addView(linearLayout)
-        linearLayout.layoutParams = ConstraintLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0
-        )
-
-        val set = ConstraintSet()
-        set.clone(dayLayout)
-
-        set.connect(tv.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        set.connect(tv.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-        set.connect(linearLayout.id, ConstraintSet.TOP, tv.id, ConstraintSet.BOTTOM)
-        set.connect(linearLayout.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-
-        set.applyTo(dayLayout)
-        return dayLayout
     }
 
     fun getOneWeekUI(
@@ -86,7 +43,7 @@ object MonthCalendarUIUtil {
         currentDate: Date,
         dayViewList: ArrayList<View>
     ): View {
-//        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(context)
         val weekLayout = ConstraintLayout(context)
         val rate: Float = 1.0F / WEEK
         var date = currentDate
@@ -97,14 +54,13 @@ object MonthCalendarUIUtil {
         )
 
         for(idx in 0 until WEEK) {
-//            val v = inflater.inflate(R.layout.item_one_week, null, false)
-            val v = getOneDay(context, date)
+            val v = inflater.inflate(R.layout.item_one_day, null, false)
             v.id = View.generateViewId()
             weekLayout.addView(v)
 
-//            val tv = v.findViewById<TextView>(R.id.title)
-//            tv.text = date.calendarDay.toString()
-//            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+            val tv = v.findViewById<TextView>(R.id.title)
+            tv.text = date.calendarDay.toString()
+            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
 
             v.layoutParams = ConstraintLayout.LayoutParams(
                 0,
@@ -136,6 +92,7 @@ object MonthCalendarUIUtil {
         dayViewList: ArrayList<View>
     ): View {
         val start = System.currentTimeMillis()
+
         val row = getMonthRow(currentDate)
         var date = currentDate.startOfMonth.startOfWeek
         val monthLayout = LinearLayout(context)
@@ -161,7 +118,7 @@ object MonthCalendarUIUtil {
         }
 
         val diff = System.currentTimeMillis() - start
-        Log.d("Asu", "diff: $diff")
+        Log.d("Asu", "getMonthUI diff: $diff")
         return monthLayout
     }
 
