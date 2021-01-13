@@ -12,9 +12,9 @@ class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
-    override fun createFragment(position: Int): FragmentMonthCalendar {
+    override fun createFragment(position: Int): FragmentMonthPage {
         val time = getItemId(position)
-        return FragmentMonthCalendar.newInstance(time)
+        return FragmentMonthPage.newInstance(time)
     }
 
     override fun getItemId(position: Int): Long = Date(start).getNextMonth(position - START_POSITION).time

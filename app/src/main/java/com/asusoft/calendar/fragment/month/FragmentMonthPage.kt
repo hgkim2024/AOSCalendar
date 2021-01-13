@@ -13,14 +13,14 @@ import com.asusoft.calendar.util.startOfMonth
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FragmentMonthCalendar: Fragment() {
+class FragmentMonthPage: Fragment() {
 
     lateinit var date: Date
     var dayViewList = ArrayList<View>()
 
     companion object {
-        fun newInstance(time: Long): FragmentMonthCalendar {
-            val f = FragmentMonthCalendar()
+        fun newInstance(time: Long): FragmentMonthPage {
+            val f = FragmentMonthPage()
             val args = Bundle()
             args.putLong("time", time)
             f.arguments = args
@@ -40,9 +40,6 @@ class FragmentMonthCalendar: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
         val view = inflater.inflate(R.layout.fragment_month_calender, container, false)
-
-        val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
-        weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
 
         val monthCalendar = view.findViewById<ConstraintLayout>(R.id.month_calendar)
         monthCalendar.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
