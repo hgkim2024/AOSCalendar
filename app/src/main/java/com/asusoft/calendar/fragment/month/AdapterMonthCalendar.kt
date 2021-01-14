@@ -10,13 +10,14 @@ class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 
     private var start: Long = Date().getToday().startOfMonth.time
     val nullPageList = ArrayList<FragmentMonthPage>()
+    var initFlag = true
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
     override fun createFragment(position: Int): FragmentMonthPage {
         Log.d("Asu", "createFragment position: $position")
         val time = getItemId(position)
-        val page = FragmentMonthPage.newInstance(time)
+        val page = FragmentMonthPage.newInstance(time, initFlag)
         nullPageList.add(page)
         return page
     }

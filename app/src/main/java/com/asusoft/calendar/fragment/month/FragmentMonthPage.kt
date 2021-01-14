@@ -1,5 +1,6 @@
 package com.asusoft.calendar.fragment.month
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,12 +23,14 @@ class FragmentMonthPage: Fragment() {
     var dayViewList = ArrayList<View>()
     lateinit var page: View
     var monthCalendar: ConstraintLayout? = null
+    var initFlag = false
 
     companion object {
-        fun newInstance(time: Long): FragmentMonthPage {
+        fun newInstance(time: Long, initFlag: Boolean): FragmentMonthPage {
             val f = FragmentMonthPage()
             val args = Bundle()
             args.putLong("time", time)
+            args.putBoolean("initFlag", initFlag)
             f.arguments = args
             return f
         }
@@ -38,6 +41,8 @@ class FragmentMonthPage: Fragment() {
 
         val args = arguments!!
         val time = args.getLong("time")
+        initFlag = args.getBoolean("initFlag", false)
+
         date = Date(time)
     }
 
@@ -51,6 +56,10 @@ class FragmentMonthPage: Fragment() {
         val inflater = LayoutInflater.from(context)
         page = inflater.inflate(R.layout.fragment_month_calender, null, false)
 
+        if (initFlag) {
+            setPageUI(context)
+        }
+
         return page
     }
 
@@ -63,7 +72,10 @@ class FragmentMonthPage: Fragment() {
         (activity as ActivityStart).setTitle(title)
         Log.d("Asu", "onResume date: $title")
 
-        val context = this.context!!
+        setPageUI(context!!)
+    }
+
+    fun setPageUI(context: Context) {
         GlobalScope.async {
             page.post {
                 monthCalendar = page.findViewById(R.id.month_calendar)

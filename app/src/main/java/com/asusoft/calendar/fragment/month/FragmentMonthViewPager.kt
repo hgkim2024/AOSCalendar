@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
@@ -49,30 +49,36 @@ class FragmentMonthViewPager: Fragment() {
         viewPager.setCurrentItem(AdapterMonthCalendar.START_POSITION, false)
         viewPager.offscreenPageLimit = 1
 
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
 
-                if (state == SCROLL_STATE_IDLE) {
-                    val list = adapter.nullPageList
-                    for (idx in list.size - 1 downTo 0) {
-                        if (list[idx].monthCalendar != null) {
-                            list.removeAt(idx)
+                when(state) {
+                    SCROLL_STATE_DRAGGING -> {
+                        if (adapter.initFlag) {
+                            adapter.initFlag = false
                         }
                     }
 
-                    for (page in list) {
-                        val context = context!!
-                        GlobalScope.async {
-                            page.view?.post {
-                                page.monthCalendar = page.view?.findViewById(R.id.month_calendar)
-                                if (page.monthCalendar?.childCount == 0) {
-                                    page.monthCalendar?.addView(MonthCalendarUIUtil.getMonthUI(context, page.date.startOfMonth, page.dayViewList))
-                                }
+                    SCROLL_STATE_IDLE -> {
+                        val list = adapter.nullPageList
+                        for (idx in list.size - 1 downTo 0) {
+                            if (list[idx].monthCalendar != null) {
+                                list.removeAt(idx)
                             }
                         }
+
+                        val context = context!!
+
+                        for (page in list) {
+                            page.setPageUI(context)
+                        }
                     }
+
+                    SCROLL_STATE_SETTLING -> {}
                 }
+
+
             }
         })
     }
