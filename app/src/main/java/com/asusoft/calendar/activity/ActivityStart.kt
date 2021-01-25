@@ -1,22 +1,21 @@
 package com.asusoft.calendar.activity
 
+import android.animation.ObjectAnimator
+import android.animation.StateListAnimator
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.getToday
-import com.asusoft.calendar.util.prevMonth
-import com.asusoft.calendar.util.startOfMonth
-import java.util.*
-import kotlin.collections.ArrayList
+import com.google.android.material.appbar.AppBarLayout
 
 
 class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,6 +32,12 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);
         supportFragmentManager.addOnBackStackChangedListener(this)
+
+        // remove shadow
+        val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
+        val stateListAnimator = StateListAnimator()
+        stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(appBarLayout, "elevation", 0f))
+        appBarLayout.stateListAnimator = stateListAnimator
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction().add(R.id.fragment, FragmentMonthViewPager.newInstance(), "FragmentMonthViewPager").commit()
