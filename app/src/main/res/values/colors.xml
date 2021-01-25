@@ -6,8 +6,7 @@
 
     <color name="red">#EF5350</color>
     <color name="blue">#4169E1</color>
-    <color name="background">#F5F5F5</color>
-    <color name="itemBackground">#FAFAFA</color>
+    <color name="background">#FAFAFA</color>
     <color name="font">#424242</color>
     <color name="lightFont">#BDBDBD</color>
     <color name="separator">#E0E0E0</color>

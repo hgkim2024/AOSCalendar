@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
 import kotlinx.coroutines.GlobalScope
@@ -20,8 +22,10 @@ import java.util.*
 class FragmentMonthPage: Fragment() {
 
     lateinit var date: Date
-    var dayViewList = ArrayList<View>()
+    lateinit var monthItem: MonthItem
     lateinit var page: View
+
+    var prevClickDayView: View? = null
     var monthCalendar: ConstraintLayout? = null
     var initFlag = false
 
@@ -80,7 +84,21 @@ class FragmentMonthPage: Fragment() {
             page.post {
                 monthCalendar = page.findViewById(R.id.month_calendar)
                 if (monthCalendar?.childCount == 0) {
-                    monthCalendar?.addView(MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth, dayViewList))
+                    monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)
+                    monthCalendar?.addView(monthItem.monthView)
+                }
+
+                for (weekItem in monthItem.WeekItemList) {
+                    for (dayView in weekItem.dayViewList) {
+                        dayView.setOnClickListener {
+                            if (prevClickDayView != null) {
+                                prevClickDayView!!.background = null
+                            }
+
+                            dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
+                            prevClickDayView = dayView
+                        }
+                    }
                 }
             }
         }

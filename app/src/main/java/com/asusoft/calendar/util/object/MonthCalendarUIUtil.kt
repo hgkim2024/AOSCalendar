@@ -11,6 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
+import com.asusoft.calendar.fragment.month.objects.MonthItem
+import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.util.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -38,15 +40,17 @@ object MonthCalendarUIUtil {
         }
     }
 
-    fun getOneWeekUI(
-        context: Context,
-        currentDate: Date,
-        dayViewList: ArrayList<View>
-    ): View {
+    private fun getOneWeekUI(
+            context: Context,
+            startOfWeekDate: Date,
+            currentMonthDate: Date
+    ): WeekItem {
         val inflater = LayoutInflater.from(context)
         val weekLayout = ConstraintLayout(context)
         val rate: Float = 1.0F / WEEK
-        var date = currentDate
+        var date = startOfWeekDate
+
+        val dayViewList = ArrayList<View>()
 
         weekLayout.layoutParams = ConstraintLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -80,21 +84,26 @@ object MonthCalendarUIUtil {
 
             set.applyTo(weekLayout)
             dayViewList.add(v)
+
+            if (currentMonthDate.calendarMonth != date.calendarMonth) {
+                v.alpha = 0.4F
+            }
+
             date = date.tomorrow
         }
 
-        return weekLayout
+        return WeekItem(startOfWeekDate, weekLayout, dayViewList)
     }
 
     fun getMonthUI(
-        context: Context,
-        currentDate: Date,
-        dayViewList: ArrayList<View>
-    ): View {
+            context: Context,
+            startOfMonthDate: Date
+    ): MonthItem {
         val start = System.currentTimeMillis()
 
-        val row = getMonthRow(currentDate)
-        var date = currentDate.startOfMonth.startOfWeek
+        val weekItemList = ArrayList<WeekItem>()
+        val row = getMonthRow(startOfMonthDate)
+        var date = startOfMonthDate.startOfWeek
         val monthLayout = LinearLayout(context)
         monthLayout.weightSum = WEIGHT_SUM
         monthLayout.orientation = LinearLayout.VERTICAL
@@ -105,7 +114,9 @@ object MonthCalendarUIUtil {
         )
 
         for (idx in 0 until row) {
-            val weekLayout = getOneWeekUI(context, date, dayViewList)
+            val weekItem = getOneWeekUI(context, date, startOfMonthDate)
+
+            val weekLayout = weekItem.weekView
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
@@ -114,12 +125,14 @@ object MonthCalendarUIUtil {
                 WEIGHT_SUM / row
             )
 
+            weekItemList.add(weekItem)
             date = date.nextWeek
         }
 
         val diff = System.currentTimeMillis() - start
         Log.d("Asu", "getMonthUI diff: $diff")
-        return monthLayout
+
+        return MonthItem(startOfMonthDate, monthLayout, weekItemList)
     }
 
     fun getWeekHeader(
