@@ -25,7 +25,8 @@
                 android:layout_gravity="center"
                 android:textColor="@color/font"
                 android:id="@+id/action_bar_title"
-                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textSize="19sp"
                 android:background="@android:color/transparent"/>
 
         </androidx.appcompat.widget.Toolbar>

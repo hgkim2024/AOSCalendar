@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.startOfMonth
+import kotlinx.android.synthetic.main.fragment_view_pager.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
@@ -34,7 +35,11 @@ class FragmentMonthViewPager: Fragment() {
         val view = inflater.inflate(R.layout.fragment_view_pager, container, false)
 
         adapter = AdapterMonthCalendar(activity!!)
-        viewPager = view.findViewById(R.id.month_calendar)
+        viewPager = view.month_calendar
+
+//        view.btn_float.setOnClickListener {
+//            viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+//        }
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
@@ -60,20 +65,13 @@ class FragmentMonthViewPager: Fragment() {
                         }
                     }
 
-                    SCROLL_STATE_IDLE -> {}
+                    SCROLL_STATE_IDLE -> {
+                        setPageUI()
+                    }
 
                     SCROLL_STATE_SETTLING -> {
-                        val list = adapter.nullPageList
-                        for (idx in list.size - 1 downTo 0) {
-                            if (list[idx].monthCalendar != null) {
-                                list.removeAt(idx)
-                            }
-                        }
-
-                        val context = context!!
-
-                        for (page in list) {
-                            page.setPageUI(context)
+                        if (adapter.nullPageList.size > 3) {
+                            setPageUI()
                         }
                     }
                 }
@@ -81,5 +79,20 @@ class FragmentMonthViewPager: Fragment() {
 
             }
         })
+    }
+
+    fun setPageUI() {
+        val list = adapter.nullPageList
+        for (idx in list.size - 1 downTo 0) {
+            if (list[idx].monthCalendar != null) {
+                list.removeAt(idx)
+            }
+        }
+
+        val context = context!!
+
+        for (page in list) {
+            page.setPageUI(context)
+        }
     }
 }

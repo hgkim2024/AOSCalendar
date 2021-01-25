@@ -158,7 +158,7 @@ object MonthCalendarUIUtil {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 WEIGHT_SUM / WEEK
             )
-            val leftPadding = CalculatorUtil.dpToPx(context, 10.0F)
+            val leftPadding = CalculatorUtil.dpToPx(context, 8.0F)
             tv.setPadding(leftPadding, 0, 0, 0)
 
             tv.text = days[idx].getShortTitle()

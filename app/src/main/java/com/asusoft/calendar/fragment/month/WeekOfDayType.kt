@@ -35,8 +35,8 @@ enum class WeekOfDayType(val value: Int) {
 
     fun getFontColor(context: Context): Int {
         return when(this) {
-            SUNDAY -> ContextCompat.getColor(context, R.color.red)
-            SATURDAY -> ContextCompat.getColor(context, R.color.blue)
+            SUNDAY -> ContextCompat.getColor(context, R.color.holiday)
+            SATURDAY -> ContextCompat.getColor(context, R.color.saturday)
             else -> ContextCompat.getColor(context, R.color.font)
         }
     }

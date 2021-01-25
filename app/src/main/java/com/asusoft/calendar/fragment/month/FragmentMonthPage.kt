@@ -70,12 +70,7 @@ class FragmentMonthPage: Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val sdf = SimpleDateFormat("yyyy.MM")
-        val title = sdf.format(date)
-
-        (activity as ActivityStart).setTitle(title)
-        Log.d("Asu", "onResume date: $title")
-
+        setActionBarTitle()
         setPageUI(context!!)
     }
 
@@ -102,5 +97,13 @@ class FragmentMonthPage: Fragment() {
                 }
             }
         }
+    }
+
+    private fun setActionBarTitle() {
+        val sdf = SimpleDateFormat("yyyy년 MM월")
+        val title = sdf.format(date)
+
+        (activity as ActivityStart).setTitle(title)
+        Log.d("Asu", "onResume date: $title")
     }
 }

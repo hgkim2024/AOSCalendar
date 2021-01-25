@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">@color/background</color>
     <color name="colorPrimaryDark">@color/background</color>
     <color name="colorAccent">#4169E1</color>
 
-    <color name="red">#EF5350</color>
-    <color name="blue">#4169E1</color>
+    <color name="holiday">#dc143c</color>
+    <color name="saturday">#4169E1</color>
+
     <color name="background">#FAFAFA</color>
-    <color name="font">#424242</color>
-    <color name="lightFont">#BDBDBD</color>
     <color name="separator">#E0E0E0</color>
 
-    <color name="edit">#3273b5</color>
-    <color name="editSelect">#993273b5</color>
+    <color name="font">#424242</color>
+    <color name="lightFont">#BDBDBD</color>
 
 </resources>
