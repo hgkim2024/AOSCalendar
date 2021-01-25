@@ -19,6 +19,7 @@ class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
         val time = getItemId(position)
         val page = FragmentMonthPage.newInstance(time, initFlag)
         nullPageList.add(page)
+        Log.d("Asu", "nullPageList size: ${nullPageList.size}")
         return page
     }
 

@@ -47,7 +47,7 @@ class FragmentMonthViewPager: Fragment() {
 
         viewPager.adapter = adapter
         viewPager.setCurrentItem(AdapterMonthCalendar.START_POSITION, false)
-        viewPager.offscreenPageLimit = 1
+        viewPager.offscreenPageLimit = 2
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
@@ -60,7 +60,9 @@ class FragmentMonthViewPager: Fragment() {
                         }
                     }
 
-                    SCROLL_STATE_IDLE -> {
+                    SCROLL_STATE_IDLE -> {}
+
+                    SCROLL_STATE_SETTLING -> {
                         val list = adapter.nullPageList
                         for (idx in list.size - 1 downTo 0) {
                             if (list[idx].monthCalendar != null) {
@@ -74,8 +76,6 @@ class FragmentMonthViewPager: Fragment() {
                             page.setPageUI(context)
                         }
                     }
-
-                    SCROLL_STATE_SETTLING -> {}
                 }
 
 
