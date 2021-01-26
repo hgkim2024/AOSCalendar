@@ -1,6 +1,7 @@
 package com.asusoft.calendar.util.`object`
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
@@ -106,7 +106,6 @@ object MonthCalendarUIUtil {
             startOfWeekDate: Date,
             currentMonthDate: Date
     ): WeekItem {
-        val inflater = LayoutInflater.from(context)
         val weekLayout = ConstraintLayout(context)
         val rate: Float = 1.0F / WEEK
         var date = startOfWeekDate
@@ -119,15 +118,19 @@ object MonthCalendarUIUtil {
         )
 
         for(idx in 0 until WEEK) {
-            val v = inflater.inflate(R.layout.view_monthly_one_day, null, false)
-            v.id = View.generateViewId()
-            weekLayout.addView(v)
+            val tv = TextView(context)
+            tv.id = View.generateViewId()
+            weekLayout.addView(tv)
 
-            val tv = v.findViewById<TextView>(R.id.title)
             tv.text = date.calendarDay.toString()
             tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+            tv.textSize = FONT_SIZE
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
 
-            v.layoutParams = ConstraintLayout.LayoutParams(
+            val padding = CalculatorUtil.dpToPx(context, 8.0F)
+            tv.setPadding(padding, padding, 0, 0)
+
+            tv.layoutParams = ConstraintLayout.LayoutParams(
                 0,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
@@ -135,19 +138,19 @@ object MonthCalendarUIUtil {
             val set = ConstraintSet()
             set.clone(weekLayout)
 
-            set.constrainPercentWidth(v.id, rate)
-            set.connect(v.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            set.constrainPercentWidth(tv.id, rate)
+            set.connect(tv.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
 
             when(idx) {
-                0 -> set.connect(v.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                else -> set.connect(v.id, ConstraintSet.START, dayViewList.last().id, ConstraintSet.END)
+                0 -> set.connect(tv.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                else -> set.connect(tv.id, ConstraintSet.START, dayViewList.last().id, ConstraintSet.END)
             }
 
             set.applyTo(weekLayout)
-            dayViewList.add(v)
+            dayViewList.add(tv)
 
             if (currentMonthDate.calendarMonth != date.calendarMonth) {
-                v.alpha = 0.4F
+                tv.alpha = 0.4F
             }
 
             date = date.tomorrow
@@ -176,10 +179,10 @@ object MonthCalendarUIUtil {
 
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, 0)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, 1)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, 0)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, 1)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 0)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 1)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 2)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 3)
 
             val weekLayout = weekItem.weekLayout
             monthLayout.addView(weekLayout)
