@@ -10,8 +10,14 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
+import com.asusoft.calendar.realm.EventMultiDay
+import com.asusoft.calendar.realm.EventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
+import com.asusoft.calendar.util.endOfWeek
+import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.weekOfDay
 import java.util.*
 
 
@@ -25,20 +31,22 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
             context: Context,
             startDay: WeekOfDayType,
             endDay: WeekOfDayType,
+            isOneDay: Boolean,
             order: Int
     ) {
         if (endDay.value < startDay.value) return
 
-        val eventView: View = when (startDay) {
+        // UI 생성
+        val eventView: View = when {
 
-            // 하루 이벤트
-            endDay -> {
+            // 하루 이벤트 UI
+            isOneDay -> {
                 val inflater = LayoutInflater.from(context)
                 val eventView = inflater.inflate(R.layout.view_monthly_one_day_event, null, false)
                 eventView
             }
 
-            // 이틀 이상 이벤트
+            // 이틀 이상 이벤트 UI
             else -> {
                 val eventView = TextView(context)
 
@@ -52,6 +60,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
             }
         }
 
+        // UI 배치
         eventView.id = View.generateViewId()
 
         eventView.layoutParams = ConstraintLayout.LayoutParams(

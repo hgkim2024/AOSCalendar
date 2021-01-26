@@ -13,33 +13,92 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
+import com.asusoft.calendar.realm.EventMultiDay
+import com.asusoft.calendar.realm.EventOneDay
 import com.asusoft.calendar.util.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 object MonthCalendarUIUtil {
-    private const val WEEK = 7
+    public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
     public const val FONT_SIZE = 12F
 
-    fun setCalendarDate(
-            currentDate: Date,
-            dayViewList: ArrayList<View>
-    ) {
-        if (dayViewList.isEmpty()) return
-        var date = currentDate.startOfMonth.startOfWeek
-        val row = getMonthRow(currentDate)
 
-        for (weekIdx in 0 until row) {
-            for(dayIdx in 0 until WEEK) {
-                val v = dayViewList[(weekIdx * 7) + dayIdx]
-                val tv = v.findViewById<TextView>(R.id.title)
-                tv.text = date.calendarDay.toString()
-                date = date.tomorrow
+    // TODO: - 테스트 필요
+    fun getEventOrderList(
+            weekDate: Date,
+            eventMultiDayList: List<EventMultiDay>,
+            eventOneDayList: List<EventOneDay>
+    ): HashMap<Long, Int> {
+        val orderMap = HashMap<Long, Int>()
+        val dayCheckList = java.util.ArrayList<Array<Boolean>>()
+
+        for (eventMultiDay in eventMultiDayList) {
+            val startOfWeek = if (eventMultiDay.startTime < weekDate.startOfWeek.time) {
+                weekDate.startOfWeek.weekOfDay
+            } else {
+                Date(eventMultiDay.startTime).weekOfDay
             }
-            date = date.nextWeek
+
+            val endOfWeek = if (eventMultiDay.endTime < weekDate.endOfWeek.time) {
+                Date(eventMultiDay.endTime).weekOfDay
+            } else {
+                weekDate.endOfWeek.weekOfDay
+            }
+
+            loop@ while(true) {
+                var index = 0
+                val size = endOfWeek - startOfWeek + 1
+
+                for (i in 0 until WEEK - size) {
+                    if (dayCheckList.size <= index) {
+                        dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+                    }
+
+                    for(j in 0 until size) {
+                        if (!dayCheckList[index][i + j]) {
+                            if (j == size -1) {
+                                orderMap[eventMultiDay.key] = index
+
+                                for(j in 0 until size) {
+                                    dayCheckList[index][i + j] = true
+                                }
+
+                                break@loop
+                            }
+                        } else {
+                            break
+                        }
+                    }
+                }
+
+                index++
+            }
         }
+
+        for (eventOneDay in eventOneDayList) {
+            val weekOfDay = Date(eventOneDay.time).weekOfDay
+
+            var index = 0
+            loop@ while(true) {
+                if (dayCheckList.size <= index) {
+                    dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+                }
+
+                if (!dayCheckList[index][weekOfDay]) {
+                    orderMap[eventOneDay.key] = index
+                    dayCheckList[index][weekOfDay] = true
+
+                    break@loop
+                }
+
+                index++
+            }
+        }
+
+        return orderMap
     }
 
     private fun getOneWeekUI(
