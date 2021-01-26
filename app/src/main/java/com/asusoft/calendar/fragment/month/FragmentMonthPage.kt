@@ -52,10 +52,6 @@ class FragmentMonthPage: Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val sdf = SimpleDateFormat("yyyy.MM")
-        val title = sdf.format(date)
-        Log.d("Asu", "onCreateView date: $title")
-
         val context = this.context!!
         val inflater = LayoutInflater.from(context)
         page = inflater.inflate(R.layout.fragment_month_calender, null, false)
@@ -71,29 +67,33 @@ class FragmentMonthPage: Fragment() {
         super.onResume()
 
         setActionBarTitle()
-        setPageUI(context!!)
+        setAsyncPageUI(context!!)
+    }
+
+    fun setAsyncPageUI(context: Context) {
+        GlobalScope.async {
+            page.post {
+                setPageUI(context)
+            }
+        }
     }
 
     fun setPageUI(context: Context) {
-        GlobalScope.async {
-            page.post {
-                monthCalendar = page.findViewById(R.id.month_calendar)
-                if (monthCalendar?.childCount == 0) {
-                    monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)
-                    monthCalendar?.addView(monthItem.monthView)
-                }
+        monthCalendar = page.findViewById(R.id.month_calendar)
+        if (monthCalendar?.childCount == 0) {
+            monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)
+            monthCalendar?.addView(monthItem.monthView)
+        }
 
-                for (weekItem in monthItem.WeekItemList) {
-                    for (dayView in weekItem.dayViewList) {
-                        dayView.setOnClickListener {
-                            if (prevClickDayView != null) {
-                                prevClickDayView!!.background = null
-                            }
-
-                            dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
-                            prevClickDayView = dayView
-                        }
+        for (weekItem in monthItem.WeekItemList) {
+            for (dayView in weekItem.dayViewList) {
+                dayView.setOnClickListener {
+                    if (prevClickDayView != null) {
+                        prevClickDayView!!.background = null
                     }
+
+                    dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
+                    prevClickDayView = dayView
                 }
             }
         }
@@ -104,6 +104,6 @@ class FragmentMonthPage: Fragment() {
         val title = sdf.format(date)
 
         (activity as ActivityStart).setTitle(title)
-        Log.d("Asu", "onResume date: $title")
+//        Log.d("Asu", "onResume date: $title")
     }
 }

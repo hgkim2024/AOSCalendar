@@ -1,5 +1,6 @@
 package com.asusoft.calendar.fragment.month
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.startOfMonth
 import kotlinx.android.synthetic.main.fragment_view_pager.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 
 class FragmentMonthViewPager: Fragment() {
 
@@ -40,6 +39,11 @@ class FragmentMonthViewPager: Fragment() {
 //        view.btn_float.setOnClickListener {
 //            viewPager.setCurrentItem(viewPager.currentItem + 1, true)
 //        }
+
+        view.btn_float.setOnClickListener {
+            val intent = Intent(context, ActivityAddEvent::class.java)
+            startActivity(intent)
+        }
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
@@ -92,7 +96,7 @@ class FragmentMonthViewPager: Fragment() {
         val context = context!!
 
         for (page in list) {
-            page.setPageUI(context)
+            page.setAsyncPageUI(context)
         }
     }
 }

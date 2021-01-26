@@ -19,6 +19,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // Chart 라이브러리 - MPAndroidChart
+        maven { url 'https://jitpack.io' }
     }
 }
 
