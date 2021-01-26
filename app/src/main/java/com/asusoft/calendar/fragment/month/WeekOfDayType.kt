@@ -29,6 +29,10 @@ enum class WeekOfDayType(val value: Int) {
         }
     }
 
+    fun getIndex(): Int {
+        return this.value - 1
+    }
+
     fun getTitle(): String {
         return getShortTitle() + "요일"
     }

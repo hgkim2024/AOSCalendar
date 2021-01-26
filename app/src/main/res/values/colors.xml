@@ -13,5 +13,6 @@
 
     <color name="font">#424242</color>
     <color name="lightFont">#BDBDBD</color>
+    <color name="invertFont">#FAFAFA</color>
 
 </resources>

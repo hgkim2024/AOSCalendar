@@ -21,6 +21,8 @@ object MonthCalendarUIUtil {
     private const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
+    public const val FONT_SIZE = 12F
+
     fun setCalendarDate(
             currentDate: Date,
             dayViewList: ArrayList<View>
@@ -58,7 +60,7 @@ object MonthCalendarUIUtil {
         )
 
         for(idx in 0 until WEEK) {
-            val v = inflater.inflate(R.layout.item_one_day, null, false)
+            val v = inflater.inflate(R.layout.view_monthly_one_day, null, false)
             v.id = View.generateViewId()
             weekLayout.addView(v)
 
@@ -115,8 +117,12 @@ object MonthCalendarUIUtil {
 
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, 0)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, 1)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, 0)
+//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, 1)
 
-            val weekLayout = weekItem.weekView
+            val weekLayout = weekItem.weekLayout
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
@@ -164,7 +170,7 @@ object MonthCalendarUIUtil {
             tv.text = days[idx].getShortTitle()
             tv.setTextColor(days[idx].getFontColor(context))
 
-            tv.textSize = 12.0F
+            tv.textSize = FONT_SIZE
             tv.gravity = Gravity.CENTER_VERTICAL
         }
 
