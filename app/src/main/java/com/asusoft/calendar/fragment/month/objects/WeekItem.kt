@@ -10,11 +10,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.WeekOfDayType
-import com.asusoft.calendar.realm.EventMultiDay
-import com.asusoft.calendar.realm.EventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
@@ -29,11 +26,24 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
 
     fun addEventUI(
             context: Context,
-            startDay: WeekOfDayType,
-            endDay: WeekOfDayType,
+            startTime: Long,
+            endTime: Long,
             isOneDay: Boolean,
             order: Int
     ) {
+        val startDay =
+                if (startTime < weekDate.startOfWeek.time)
+                    WeekOfDayType.fromInt(weekDate.startOfWeek.weekOfDay)
+                else
+                    WeekOfDayType.fromInt(Date(startTime).weekOfDay)
+
+
+        val endDay =
+                if (endTime < weekDate.endOfWeek.time)
+                    WeekOfDayType.fromInt(Date(endTime).weekOfDay)
+                else
+                    WeekOfDayType.fromInt(weekDate.endOfWeek.weekOfDay)
+
         if (endDay.value < startDay.value) return
 
         // UI 생성

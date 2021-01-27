@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,8 +12,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.fragment.month.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
-import com.asusoft.calendar.realm.EventMultiDay
-import com.asusoft.calendar.realm.EventOneDay
+import com.asusoft.calendar.realm.RealmEventMultiDay
+import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,14 +27,14 @@ object MonthCalendarUIUtil {
 
     // TODO: - 테스트 필요
     fun getEventOrderList(
-            weekDate: Date,
-            eventMultiDayList: List<EventMultiDay>,
-            eventOneDayList: List<EventOneDay>
+        weekDate: Date,
+        realmEventMultiDayList: List<RealmEventMultiDay>,
+        realmEventOneDayList: List<RealmEventOneDay>
     ): HashMap<Long, Int> {
         val orderMap = HashMap<Long, Int>()
         val dayCheckList = java.util.ArrayList<Array<Boolean>>()
 
-        for (eventMultiDay in eventMultiDayList) {
+        for (eventMultiDay in realmEventMultiDayList) {
             val startOfWeek = if (eventMultiDay.startTime < weekDate.startOfWeek.time) {
                 weekDate.startOfWeek.weekOfDay
             } else {
@@ -78,7 +77,7 @@ object MonthCalendarUIUtil {
             }
         }
 
-        for (eventOneDay in eventOneDayList) {
+        for (eventOneDay in realmEventOneDayList) {
             val weekOfDay = Date(eventOneDay.time).weekOfDay
 
             var index = 0
@@ -179,6 +178,37 @@ object MonthCalendarUIUtil {
 
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
+
+            val multiDayList = RealmEventMultiDay.select(weekItem.weekDate)
+            val oneDayList = RealmEventOneDay.select(weekItem.weekDate)
+            val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList)
+
+            for (multiDay in multiDayList) {
+                val order = orderMap.getOrDefault(multiDay.key, -1)
+                if(order != -1) {
+                    weekItem.addEventUI(
+                            context,
+                            multiDay.startTime,
+                            multiDay.endTime,
+                            false,
+                            order
+                    )
+                }
+            }
+
+            for (oneDay in oneDayList) {
+                val order = orderMap.getOrDefault(oneDay.key, -1)
+                if(order != -1) {
+                    weekItem.addEventUI(
+                            context,
+                            oneDay.time,
+                            oneDay.time,
+                            true,
+                            order
+                    )
+                }
+            }
+
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 0)
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 1)
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 2)

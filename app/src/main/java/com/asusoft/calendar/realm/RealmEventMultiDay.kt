@@ -1,15 +1,17 @@
 package com.asusoft.calendar.realm
 
+import android.util.Log
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.toStringDay
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
 
-open class EventMultiDay: RealmObject() {
+open class RealmEventMultiDay: RealmObject() {
 
     @PrimaryKey
     var key: Long = System.currentTimeMillis()
@@ -25,13 +27,14 @@ open class EventMultiDay: RealmObject() {
     companion object {
         // TODO: - 쿼리 테스트 해볼 것
 
-        fun select(date: Date): List<EventMultiDay> {
+        fun select(date: Date): List<RealmEventMultiDay> {
             val startTime = date.startOfWeek.time
             val endTime = date.endOfWeek.time
 
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
-            val item = realm.where(EventMultiDay::class.java)
+
+            val item = realm.where(RealmEventMultiDay::class.java)
 
                     .greaterThanOrEqualTo("startTime", startTime)
                     .and()
@@ -48,6 +51,32 @@ open class EventMultiDay: RealmObject() {
             realm.commitTransaction()
             return item
         }
+    }
+
+
+    fun update(
+        name: String,
+        startTime: Long,
+        endTime: Long
+    ) {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+
+        realm.beginTransaction()
+
+        if (name != "") {
+            this.name = name
+        }
+
+        if (startTime > 0) {
+            this.startTime = startTime
+        }
+
+        if (endTime > 0) {
+            this.endTime = endTime
+        }
+
+        Log.d("Asu", "RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
+        realm.commitTransaction()
     }
 
 }

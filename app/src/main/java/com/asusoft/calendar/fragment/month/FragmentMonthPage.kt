@@ -13,9 +13,12 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.startOfMonth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -105,5 +108,10 @@ class FragmentMonthPage: Fragment() {
 
         (activity as ActivityStart).setTitle(title)
 //        Log.d("Asu", "onResume date: $title")
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+
     }
 }

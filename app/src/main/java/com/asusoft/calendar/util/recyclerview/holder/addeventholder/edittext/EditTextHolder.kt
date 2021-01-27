@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.recyclerview.addeventholder.edittext
+package com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext
 
 import android.content.Context
 import android.view.View

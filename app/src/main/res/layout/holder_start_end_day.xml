@@ -9,7 +9,7 @@
     <Space
         android:id="@+id/top_space"
         android:layout_width="0dp"
-        android:layout_height="10dp"
+        android:layout_height="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,6 +21,8 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_space"
         app:layout_constraintWidth_percent="0.5"/>
@@ -32,6 +34,8 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:textAlignment="textEnd"
+        android:textSize="16sp"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_space"
         app:layout_constraintWidth_percent="0.5"/>
@@ -39,7 +43,7 @@
     <Space
         android:id="@+id/bottom_space"
         android:layout_width="0dp"
-        android:layout_height="10dp"
+        android:layout_height="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />

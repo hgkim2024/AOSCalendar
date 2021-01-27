@@ -1,15 +1,12 @@
-package com.asusoft.calendar.util.recyclerview.addeventholder.startday
+package com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
-import com.asusoft.calendar.util.recyclerview.addeventholder.datepicker.DatePickerHolder
-import com.asusoft.calendar.util.recyclerview.addeventholder.datepicker.DatePickerItem
-import com.asusoft.calendar.util.recyclerview.addeventholder.edittext.EditTextHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.datepicker.DatePickerItem
 import com.asusoft.calendar.util.toStringDay
 
 class StartDayHolder(
@@ -35,24 +32,26 @@ class StartDayHolder(
     }
 
     private fun addDatePicker(item: StartDayItem, position: Int) {
+        var dismissFlag = false
+
         for (idx in adapter.list.size -1 downTo 0) {
             val oldDatePickerItem = adapter.list.getOrNull(idx)
             if (oldDatePickerItem != null) {
                 if (oldDatePickerItem is DatePickerItem) {
                     adapter.list.removeAt(idx)
                     adapter.notifyItemRemoved(idx)
-                    logAdapter()
+
+                    if (position + 1 == idx) {
+                        dismissFlag = true
+                    }
                 }
             }
         }
 
+        if (dismissFlag) return
+
         val newDatePickerItem = DatePickerItem(item.date)
         adapter.list.add(position + 1, newDatePickerItem)
         adapter.notifyItemInserted(position + 1)
-        logAdapter()
-    }
-
-    private fun logAdapter() {
-        Log.d("Asu", "size: ${adapter.list.size} =================================================")
     }
 }

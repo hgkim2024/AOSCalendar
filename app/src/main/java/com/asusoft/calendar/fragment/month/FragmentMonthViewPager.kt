@@ -12,7 +12,11 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class FragmentMonthViewPager: Fragment() {
 
@@ -85,6 +89,27 @@ class FragmentMonthViewPager: Fragment() {
             }
         })
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        GlobalBus.getBus().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        GlobalBus.getBus().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        if (addEventActivity != null) {
+            adapter.notifyDataSetChanged()
+        }
+    }
+
 
     fun setPageUI() {
         val list = adapter.nullPageList

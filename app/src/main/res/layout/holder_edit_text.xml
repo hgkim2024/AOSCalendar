@@ -9,7 +9,7 @@
     <Space
         android:id="@+id/top_space"
         android:layout_width="0dp"
-        android:layout_height="10dp"
+        android:layout_height="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:hint="제목"
+        android:textSize="22sp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +30,7 @@
     <Space
         android:id="@+id/bottom_space"
         android:layout_width="0dp"
-        android:layout_height="10dp"
+        android:layout_height="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_edit" />
