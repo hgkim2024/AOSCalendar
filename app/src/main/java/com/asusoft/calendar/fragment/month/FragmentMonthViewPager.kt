@@ -12,7 +12,7 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import kotlinx.android.synthetic.main.fragment_view_pager.view.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class FragmentMonthViewPager: Fragment() {
 
@@ -34,13 +34,14 @@ class FragmentMonthViewPager: Fragment() {
         val view = inflater.inflate(R.layout.fragment_view_pager, container, false)
 
         adapter = AdapterMonthCalendar(activity!!)
-        viewPager = view.month_calendar
+        viewPager = view.findViewById(R.id.month_calendar)
 
 //        view.btn_float.setOnClickListener {
 //            viewPager.setCurrentItem(viewPager.currentItem + 1, true)
 //        }
 
-        view.btn_float.setOnClickListener {
+        val floatingBtn = view.findViewById<FloatingActionButton>(R.id.btn_float)
+        floatingBtn.setOnClickListener {
             val intent = Intent(context, ActivityAddEvent::class.java)
             startActivity(intent)
         }

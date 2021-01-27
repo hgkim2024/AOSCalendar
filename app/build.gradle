@@ -2,7 +2,6 @@ plugins {
     // basic apply
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
 
     // add realm
     id 'kotlin-kapt'

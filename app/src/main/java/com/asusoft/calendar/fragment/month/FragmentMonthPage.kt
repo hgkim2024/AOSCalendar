@@ -78,7 +78,7 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
-    fun setPageUI(context: Context) {
+    private fun setPageUI(context: Context) {
         monthCalendar = page.findViewById(R.id.month_calendar)
         if (monthCalendar?.childCount == 0) {
             monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)

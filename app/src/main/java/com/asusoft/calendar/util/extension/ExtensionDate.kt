@@ -1,5 +1,7 @@
 package com.asusoft.calendar.util
 
+import com.asusoft.calendar.fragment.month.WeekOfDayType
+import java.text.SimpleDateFormat
 import java.util.*
 
 /*
@@ -247,4 +249,26 @@ fun Date.getEndOfDay(calendar: Calendar): Date {
 fun Date.getToday(): Date {
     val calendar: Calendar = Calendar.getInstance()
     return getStartOfDay(calendar)
+}
+
+
+/*
+*
+* Date 를 0000년 00월 00일 String 으로 변환
+*/
+fun Date.toStringDay(): String {
+    val sdf = SimpleDateFormat("yyyy년 MM월 dd일")
+    var dateString = sdf.format(this)
+    dateString += "(${WeekOfDayType.fromInt(weekOfDay).getShortTitle()})"
+    return dateString
+}
+
+
+/*
+
+* yyyy-MM-dd String 을 Date 로 변환
+*/
+fun Date.stringToDate(dateString: String): Date {
+    val sdf = SimpleDateFormat("yyyy-MM-dd")
+    return sdf.parse(dateString)
 }
