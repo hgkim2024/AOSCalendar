@@ -2,8 +2,12 @@ package com.asusoft.calendar.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
+import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.DatePicker
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -11,13 +15,29 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
+import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.appbar.AppBarLayout
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 
 class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
+    private var date = Date().getToday()
+
+    companion object {
+        fun toStringActivity(): String {
+            return "ActivityStart"
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        GlobalBus.getBus().register(this)
 
         // TODO: - 실제 기기에서 적용되는지 테스트해보기 - 안드로이드 10 기기가 없음
 //        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
@@ -29,6 +49,10 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        toolbar.setOnClickListener {
+            showDatePickerDialog()
+        }
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);
         supportFragmentManager.addOnBackStackChangedListener(this)
@@ -45,6 +69,21 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
             onBackStackChanged()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        GlobalBus.getBus().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val fragmentMonthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
+        if (fragmentMonthViewPager != null) {
+            date = event.map["date"] as Date
+            Log.d("Asu", "current page date: ${date.toStringDay()}")
+        }
+    }
+
     override fun onBackStackChanged() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
     }
@@ -57,5 +96,42 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     fun setTitle(text: String) {
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.text = text
+    }
+
+    private fun showDatePickerDialog() {
+
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
+            date = date.stringToDate(dateString)
+            Log.d("Asu", "change date: ${date.toStringDay()}")
+        }
+
+        val datePickerDialog = DatePickerDialog(baseContext, dateSetListener, date.calendarYear, date.calendarMonth - 1, date.calendarDay)
+
+        datePickerDialog.setCancelable(true)
+
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+                getString(android.R.string.cancel)
+        ) { dialog, which ->
+            if (which == DialogInterface.BUTTON_NEGATIVE) {
+                dialog.cancel()
+            }
+        }
+
+        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                getString(android.R.string.ok)) { dialog, which ->
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+
+                val event = HashMapEvent(HashMap())
+                event.map[toStringActivity()] = toStringActivity()
+                event.map["date"] = date
+                Log.d("Asu", "move date: ${date.toStringDay()}")
+                GlobalBus.getBus().post(event)
+
+                dialog.cancel()
+            }
+        }
+
+        datePickerDialog.show()
     }
 }

@@ -42,6 +42,17 @@ val Date.calendarMonth: Int
 
 /*
 *
+년 반환
+*/
+val Date.calendarYear: Int
+    get() {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = this
+        return calendar.get(Calendar.YEAR)
+    }
+
+/*
+*
 해당 날의 시작 시간을 반환
 */
 val Date.startOfDay: Date

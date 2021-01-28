@@ -12,11 +12,11 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.asusoft.calendar.util.getToday
-import com.asusoft.calendar.util.toStringDay
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,7 +26,8 @@ class FragmentMonthViewPager: Fragment() {
 
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
-    private var date = Date().getToday()
+    private var selectedDate = Date().getToday()
+    private var curPageDate = Date().getToday()
 
     companion object {
         fun newInstance(): FragmentMonthViewPager {
@@ -64,8 +65,7 @@ class FragmentMonthViewPager: Fragment() {
         val floatingBtn = view.findViewById<FloatingActionButton>(R.id.btn_float)
         floatingBtn.setOnClickListener {
             val intent = Intent(context, ActivityAddEvent::class.java)
-            val args = Bundle()
-            intent.putExtra("date", date)
+            intent.putExtra("date", selectedDate)
             startActivity(intent)
         }
 
@@ -95,6 +95,14 @@ class FragmentMonthViewPager: Fragment() {
 
                     SCROLL_STATE_IDLE -> {
                         setPageUI()
+
+                        val diffMonth = viewPager.currentItem - AdapterMonthCalendar.START_POSITION
+                        Log.d("Asu", "diffMonth: $diffMonth")
+                        val event = HashMapEvent(HashMap())
+                        event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
+                        curPageDate = Date().getToday().getNextMonth(diffMonth).startOfMonth
+                        event.map["date"] = curPageDate
+                        GlobalBus.getBus().post(event)
                     }
 
                     SCROLL_STATE_SETTLING -> {
@@ -113,8 +121,19 @@ class FragmentMonthViewPager: Fragment() {
     public fun onEvent(event: HashMapEvent) {
         val fragmentMonthPage = event.map.getOrDefault(FragmentMonthPage.toString(), null)
         if (fragmentMonthPage != null) {
-            date = event.map["date"] as Date
-            Log.d("Asu", "selected day date: ${date.toStringDay()}")
+            selectedDate = event.map["date"] as Date
+            Log.d("Asu", "selected day date: ${selectedDate.toStringDay()}")
+        }
+
+        val activityStart = event.map.getOrDefault(ActivityStart.toStringActivity(), null)
+        if (activityStart != null) {
+            val date = event.map["date"] as Date
+
+            val diffYear = date.calendarYear - curPageDate.calendarYear
+            val diffMonth = date.calendarMonth - curPageDate.calendarMonth
+            val diff = diffYear * 12 + diffMonth
+
+            viewPager.setCurrentItem(viewPager.currentItem + diff, true)
         }
     }
 
