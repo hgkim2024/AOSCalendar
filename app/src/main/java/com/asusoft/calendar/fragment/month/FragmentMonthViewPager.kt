@@ -90,27 +90,6 @@ class FragmentMonthViewPager: Fragment() {
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        GlobalBus.getBus().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        GlobalBus.getBus().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
-        if (addEventActivity != null) {
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-
     fun setPageUI() {
         val list = adapter.nullPageList
         for (idx in list.size - 1 downTo 0) {

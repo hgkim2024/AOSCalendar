@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.enum.AddEventType.*
+import com.asusoft.calendar.activity.enums.AddEventType.*
 import com.asusoft.calendar.util.extension.addSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.datepicker.DatePickerHolder

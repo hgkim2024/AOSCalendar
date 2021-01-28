@@ -1,17 +1,17 @@
-package com.asusoft.calendar.fragment.month
+package com.asusoft.calendar.fragment.month.enums
 
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 
 enum class WeekOfDayType(val value: Int) {
-    SUNDAY(1),
-    MONDAY(2),
-    TUESDAY(3),
-    WEDNESDAY(4),
-    THURSDAY(5),
-    FRIDAY(6),
-    SATURDAY(7);
+    SUNDAY(0),
+    MONDAY(1),
+    TUESDAY(2),
+    WEDNESDAY(3),
+    THURSDAY(4),
+    FRIDAY(5),
+    SATURDAY(6);
 
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }
@@ -27,10 +27,6 @@ enum class WeekOfDayType(val value: Int) {
             FRIDAY -> "금"
             SATURDAY -> "토"
         }
-    }
-
-    fun getIndex(): Int {
-        return this.value - 1
     }
 
     fun getTitle(): String {

@@ -25,8 +25,6 @@ open class RealmEventMultiDay: RealmObject() {
     var endTime: Long = 0
 
     companion object {
-        // TODO: - 쿼리 테스트 해볼 것
-
         fun select(date: Date): List<RealmEventMultiDay> {
             val startTime = date.startOfWeek.time
             val endTime = date.endOfWeek.time
@@ -49,6 +47,8 @@ open class RealmEventMultiDay: RealmObject() {
                     .findAll()
             
             realm.commitTransaction()
+
+            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
     }
@@ -79,4 +79,10 @@ open class RealmEventMultiDay: RealmObject() {
         realm.commitTransaction()
     }
 
+    fun insert() {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+        realm.beginTransaction()
+        realm.insertOrUpdate(this)
+        realm.commitTransaction()
+    }
 }

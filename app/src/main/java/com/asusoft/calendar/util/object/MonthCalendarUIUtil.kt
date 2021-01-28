@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.asusoft.calendar.fragment.month.WeekOfDayType
+import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
@@ -25,8 +25,7 @@ object MonthCalendarUIUtil {
     public const val FONT_SIZE = 12F
 
 
-    // TODO: - 테스트 필요
-    fun getEventOrderList(
+    private fun getEventOrderList(
         weekDate: Date,
         realmEventMultiDayList: List<RealmEventMultiDay>,
         realmEventOneDayList: List<RealmEventOneDay>
@@ -47,30 +46,30 @@ object MonthCalendarUIUtil {
                 weekDate.endOfWeek.weekOfDay
             }
 
+            var index = 0
             loop@ while(true) {
-                var index = 0
-                val size = endOfWeek - startOfWeek + 1
+                if (startOfWeek >= endOfWeek) break@loop
 
-                for (i in 0 until WEEK - size) {
-                    if (dayCheckList.size <= index) {
-                        dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+                if (dayCheckList.size <= index) {
+                    dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+                }
+
+                var breakFlag = true
+
+                for (i in startOfWeek..endOfWeek) {
+                    if (dayCheckList[index][i]) {
+                        breakFlag = false
+                        break
+                    }
+                }
+
+                if (breakFlag) {
+                    orderMap[eventMultiDay.key] = index
+                    for (i in startOfWeek..endOfWeek) {
+                        dayCheckList[index][i] = true
                     }
 
-                    for(j in 0 until size) {
-                        if (!dayCheckList[index][i + j]) {
-                            if (j == size -1) {
-                                orderMap[eventMultiDay.key] = index
-
-                                for(j in 0 until size) {
-                                    dayCheckList[index][i + j] = true
-                                }
-
-                                break@loop
-                            }
-                        } else {
-                            break
-                        }
-                    }
+                    break@loop
                 }
 
                 index++
@@ -188,6 +187,7 @@ object MonthCalendarUIUtil {
                 if(order != -1) {
                     weekItem.addEventUI(
                             context,
+                            multiDay.name,
                             multiDay.startTime,
                             multiDay.endTime,
                             false,
@@ -201,6 +201,7 @@ object MonthCalendarUIUtil {
                 if(order != -1) {
                     weekItem.addEventUI(
                             context,
+                            oneDay.name,
                             oneDay.time,
                             oneDay.time,
                             true,
@@ -272,7 +273,7 @@ object MonthCalendarUIUtil {
     private fun getMonthRow(date: Date): Int {
         val currentDate = date.startOfMonth
         var row = 5
-        var day = currentDate.weekOfDay - 1
+        var day = currentDate.weekOfDay
         day += currentDate.endOfMonth.calendarDay
 
         if(day > WEEK * 5) {

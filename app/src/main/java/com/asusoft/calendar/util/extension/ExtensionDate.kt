@@ -1,6 +1,6 @@
 package com.asusoft.calendar.util
 
-import com.asusoft.calendar.fragment.month.WeekOfDayType
+import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,13 +19,13 @@ val Date.calendarDay: Int
 /*
 *
 요일 반환
-* 일요일: 1, 월요일: 2, ... , 토요일: 7
+* 일요일: 0, 월요일: 1, ... , 토요일: 6
 */
 val Date.weekOfDay: Int
     get() {
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = this
-        return calendar.get(Calendar.DAY_OF_WEEK)
+        return calendar.get(Calendar.DAY_OF_WEEK) - 1
     }
 
 /*
@@ -225,6 +225,7 @@ fun Date.getStartOfDay(calendar: Calendar): Date {
     calendar.set(Calendar.HOUR_OF_DAY, 0);
     calendar.set(Calendar.MINUTE, 0);
     calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
     return calendar.time
 }
 
@@ -237,7 +238,8 @@ fun Date.getEndOfDay(calendar: Calendar): Date {
     calendar.add(Calendar.DAY_OF_YEAR, 1)
     calendar.set(Calendar.HOUR_OF_DAY, 0);
     calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, -1);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, -1);
     return calendar.time
 }
 

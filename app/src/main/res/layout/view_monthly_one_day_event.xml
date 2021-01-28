@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
+        android:id="@+id/tv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:paddingStart="2dp"

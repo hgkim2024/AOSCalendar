@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.enum
+package com.asusoft.calendar.activity.enums
 
 enum class AddEventType(val value: Int) {
 

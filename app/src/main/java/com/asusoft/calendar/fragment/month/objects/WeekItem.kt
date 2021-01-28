@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
-import com.asusoft.calendar.fragment.month.WeekOfDayType
+import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.endOfWeek
@@ -26,6 +26,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
 
     fun addEventUI(
             context: Context,
+            title: String,
             startTime: Long,
             endTime: Long,
             isOneDay: Boolean,
@@ -53,6 +54,8 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
             isOneDay -> {
                 val inflater = LayoutInflater.from(context)
                 val eventView = inflater.inflate(R.layout.view_monthly_one_day_event, null, false)
+                val tv = eventView.findViewById<TextView>(R.id.tv)
+                tv.text = title
                 eventView
             }
 
@@ -63,7 +66,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
                 eventView.textSize = MonthCalendarUIUtil.FONT_SIZE
                 eventView.gravity = Gravity.CENTER_VERTICAL
                 eventView.maxLines = 1
-                eventView.text = "이벤트"
+                eventView.text = title
                 eventView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                 eventView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
                 eventView
@@ -79,8 +82,8 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
         )
         weekLayout.addView(eventView)
 
-        val startDayView = dayViewList[startDay.getIndex()]
-        val endDayView = dayViewList[endDay.getIndex()]
+        val startDayView = dayViewList[startDay.value]
+        val endDayView = dayViewList[endDay.value]
 
         val set = ConstraintSet()
         set.clone(weekLayout)

@@ -104,20 +104,20 @@ class ActivityAddEvent : AppCompatActivity() {
         if (startDayItem.date.startOfDay == endDayItem.date.startOfDay) {
             // 하루 이벤트
             val eventOneDay = RealmEventOneDay()
-            // TODO: - Insert 로 변경
             eventOneDay.update(
                 titleItem.context,
                 startDayItem.date.startOfDay.time
             )
+            eventOneDay.insert()
         } else {
             // 이틀 이상 이벤트
             val eventMultiDay = RealmEventMultiDay()
-            // TODO: - Insert 로 변경
             eventMultiDay.update(
                 titleItem.context,
                 startDayItem.date.startOfDay.time,
                 endDayItem.date.endOfDay.time
             )
+            eventMultiDay.insert()
         }
 
         val event = HashMapEvent(HashMap())

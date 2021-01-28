@@ -10,9 +10,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.startOfMonth
 import kotlinx.coroutines.GlobalScope
@@ -51,6 +53,14 @@ class FragmentMonthPage: Fragment() {
         initFlag = args.getBoolean("initFlag", false)
 
         date = Date(time)
+
+        GlobalBus.getBus().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        GlobalBus.getBus().unregister(this)
     }
 
 
@@ -71,6 +81,14 @@ class FragmentMonthPage: Fragment() {
 
         setActionBarTitle()
         setAsyncPageUI(context!!)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        if (addEventActivity != null) {
+            refreshPage()
+        }
     }
 
     fun setAsyncPageUI(context: Context) {
@@ -102,16 +120,20 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
+    private fun refreshPage() {
+        removePage()
+        setAsyncPageUI(context!!)
+    }
+
+    private fun removePage() {
+        monthCalendar?.removeAllViews()
+    }
+
     private fun setActionBarTitle() {
         val sdf = SimpleDateFormat("yyyy년 MM월")
         val title = sdf.format(date)
 
         (activity as ActivityStart).setTitle(title)
 //        Log.d("Asu", "onResume date: $title")
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-
     }
 }

@@ -2,9 +2,7 @@ package com.asusoft.calendar.realm
 
 import android.util.Log
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.util.endOfWeek
-import com.asusoft.calendar.util.startOfWeek
-import com.asusoft.calendar.util.toStringDay
+import com.asusoft.calendar.util.*
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.Index
@@ -22,8 +20,6 @@ open class RealmEventOneDay: RealmObject() {
     var time: Long = 0
 
     companion object {
-        // TODO: - 쿼리 테스트 해볼 것
-
         fun select(date: Date): List<RealmEventOneDay> {
             val startTime = date.startOfWeek.time
             val endTime = date.endOfWeek.time
@@ -39,7 +35,7 @@ open class RealmEventOneDay: RealmObject() {
 
             realm.commitTransaction()
 
-            Log.d("Asu", "RealmEventOneDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+            Log.d("Asu", "RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
             return item
         }
     }
@@ -62,6 +58,13 @@ open class RealmEventOneDay: RealmObject() {
         }
 
         Log.d("Asu", "RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
+        realm.commitTransaction()
+    }
+
+    fun insert() {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+        realm.beginTransaction()
+        realm.insertOrUpdate(this)
         realm.commitTransaction()
     }
 }
