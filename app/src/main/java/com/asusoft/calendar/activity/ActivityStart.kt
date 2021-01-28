@@ -103,35 +103,24 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
         val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
             date = date.stringToDate(dateString)
+
+            val event = HashMapEvent(HashMap())
+            event.map[toStringActivity()] = toStringActivity()
+            event.map["date"] = date
+            GlobalBus.getBus().post(event)
+
             Log.d("Asu", "change date: ${date.toStringDay()}")
         }
 
-        val datePickerDialog = DatePickerDialog(baseContext, dateSetListener, date.calendarYear, date.calendarMonth - 1, date.calendarDay)
+        val datePickerDialog = DatePickerDialog(
+                this,
+                dateSetListener,
+                date.calendarYear,
+                date.calendarMonth - 1,
+                date.calendarDay
+        )
 
         datePickerDialog.setCancelable(true)
-
-        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-                getString(android.R.string.cancel)
-        ) { dialog, which ->
-            if (which == DialogInterface.BUTTON_NEGATIVE) {
-                dialog.cancel()
-            }
-        }
-
-        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                getString(android.R.string.ok)) { dialog, which ->
-            if (which == DialogInterface.BUTTON_POSITIVE) {
-
-                val event = HashMapEvent(HashMap())
-                event.map[toStringActivity()] = toStringActivity()
-                event.map["date"] = date
-                Log.d("Asu", "move date: ${date.toStringDay()}")
-                GlobalBus.getBus().post(event)
-
-                dialog.cancel()
-            }
-        }
-
         datePickerDialog.show()
     }
 }
