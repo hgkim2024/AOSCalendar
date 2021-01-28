@@ -86,7 +86,7 @@ class FragmentMonthViewPager: Fragment() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
 
-                when(state) {
+                when (state) {
                     SCROLL_STATE_DRAGGING -> {
                         if (adapter.initFlag) {
                             adapter.initFlag = false
@@ -108,6 +108,7 @@ class FragmentMonthViewPager: Fragment() {
 
                     SCROLL_STATE_SETTLING -> {
                         if (adapter.nullPageList.size > 3) {
+                            Log.d("Asu", "SCROLL_STATE_SETTLING size: ${adapter.nullPageList.size}")
                             setPageUI()
                         }
                     }
