@@ -90,6 +90,7 @@ class FragmentMonthViewPager: Fragment() {
                     SCROLL_STATE_DRAGGING -> {
                         if (adapter.initFlag) {
                             adapter.initFlag = false
+                            removeNullPageList()
                         }
                     }
 
@@ -138,6 +139,16 @@ class FragmentMonthViewPager: Fragment() {
     }
 
     fun setPageUI() {
+        val list = removeNullPageList()
+
+        val context = context!!
+
+        for (page in list) {
+            page.setAsyncPageUI(context)
+        }
+    }
+
+    private fun removeNullPageList(): ArrayList<FragmentMonthPage> {
         val list = adapter.nullPageList
         for (idx in list.size - 1 downTo 0) {
             if (list[idx].monthCalendar != null) {
@@ -145,10 +156,6 @@ class FragmentMonthViewPager: Fragment() {
             }
         }
 
-        val context = context!!
-
-        for (page in list) {
-            page.setAsyncPageUI(context)
-        }
+        return list
     }
 }

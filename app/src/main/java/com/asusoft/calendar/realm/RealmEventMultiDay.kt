@@ -43,6 +43,12 @@ open class RealmEventMultiDay: RealmObject() {
                     .greaterThanOrEqualTo("endTime", startTime)
                     .and()
                     .lessThanOrEqualTo("endTime", endTime)
+
+                    .or()
+
+                    .lessThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .greaterThanOrEqualTo("endTime", endTime)
                     
                     .findAll()
             

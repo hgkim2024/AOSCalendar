@@ -11,7 +11,7 @@
         android:id="@+id/edge"
         android:layout_width="2.7dp"
         android:layout_height="match_parent"
-        android:background="@color/lightFont"
+        android:background="@color/colorAccent"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintStart_toStartOf="parent"/>
