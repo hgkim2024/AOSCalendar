@@ -16,6 +16,7 @@ import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.startOfMonth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -81,6 +82,17 @@ class FragmentMonthPage: Fragment() {
 
         setActionBarTitle()
         setAsyncPageUI(context!!)
+
+        if (prevClickDayView != null) {
+            for (weekItem in monthItem.WeekItemList) {
+                for (idx in weekItem.dayViewList.indices) {
+                    val dayView = weekItem.dayViewList[idx]
+                    if (prevClickDayView == dayView) {
+                        postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
+                    }
+                }
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -107,7 +119,8 @@ class FragmentMonthPage: Fragment() {
         }
 
         for (weekItem in monthItem.WeekItemList) {
-            for (dayView in weekItem.dayViewList) {
+            for (idx in weekItem.dayViewList.indices) {
+                val dayView = weekItem.dayViewList[idx]
                 dayView.setOnClickListener {
                     if (prevClickDayView != null) {
                         prevClickDayView!!.background = null
@@ -115,9 +128,18 @@ class FragmentMonthPage: Fragment() {
 
                     dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
                     prevClickDayView = dayView
+
+                    postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
                 }
             }
         }
+    }
+
+    private fun postSelectedDayDate(date: Date) {
+        val event = HashMapEvent(HashMap())
+        event.map[FragmentMonthPage.toString()] = FragmentMonthPage.toString()
+        event.map["date"] = date
+        GlobalBus.getBus().post(event)
     }
 
     private fun refreshPage() {

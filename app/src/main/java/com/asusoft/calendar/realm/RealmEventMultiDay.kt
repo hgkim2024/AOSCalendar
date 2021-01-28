@@ -48,7 +48,7 @@ open class RealmEventMultiDay: RealmObject() {
             
             realm.commitTransaction()
 
-            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+//            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
     }
@@ -75,7 +75,7 @@ open class RealmEventMultiDay: RealmObject() {
             this.endTime = endTime
         }
 
-        Log.d("Asu", "RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
+//        Log.d("Asu", "RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
         realm.commitTransaction()
     }
 

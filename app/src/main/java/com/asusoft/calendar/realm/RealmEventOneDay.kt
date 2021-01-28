@@ -35,7 +35,7 @@ open class RealmEventOneDay: RealmObject() {
 
             realm.commitTransaction()
 
-            Log.d("Asu", "RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
+//            Log.d("Asu", "RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
             return item
         }
     }
@@ -57,7 +57,7 @@ open class RealmEventOneDay: RealmObject() {
             this.time = time
         }
 
-        Log.d("Asu", "RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
+//        Log.d("Asu", "RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
         realm.commitTransaction()
     }
 

@@ -2,6 +2,7 @@ package com.asusoft.calendar.fragment.month
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +15,35 @@ import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.getToday
+import com.asusoft.calendar.util.toStringDay
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 class FragmentMonthViewPager: Fragment() {
 
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
+    private var date = Date().getToday()
 
     companion object {
         fun newInstance(): FragmentMonthViewPager {
             return FragmentMonthViewPager()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        GlobalBus.getBus().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        GlobalBus.getBus().unregister(this)
     }
 
     override fun onCreateView(
@@ -47,6 +64,8 @@ class FragmentMonthViewPager: Fragment() {
         val floatingBtn = view.findViewById<FloatingActionButton>(R.id.btn_float)
         floatingBtn.setOnClickListener {
             val intent = Intent(context, ActivityAddEvent::class.java)
+            val args = Bundle()
+            intent.putExtra("date", date)
             startActivity(intent)
         }
 
@@ -88,6 +107,15 @@ class FragmentMonthViewPager: Fragment() {
 
             }
         })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val fragmentMonthPage = event.map.getOrDefault(FragmentMonthPage.toString(), null)
+        if (fragmentMonthPage != null) {
+            date = event.map["date"] as Date
+            Log.d("Asu", "selected day date: ${date.toStringDay()}")
+        }
     }
 
     fun setPageUI() {

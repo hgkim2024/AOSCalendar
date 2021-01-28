@@ -35,6 +35,8 @@ class ActivityAddEvent : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
+        val date = intent.getSerializableExtra("date") as Date
+
         val list = ArrayList<Any>()
         list.add(
             EditTextItem(
@@ -45,14 +47,14 @@ class ActivityAddEvent : AppCompatActivity() {
 
         list.add(
             StartDayItem(
-                Date().getToday(),
+                    date,
                 "시작 날짜"
             )
         )
 
         list.add(
             StartDayItem(
-                Date().getToday(),
+                    date,
                 "종료 날짜"
             )
         )
