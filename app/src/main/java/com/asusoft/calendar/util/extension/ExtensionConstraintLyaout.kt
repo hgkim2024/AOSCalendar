@@ -8,8 +8,8 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 
 fun ConstraintLayout.addSeparator(margin: Float) {
-    val height = CalculatorUtil.dpToPx(context, 0.7F)
-    val margin = CalculatorUtil.dpToPx(context, margin)
+    val height = CalculatorUtil.dpToPx(0.7F)
+    val margin = CalculatorUtil.dpToPx(margin)
 
     val separator = View(context)
     separator.setBackgroundColor(ContextCompat.getColor(context, R.color.separator))

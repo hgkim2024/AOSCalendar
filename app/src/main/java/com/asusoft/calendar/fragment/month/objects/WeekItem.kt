@@ -78,7 +78,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
 
         eventView.layoutParams = ConstraintLayout.LayoutParams(
                 0,
-                CalculatorUtil.dpToPx(context, EVENT_HEIGHT)
+                CalculatorUtil.dpToPx(EVENT_HEIGHT)
         )
         weekLayout.addView(eventView)
 
@@ -88,11 +88,11 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
         val set = ConstraintSet()
         set.clone(weekLayout)
 
-        val padding = CalculatorUtil.dpToPx(context, LEFT_MARGIN)
+        val padding = CalculatorUtil.dpToPx(LEFT_MARGIN)
         eventView.setPadding(padding, 0, padding, 0)
 
-        val topMargin = CalculatorUtil.dpToPx(context, TOP_MARGIN + (order * (EVENT_HEIGHT + 2)))
-        val leftMargin = CalculatorUtil.dpToPx(context, LEFT_MARGIN)
+        val topMargin = CalculatorUtil.dpToPx(TOP_MARGIN + (order * (EVENT_HEIGHT + 2)))
+        val leftMargin = CalculatorUtil.dpToPx(LEFT_MARGIN)
 
         set.connect(eventView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(eventView.id, ConstraintSet.START, startDayView.id, ConstraintSet.START, leftMargin)

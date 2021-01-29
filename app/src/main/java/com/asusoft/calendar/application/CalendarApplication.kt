@@ -1,6 +1,7 @@
 package com.asusoft.calendar.application
 
 import android.app.Application
+import com.asusoft.calendar.util.`object`.CalculatorUtil
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -17,6 +18,7 @@ class CalendarApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         Realm.init(this)
+        CalculatorUtil.setContext(baseContext)
     }
 
 }

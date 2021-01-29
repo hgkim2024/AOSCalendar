@@ -125,7 +125,7 @@ object MonthCalendarUIUtil {
             tv.textSize = FONT_SIZE
             tv.setTypeface(tv.typeface, Typeface.BOLD)
 
-            val padding = CalculatorUtil.dpToPx(context, 8.0F)
+            val padding = CalculatorUtil.dpToPx( 8.0F)
             tv.setPadding(padding, padding, 0, 0)
 
             tv.layoutParams = ConstraintLayout.LayoutParams(
@@ -257,7 +257,7 @@ object MonthCalendarUIUtil {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 WEIGHT_SUM / WEEK
             )
-            val leftPadding = CalculatorUtil.dpToPx(context, 8.0F)
+            val leftPadding = CalculatorUtil.dpToPx(8.0F)
             tv.setPadding(leftPadding, 0, 0, 0)
 
             tv.text = days[idx].getShortTitle()
