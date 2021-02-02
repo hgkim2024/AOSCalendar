@@ -9,9 +9,9 @@
         android:id="@+id/date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:datePickerMode="spinner"
+        android:datePickerMode="calendar"
         android:spinnersShown="true"
-        android:calendarViewShown="false"
+        android:calendarViewShown="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
