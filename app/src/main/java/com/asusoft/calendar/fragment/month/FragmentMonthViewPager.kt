@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -26,6 +29,7 @@ class FragmentMonthViewPager: Fragment() {
 
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
+    private lateinit var todayLayout: TextView
     private var selectedDate = Date().getToday()
     private var curPageDate = Date().getToday()
 
@@ -72,6 +76,13 @@ class FragmentMonthViewPager: Fragment() {
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
 
+        todayLayout = view.findViewById<TextView>(R.id.tv_today)
+
+        todayLayout.setOnClickListener {
+            movePage(Date().getToday())
+            todayLayout.visibility = View.INVISIBLE
+        }
+
         return view
     }
 
@@ -104,6 +115,18 @@ class FragmentMonthViewPager: Fragment() {
                         curPageDate = Date().getToday().getNextMonth(diffMonth).startOfMonth
                         event.map["date"] = curPageDate
                         GlobalBus.getBus().post(event)
+
+                        val today = Date().getToday().startOfMonth
+                        if (today != curPageDate) {
+                            if (today < curPageDate) {
+                                todayLayout.text = "<  오늘"
+                            } else {
+                                todayLayout.text = "오늘  >"
+                            }
+                            todayLayout.visibility = View.VISIBLE
+                        } else {
+                            todayLayout.visibility = View.INVISIBLE
+                        }
                     }
 
                     SCROLL_STATE_SETTLING -> {
@@ -130,13 +153,16 @@ class FragmentMonthViewPager: Fragment() {
         val activityStart = event.map.getOrDefault(ActivityStart.toStringActivity(), null)
         if (activityStart != null) {
             val date = event.map["date"] as Date
-
-            val diffYear = date.calendarYear - curPageDate.calendarYear
-            val diffMonth = date.calendarMonth - curPageDate.calendarMonth
-            val diff = diffYear * 12 + diffMonth
-
-            viewPager.setCurrentItem(viewPager.currentItem + diff, true)
+            movePage(date)
         }
+    }
+
+    private fun movePage(date: Date) {
+        val diffYear = date.calendarYear - curPageDate.calendarYear
+        val diffMonth = date.calendarMonth - curPageDate.calendarMonth
+        val diff = diffYear * 12 + diffMonth
+
+        viewPager.setCurrentItem(viewPager.currentItem + diff, true)
     }
 
     fun setPageUI() {
