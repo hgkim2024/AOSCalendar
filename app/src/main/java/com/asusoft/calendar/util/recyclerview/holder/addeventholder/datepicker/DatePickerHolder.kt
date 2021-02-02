@@ -24,11 +24,43 @@ class DatePickerHolder(
                 val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
                 item.date = item.date.stringToDate(dateString)
 
-                if (adapter.list[position - 1] is StartDayItem) {
-                    val startDayItem = adapter.list[position - 1] as StartDayItem
-                    startDayItem.date = item.date
-                    adapter.notifyItemChanged(position - 1)
+                var startDayItem: StartDayItem? = null
+                var endDayItem: StartDayItem? = null
+                var startDayItemPosition = 0
+                var endDayItemPosition = 0
+
+                for (index in adapter.list.indices) {
+                    if (adapter.list[index] is StartDayItem) {
+                        if (startDayItem == null) {
+                            startDayItemPosition = index
+                            startDayItem = adapter.list[index] as StartDayItem
+                        } else {
+                            endDayItemPosition = index
+                            endDayItem = adapter.list[index] as StartDayItem
+                        }
+                    }
                 }
+
+                if(startDayItem == null || endDayItem == null) return@setOnDateChangedListener
+
+                val curPosition = position - 1
+                if (curPosition == startDayItemPosition) {
+                    if (endDayItem.date < item.date) {
+                        endDayItem.date = item.date
+                        adapter.notifyItemChanged(endDayItemPosition)
+                    }
+
+                    startDayItem.date = item.date
+                } else {
+                    if (startDayItem.date > item.date) {
+                        startDayItem.date = item.date
+                        adapter.notifyItemChanged(startDayItemPosition)
+                    }
+
+                    endDayItem.date = item.date
+                }
+
+                adapter.notifyItemChanged(position - 1)
             }
         }
     }
