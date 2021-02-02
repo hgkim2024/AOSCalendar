@@ -173,6 +173,8 @@ class FragmentMonthViewPager: Fragment() {
         for (page in list) {
             page.setAsyncPageUI(context)
         }
+
+        list.clear()
     }
 
     private fun removeNullPageList(): ArrayList<FragmentMonthPage> {
