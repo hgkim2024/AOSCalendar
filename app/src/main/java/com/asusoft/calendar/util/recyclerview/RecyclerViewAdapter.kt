@@ -1,12 +1,8 @@
 package com.asusoft.calendar.util.recyclerview
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.enums.AddEventType.*
@@ -20,22 +16,6 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.Sta
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 
 class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    companion object {
-        fun settingDivider(context: Context, recyclerView: RecyclerView) {
-            val dividerItemDecoration = DividerItemDecoration(
-                    context,
-                    LinearLayoutManager(context).orientation
-            )
-            dividerItemDecoration.setDrawable(
-                    ContextCompat.getDrawable(
-                            context,
-                            R.drawable.divider
-                    )!!
-            )
-            recyclerView.addItemDecoration(dividerItemDecoration)
-        }
-    }
 
     private val type = RecyclerViewType.getType(typeObject)
 

@@ -16,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.fragment.month.objects.CashingMonthPageItem
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -30,8 +31,11 @@ class FragmentMonthViewPager: Fragment() {
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
     private lateinit var todayLayout: TextView
+
     private var selectedDate = Date().getToday()
     private var curPageDate = Date().getToday()
+
+    private val pageCount = 2
 
     companion object {
         fun newInstance(): FragmentMonthViewPager {
@@ -62,10 +66,6 @@ class FragmentMonthViewPager: Fragment() {
         adapter = AdapterMonthCalendar(activity!!)
         viewPager = view.findViewById(R.id.month_calendar)
 
-//        view.btn_float.setOnClickListener {
-//            viewPager.setCurrentItem(viewPager.currentItem + 1, true)
-//        }
-
         val floatingBtn = view.findViewById<FloatingActionButton>(R.id.btn_float)
         floatingBtn.setOnClickListener {
             val intent = Intent(context, ActivityAddEvent::class.java)
@@ -77,6 +77,7 @@ class FragmentMonthViewPager: Fragment() {
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
+        todayLayout.visibility = View.INVISIBLE
 
         todayLayout.setOnClickListener {
             movePage(Date().getToday())
@@ -91,7 +92,7 @@ class FragmentMonthViewPager: Fragment() {
 
         viewPager.adapter = adapter
         viewPager.setCurrentItem(AdapterMonthCalendar.START_POSITION, false)
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = pageCount
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
@@ -101,15 +102,13 @@ class FragmentMonthViewPager: Fragment() {
                     SCROLL_STATE_DRAGGING -> {
                         if (adapter.initFlag) {
                             adapter.initFlag = false
-                            removeNullPageList()
                         }
                     }
 
                     SCROLL_STATE_IDLE -> {
-                        setPageUI()
 
                         val diffMonth = viewPager.currentItem - AdapterMonthCalendar.START_POSITION
-                        Log.d("Asu", "diffMonth: $diffMonth")
+//                        Log.d("Asu", "diffMonth: $diffMonth")
                         val event = HashMapEvent(HashMap())
                         event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
                         curPageDate = Date().getToday().getNextMonth(diffMonth).startOfMonth
@@ -129,14 +128,8 @@ class FragmentMonthViewPager: Fragment() {
                         }
                     }
 
-                    SCROLL_STATE_SETTLING -> {
-                        if (adapter.nullPageList.size > 3) {
-                            Log.d("Asu", "SCROLL_STATE_SETTLING size: ${adapter.nullPageList.size}")
-                            setPageUI()
-                        }
-                    }
+                    SCROLL_STATE_SETTLING -> { }
                 }
-
 
             }
         })
@@ -163,28 +156,5 @@ class FragmentMonthViewPager: Fragment() {
         val diff = diffYear * 12 + diffMonth
 
         viewPager.setCurrentItem(viewPager.currentItem + diff, true)
-    }
-
-    fun setPageUI() {
-        val list = removeNullPageList()
-
-        val context = context!!
-
-        for (page in list) {
-            page.setAsyncPageUI(context)
-        }
-
-        list.clear()
-    }
-
-    private fun removeNullPageList(): ArrayList<FragmentMonthPage> {
-        val list = adapter.nullPageList
-        for (idx in list.size - 1 downTo 0) {
-            if (list[idx].monthCalendar != null) {
-                list.removeAt(idx)
-            }
-        }
-
-        return list
     }
 }

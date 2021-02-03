@@ -229,7 +229,7 @@ object MonthCalendarUIUtil {
         }
 
         val diff = System.currentTimeMillis() - start
-        Log.d("Asu", "getMonthUI diff: $diff")
+//        Log.d("Asu", "getMonthUI diff: $diff")
 
         return MonthItem(startOfMonthDate, monthLayout, weekItemList)
     }

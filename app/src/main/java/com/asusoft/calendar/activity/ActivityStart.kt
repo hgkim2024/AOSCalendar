@@ -79,8 +79,9 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     public fun onEvent(event: HashMapEvent) {
         val fragmentMonthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
         if (fragmentMonthViewPager != null) {
+            if (event.map["date"] !is Date) return
             date = event.map["date"] as Date
-            Log.d("Asu", "current page date: ${date.toStringDay()}")
+//            Log.d("Asu", "current page date: ${date.toStringDay()}")
         }
     }
 

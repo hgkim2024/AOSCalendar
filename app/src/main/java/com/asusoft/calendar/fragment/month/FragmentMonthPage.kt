@@ -101,9 +101,14 @@ class FragmentMonthPage: Fragment() {
         if (addEventActivity != null) {
             refreshPage()
         }
+
+        val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
+        if (monthViewPager != null) {
+            setAsyncPageUI(context!!)
+        }
     }
 
-    fun setAsyncPageUI(context: Context) {
+    private fun setAsyncPageUI(context: Context) {
         GlobalScope.async {
             page.post {
                 setPageUI(context)

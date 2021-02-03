@@ -3,13 +3,14 @@ package com.asusoft.calendar.fragment.month
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.asusoft.calendar.fragment.month.objects.CashingMonthPageItem
 import com.asusoft.calendar.util.*
 import java.util.*
 
 class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 
-    private var start: Long = Date().getToday().startOfMonth.time
-    val nullPageList = ArrayList<FragmentMonthPage>()
+    var start: Long = Date().getToday().startOfMonth.time
+    val nullPageList = ArrayList<CashingMonthPageItem>()
     var initFlag = true
 
     override fun getItemCount(): Int = Int.MAX_VALUE
@@ -18,7 +19,7 @@ class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 //        Log.d("Asu", "createFragment position: $position")
         val time = getItemId(position)
         val page = FragmentMonthPage.newInstance(time, initFlag)
-        nullPageList.add(page)
+        nullPageList.add(CashingMonthPageItem(page, position))
 //        Log.d("Asu", "nullPageList size: ${nullPageList.size}")
         return page
     }
