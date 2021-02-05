@@ -12,6 +12,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.util.`object`.AlertUtil
 import com.asusoft.calendar.util.endOfDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -178,25 +179,33 @@ class ActivityAddEvent : AppCompatActivity() {
         GlobalBus.getBus().post(event)
     }
 
+    private fun removeEvent(key: Long) {
+        val oneDayItem = RealmEventOneDay.select(key)
+        if (oneDayItem != null) {
+            oneDayItem.delete()
+            finish()
+            return
+        }
+
+        val multiDayItem = RealmEventMultiDay.select(key)
+        if (multiDayItem != null) {
+            multiDayItem.delete()
+            finish()
+            return
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-
         val deleteHolder = event.map.getOrDefault(DeleteHolder.toString(), null)
         if (deleteHolder != null) {
             val key = event.map["key"] as Long
-            
-            val oneDayItem = RealmEventOneDay.select(key)
-            if (oneDayItem != null) {
-                oneDayItem.delete()
-                finish()
-                return
-            }
-
-            val multiDayItem = RealmEventMultiDay.select(key)
-            if (multiDayItem != null) {
-                multiDayItem.delete()
-                finish()
-                return
+            AlertUtil.alertOkAndCancel(
+                    this,
+                    "삭제하시겠습니까?",
+                    getString(R.string.ok)
+            ) { _, _ ->
+                removeEvent(key)
             }
         }
     }
