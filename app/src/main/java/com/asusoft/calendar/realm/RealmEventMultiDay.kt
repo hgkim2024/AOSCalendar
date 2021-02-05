@@ -2,9 +2,9 @@ package com.asusoft.calendar.realm
 
 import android.util.Log
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.util.endOfWeek
-import com.asusoft.calendar.util.startOfWeek
-import com.asusoft.calendar.util.toStringDay
+import com.asusoft.calendar.realm.copy.CopyEventMultiDay
+import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.util.*
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.Index
@@ -25,7 +25,7 @@ open class RealmEventMultiDay: RealmObject() {
     var endTime: Long = 0
 
     companion object {
-        fun select(date: Date): List<RealmEventMultiDay> {
+        fun selectOneWeek(date: Date): List<RealmEventMultiDay> {
             val startTime = date.startOfWeek.time
             val endTime = date.endOfWeek.time
 
@@ -55,6 +55,68 @@ open class RealmEventMultiDay: RealmObject() {
             realm.commitTransaction()
 
 //            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+            return item
+        }
+
+        fun selectOneDay(date: Date): List<RealmEventMultiDay> {
+            val startTime = date.startOfDay.time
+            val endTime = date.endOfDay.time
+
+            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+            realm.beginTransaction()
+
+            val item = realm.where(RealmEventMultiDay::class.java)
+
+                    .greaterThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .lessThanOrEqualTo("startTime", endTime)
+
+                    .or()
+
+                    .greaterThanOrEqualTo("endTime", startTime)
+                    .and()
+                    .lessThanOrEqualTo("endTime", endTime)
+
+                    .or()
+
+                    .lessThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .greaterThanOrEqualTo("endTime", endTime)
+
+                    .findAll()
+
+            realm.commitTransaction()
+
+//            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+            return item
+        }
+
+        fun getOneDayCopyList(date: Date): ArrayList<CopyEventMultiDay> {
+            val realmList = RealmEventMultiDay.selectOneDay(date)
+            val copyList = ArrayList<CopyEventMultiDay>()
+
+            for (item in realmList) {
+                copyList.add(
+                        CopyEventMultiDay(
+                                item.key,
+                                item.name,
+                                item.startTime,
+                                item.endTime
+                        )
+                )
+            }
+
+            return copyList
+        }
+
+        fun select(key: Long): RealmEventMultiDay? {
+            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+            realm.beginTransaction()
+
+            val item = realm.where(RealmEventMultiDay::class.java).equalTo("key", key).findFirst()
+
+            realm.commitTransaction()
+
             return item
         }
     }
@@ -89,6 +151,13 @@ open class RealmEventMultiDay: RealmObject() {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
         realm.beginTransaction()
         realm.insertOrUpdate(this)
+        realm.commitTransaction()
+    }
+
+    fun delete() {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+        realm.beginTransaction()
+        this.deleteFromRealm()
         realm.commitTransaction()
     }
 }

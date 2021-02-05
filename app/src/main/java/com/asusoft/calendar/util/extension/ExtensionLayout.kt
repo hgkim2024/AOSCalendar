@@ -1,11 +1,30 @@
 package com.asusoft.calendar.util.extension
 
+import android.graphics.Point
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.`object`.CalculatorUtil
+
+fun View.getBoundsLocation(): Point {
+    val viewGroup = parent as ViewGroup
+    val parentLocation = IntArray(2)
+    viewGroup.getLocationOnScreen(parentLocation)
+
+    val childLocation = IntArray(2)
+    this.getLocationOnScreen(childLocation)
+    return Point(childLocation[0] - parentLocation[0], childLocation[1] - parentLocation[1])
+}
+
+fun View.removeFromSuperView() {
+    val viewGroup = parent as ViewGroup
+    if (viewGroup.childCount > 0) {
+        viewGroup.removeView(this)
+    }
+}
 
 fun ConstraintLayout.addSeparator(margin: Float) {
     val height = CalculatorUtil.dpToPx(0.7F)

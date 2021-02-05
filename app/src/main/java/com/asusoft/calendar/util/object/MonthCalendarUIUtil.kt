@@ -2,6 +2,7 @@ package com.asusoft.calendar.util.`object`
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -24,6 +25,19 @@ object MonthCalendarUIUtil {
     private const val WEIGHT_SUM = 100.0F
 
     public const val FONT_SIZE = 12F
+
+    fun getEventOrderList(
+            weekDate: Date
+    ): HashMap<Long, Int> {
+        val multiDayList = RealmEventMultiDay.selectOneWeek(weekDate.startOfWeek)
+        val oneDayList = RealmEventOneDay.selectOneWeek(weekDate.endOfWeek)
+
+        return getEventOrderList(
+                weekDate,
+                multiDayList,
+                oneDayList
+        )
+    }
 
 
     private fun getEventOrderList(
@@ -117,25 +131,45 @@ object MonthCalendarUIUtil {
         eventLayout.addView(edgeView)
         eventLayout.addView(textView)
 
-        edgeView.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.dpToPx(if (isDialog) 5.0F else 2.7F),
-                0
-        )
-        edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+        if (isDialog) {
 
-        val startPadding = CalculatorUtil.dpToPx(2.0F)
-        textView.setPadding(startPadding, 0, startPadding, 0)
-        textView.setTextColor(ContextCompat.getColor(context, R.color.font))
-        textView.gravity = Gravity.CENTER_VERTICAL
-        textView.textSize = 12.0F
-        textView.maxLines = 1
-        textView.text = name
+            eventLayout.layoutParams = ConstraintLayout.LayoutParams(
+                    ConstraintLayout.LayoutParams.MATCH_PARENT,
+                    CalculatorUtil.dpToPx(30.0F)
+            )
+
+            edgeView.layoutParams = ConstraintLayout.LayoutParams(
+                    CalculatorUtil.dpToPx(5.0F),
+                    0
+            )
+
+            val startPadding = CalculatorUtil.dpToPx(5.0F)
+            textView.setPadding(startPadding, 0, startPadding, 0)
+            textView.textSize = 14.0F
+        } else {
+
+            edgeView.layoutParams = ConstraintLayout.LayoutParams(
+                    CalculatorUtil.dpToPx(2.7F),
+                    0
+            )
+
+            val startPadding = CalculatorUtil.dpToPx(2.0F)
+            textView.setPadding(startPadding, 0, startPadding, 0)
+            textView.textSize = 12.0F
+        }
 
         textView.layoutParams = ConstraintLayout.LayoutParams(
                 0,
                 ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 
+        edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+
+        textView.setTextColor(ContextCompat.getColor(context, R.color.font))
+        textView.gravity = Gravity.CENTER_VERTICAL
+        textView.maxLines = 1
+        textView.text = name
+        textView.ellipsize = TextUtils.TruncateAt.END
 
         val set = ConstraintSet()
         set.clone(eventLayout)
@@ -161,6 +195,8 @@ object MonthCalendarUIUtil {
             currentMonthDate: Date
     ): WeekItem {
         val weekLayout = ConstraintLayout(context)
+        weekLayout.id = View.generateViewId()
+
         val rate: Float = 1.0F / WEEK
         var date = startOfWeekDate
 
@@ -223,6 +259,8 @@ object MonthCalendarUIUtil {
         val row = getMonthRow(startOfMonthDate)
         var date = startOfMonthDate.startOfWeek
         val monthLayout = LinearLayout(context)
+        monthLayout.id = View.generateViewId()
+
         monthLayout.weightSum = WEIGHT_SUM
         monthLayout.orientation = LinearLayout.VERTICAL
 
@@ -234,8 +272,8 @@ object MonthCalendarUIUtil {
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
 
-            val multiDayList = RealmEventMultiDay.select(weekItem.weekDate)
-            val oneDayList = RealmEventOneDay.select(weekItem.weekDate)
+            val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
+            val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
             val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList)
 
             for (multiDay in multiDayList) {

@@ -68,9 +68,7 @@ class FragmentMonthViewPager: Fragment() {
 
         val floatingBtn = view.findViewById<FloatingActionButton>(R.id.btn_float)
         floatingBtn.setOnClickListener {
-            val intent = Intent(context, ActivityAddEvent::class.java)
-            intent.putExtra("date", selectedDate)
-            startActivity(intent)
+            showAddEventActivity()
         }
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
@@ -141,6 +139,11 @@ class FragmentMonthViewPager: Fragment() {
         if (fragmentMonthPage != null) {
             selectedDate = event.map["date"] as Date
             Log.d("Asu", "selected day date: ${selectedDate.toStringDay()}")
+
+            val addFlag = event.map["add"]
+            if (addFlag != null) {
+                showAddEventActivity()
+            }
         }
 
         val activityStart = event.map.getOrDefault(ActivityStart.toStringActivity(), null)
@@ -156,5 +159,12 @@ class FragmentMonthViewPager: Fragment() {
         val diff = diffYear * 12 + diffMonth
 
         viewPager.setCurrentItem(viewPager.currentItem + diff, true)
+    }
+
+    private fun showAddEventActivity() {
+        val intent = Intent(context, ActivityAddEvent::class.java)
+        intent.putExtra("startDate", selectedDate)
+        intent.putExtra("endDate", selectedDate)
+        startActivity(intent)
     }
 }

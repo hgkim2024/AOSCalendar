@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.DatePicker
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
-import com.asusoft.calendar.util.stringToDate
 
 class DatePickerHolder(
     val context: Context,
@@ -20,6 +20,8 @@ class DatePickerHolder(
             val item = adapter.list[position] as DatePickerItem
 
             val datePicker = view.findViewById<DatePicker>(R.id.date_picker)
+            datePicker.init(item.date.calendarYear, item.date.calendarMonth - 1, item.date.calendarDay, null)
+
             datePicker.setOnDateChangedListener { _, year, month, day ->
                 val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
                 item.date = item.date.stringToDate(dateString)
