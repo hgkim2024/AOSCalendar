@@ -2,13 +2,14 @@ package com.asusoft.calendar.util.`object`
 
 import android.content.Context
 import android.graphics.Typeface
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
@@ -97,6 +98,61 @@ object MonthCalendarUIUtil {
         }
 
         return orderMap
+    }
+
+    // TODO: - 다이얼로그 인 경우 크기 보정하기
+    fun getEventView(
+            context: Context,
+            name: String,
+            isDialog: Boolean
+    ): ConstraintLayout {
+        val eventLayout = ConstraintLayout(context)
+        val edgeView = View(context)
+        val textView = TextView(context)
+
+        eventLayout.id = View.generateViewId()
+        edgeView.id = View.generateViewId()
+        textView.id = View.generateViewId()
+
+        eventLayout.addView(edgeView)
+        eventLayout.addView(textView)
+
+        edgeView.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(if (isDialog) 5.0F else 2.7F),
+                0
+        )
+        edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+
+        val startPadding = CalculatorUtil.dpToPx(2.0F)
+        textView.setPadding(startPadding, 0, startPadding, 0)
+        textView.setTextColor(ContextCompat.getColor(context, R.color.font))
+        textView.gravity = Gravity.CENTER_VERTICAL
+        textView.textSize = 12.0F
+        textView.maxLines = 1
+        textView.text = name
+
+        textView.layoutParams = ConstraintLayout.LayoutParams(
+                0,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+        )
+
+
+        val set = ConstraintSet()
+        set.clone(eventLayout)
+
+        val topMargin = CalculatorUtil.dpToPx(1.0F)
+        val startMargin = CalculatorUtil.dpToPx(3.0F)
+
+        set.connect(edgeView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        set.connect(edgeView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, topMargin)
+        set.connect(edgeView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
+
+        set.connect(textView.id, ConstraintSet.START, edgeView.id, ConstraintSet.END)
+        set.connect(textView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+        set.applyTo(eventLayout)
+
+        return eventLayout
     }
 
     private fun getOneWeekUI(

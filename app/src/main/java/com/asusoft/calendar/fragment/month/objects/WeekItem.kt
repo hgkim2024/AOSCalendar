@@ -26,7 +26,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
 
     fun addEventUI(
             context: Context,
-            title: String,
+            name: String,
             startTime: Long,
             endTime: Long,
             isOneDay: Boolean,
@@ -51,13 +51,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
         val eventView: View = when {
 
             // 하루 이벤트 UI
-            isOneDay -> {
-                val inflater = LayoutInflater.from(context)
-                val eventView = inflater.inflate(R.layout.view_monthly_one_day_event, null, false)
-                val tv = eventView.findViewById<TextView>(R.id.tv)
-                tv.text = title
-                eventView
-            }
+            isOneDay -> MonthCalendarUIUtil.getEventView(context, name, false)
 
             // 이틀 이상 이벤트 UI
             else -> {
@@ -66,7 +60,7 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
                 eventView.textSize = MonthCalendarUIUtil.FONT_SIZE
                 eventView.gravity = Gravity.CENTER_VERTICAL
                 eventView.maxLines = 1
-                eventView.text = title
+                eventView.text = name
                 eventView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                 eventView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
                 eventView
