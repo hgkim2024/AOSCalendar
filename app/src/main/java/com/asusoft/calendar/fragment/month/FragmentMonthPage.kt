@@ -264,6 +264,8 @@ class FragmentMonthPage: Fragment() {
         val set = ConstraintSet()
         set.clone(monthCalendar)
 
+        // TODO: - 이벤트가 많아 스크롤이 필요한 경우 예외로직 적용하기
+
         val topMargin =
                 if (point.y + dayView.height + dialogHeight >= monthCalendar.height)
                     point.y - dialogHeight
