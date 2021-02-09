@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textColor="@color/font"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="7dp"
             android:gravity="center_vertical"
             android:textSize="15sp"
             android:maxLines="1"
@@ -51,6 +51,7 @@
         android:layout_marginTop="7dp"
         android:layout_marginBottom="7dp"
         android:scrollbars="vertical"
+        android:fadeScrollbars="true"
         app:layout_constraintTop_toBottomOf="@+id/top_layout"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
