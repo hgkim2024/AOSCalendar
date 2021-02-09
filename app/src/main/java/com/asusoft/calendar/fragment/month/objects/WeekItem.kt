@@ -10,11 +10,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.endOfWeek
-import com.asusoft.calendar.util.startOfWeek
-import com.asusoft.calendar.util.weekOfDay
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import java.util.*
 
 
@@ -29,9 +28,9 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
     fun addEventUI(
             context: Context,
             name: String,
+            startOfMonthDate: Date,
             startTime: Long,
             endTime: Long,
-            isOneDay: Boolean,
             order: Int
     ) {
         val startDay =
@@ -47,16 +46,28 @@ class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayView
                 else
                     WeekOfDayType.fromInt(weekDate.endOfWeek.weekOfDay)
 
+        val isOneDay = startDay == endDay
+
         if (endDay.value < startDay.value) return
 
         // UI 생성
         val eventView: View = when {
 
             // 하루 이벤트 UI
-            isOneDay -> MonthCalendarUIUtil.getEventView(context, name, false)
+            isOneDay -> {
+                val eventView = MonthCalendarUIUtil.getEventView(context, name, false)
+                val curDate = Date(startTime)
+                if (startOfMonthDate.calendarMonth != curDate.calendarMonth
+                    || startOfMonthDate.calendarYear != curDate.calendarYear) {
+                    eventView.alpha = ALPHA
+                }
+
+                eventView
+            }
 
             // 이틀 이상 이벤트 UI
             else -> {
+                // TODO: - 이틀 이상 뷰도 현재 달이 아닌 경우 알파처리
                 val eventView = TextView(context)
 
                 eventView.textSize = MonthCalendarUIUtil.FONT_SIZE

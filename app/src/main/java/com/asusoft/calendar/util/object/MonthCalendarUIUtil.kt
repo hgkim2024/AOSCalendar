@@ -17,6 +17,7 @@ import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.extension.addSeparator
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +27,7 @@ object MonthCalendarUIUtil {
 
     public const val FONT_SIZE = 12F
     public const val EVENT_HEIGHT = 26.0F
+    public const val ALPHA = 0.4F
 
     fun getEventOrderList(
             weekDate: Date
@@ -115,7 +117,6 @@ object MonthCalendarUIUtil {
         return orderMap
     }
 
-    // TODO: - 다이얼로그 인 경우 크기 보정하기
     fun getEventView(
             context: Context,
             name: String,
@@ -242,7 +243,7 @@ object MonthCalendarUIUtil {
             dayViewList.add(tv)
 
             if (currentMonthDate.calendarMonth != date.calendarMonth) {
-                tv.alpha = 0.4F
+                tv.alpha = ALPHA
             }
 
             date = date.tomorrow
@@ -274,6 +275,10 @@ object MonthCalendarUIUtil {
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
 
+            if (idx < row - 1) {
+                weekItem.weekLayout.addSeparator(0.5F)
+            }
+
             val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
             val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
             val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList)
@@ -282,12 +287,12 @@ object MonthCalendarUIUtil {
                 val order = orderMap.getOrDefault(multiDay.key, -1)
                 if(order != -1) {
                     weekItem.addEventUI(
-                            context,
-                            multiDay.name,
-                            multiDay.startTime,
-                            multiDay.endTime,
-                            false,
-                            order
+                        context,
+                        multiDay.name,
+                        startOfMonthDate,
+                        multiDay.startTime,
+                        multiDay.endTime,
+                        order
                     )
                 }
             }
@@ -296,12 +301,12 @@ object MonthCalendarUIUtil {
                 val order = orderMap.getOrDefault(oneDay.key, -1)
                 if(order != -1) {
                     weekItem.addEventUI(
-                            context,
-                            oneDay.name,
-                            oneDay.time,
-                            oneDay.time,
-                            true,
-                            order
+                        context,
+                        oneDay.name,
+                        startOfMonthDate,
+                        oneDay.time,
+                        oneDay.time,
+                        order
                     )
                 }
             }
