@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.ScaleAnimation
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +23,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.fragment.month.objects.MonthItem
+import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
@@ -61,6 +65,7 @@ class FragmentMonthPage: Fragment() {
             f.arguments = args
             return f
         }
+        const val ANIMATION_DURATION: Long = 80
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,25 +191,22 @@ class FragmentMonthPage: Fragment() {
                         prevClickDayView!!.background = null
                     }
 
-                    removeDayEventView()
-
-                    if (prevClickDayView == dayView) {
-                        prevClickDayView = null
-                        return@setOnClickListener
+                    if (prevDayEventView != null) {
+                        removeDayEventView(
+                            context,
+                            weekItem,
+                            dayView,
+                            idx
+                        )
+                    } else {
+                        showOneDayEventView(
+                            context,
+                            weekItem,
+                            dayView,
+                            idx
+                        )
                     }
 
-                    dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
-                    prevClickDayView = dayView
-
-                    postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
-
-                    val xPoint = dayView.getBoundsLocation()
-                    val yPoint = weekItem.weekLayout.getBoundsLocation()
-                    setOneDayEventView(
-                            dayView,
-                            weekItem.weekDate.getNextDay(idx),
-                            Point(xPoint.x, yPoint.y)
-                    )
                 }
 
 
@@ -296,6 +298,44 @@ class FragmentMonthPage: Fragment() {
         set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
 
         set.applyTo(monthCalendar)
+
+        val anim = ScaleAnimation(1F, 1F, 0F, 1F)
+        anim.duration = ANIMATION_DURATION
+        eventLayout.startAnimation(anim)
+    }
+
+    private fun removeDayEventView(
+        context: Context,
+        weekItem: WeekItem,
+        dayView: View,
+        idx: Int
+    ) {
+        if (prevDayEventView != null) {
+            val view = prevDayEventView!!
+            prevDayEventView = null
+
+            val anim = ScaleAnimation(1F, 1F, 1F, 0F)
+            anim.setAnimationListener(object: Animation.AnimationListener{
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationRepeat(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view.removeFromSuperView()
+
+                    if (prevClickDayView == dayView) return
+
+                    showOneDayEventView(
+                        context,
+                        weekItem,
+                        dayView,
+                        idx
+                    )
+                }
+            })
+
+            anim.duration = ANIMATION_DURATION
+            view.startAnimation(anim)
+        }
     }
 
     private fun removeDayEventView() {
@@ -303,6 +343,26 @@ class FragmentMonthPage: Fragment() {
             prevDayEventView!!.removeFromSuperView()
             prevDayEventView = null
         }
+    }
+
+    private fun showOneDayEventView(
+        context: Context,
+        weekItem: WeekItem,
+        dayView: View,
+        idx: Int
+    ) {
+        dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
+        prevClickDayView = dayView
+
+        postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
+
+        val xPoint = dayView.getBoundsLocation()
+        val yPoint = weekItem.weekLayout.getBoundsLocation()
+        setOneDayEventView(
+            dayView,
+            weekItem.weekDate.getNextDay(idx),
+            Point(xPoint.x, yPoint.y)
+        )
     }
 
     private fun getEventList(date: Date): ArrayList<Any> {
