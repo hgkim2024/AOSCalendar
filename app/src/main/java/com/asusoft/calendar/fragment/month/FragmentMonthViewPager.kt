@@ -35,7 +35,7 @@ class FragmentMonthViewPager: Fragment() {
     private var selectedDate = Date().getToday()
     private var curPageDate = Date().getToday()
 
-    private val pageCount = 2
+    private val pageCount = 1
 
     companion object {
         fun newInstance(): FragmentMonthViewPager {
