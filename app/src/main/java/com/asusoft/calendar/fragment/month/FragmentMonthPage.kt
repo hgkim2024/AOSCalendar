@@ -24,6 +24,7 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
@@ -187,6 +188,11 @@ class FragmentMonthPage: Fragment() {
 
                     removeDayEventView()
 
+                    if (prevClickDayView == dayView) {
+                        prevClickDayView = null
+                        return@setOnClickListener
+                    }
+
                     dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
                     prevClickDayView = dayView
 
@@ -248,11 +254,21 @@ class FragmentMonthPage: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         var dialogWidth: Int = 150
-        var dialogHeight: Int = 30 + (30 * eventList.size) + 3
-        if (eventList.isEmpty()) dialogHeight += 30
+        var dialogHeight: Int = 30 + 13 + (EVENT_HEIGHT.toInt() * eventList.size)
+        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT.toInt()
 
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
         dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
+
+        if (point.y + dayView.height < monthCalendar.height) {
+            if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {
+                dialogHeight = monthCalendar.height - point.y - dayView.height - 10
+            }
+        } else {
+            if (dialogHeight + dayView.height >= monthCalendar.height - 10) {
+                dialogHeight = monthCalendar.height - dayView.height - 10
+            }
+        }
 
         eventLayout.layoutParams = ConstraintLayout.LayoutParams(
                 dialogWidth,
@@ -263,8 +279,6 @@ class FragmentMonthPage: Fragment() {
 
         val set = ConstraintSet()
         set.clone(monthCalendar)
-
-        // TODO: - 이벤트가 많아 스크롤이 필요한 경우 예외로직 적용하기
 
         val topMargin =
                 if (point.y + dayView.height + dialogHeight >= monthCalendar.height)

@@ -20,7 +20,7 @@
             android:textColor="@color/font"
             android:layout_marginStart="10dp"
             android:gravity="center_vertical"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:maxLines="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/add_button"/>
@@ -48,6 +48,9 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:scrollbars="vertical"
         app:layout_constraintTop_toBottomOf="@+id/top_layout"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -57,6 +60,7 @@
         android:layout_height="0dp"
         android:textColor="@color/font"
         android:text="이 날은 이벤트 없음"
+        android:textSize="14sp"
         android:clickable="false"
         android:visibility="invisible"
         android:gravity="center_vertical"

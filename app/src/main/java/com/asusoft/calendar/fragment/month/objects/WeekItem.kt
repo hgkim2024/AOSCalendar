@@ -20,9 +20,11 @@ import java.util.*
 
 class WeekItem(val weekDate: Date, val weekLayout: ConstraintLayout, val dayViewList: ArrayList<View>) {
 
-    private final val EVENT_HEIGHT = 17.0F
-    private final val TOP_MARGIN = 27.0F
-    private final val LEFT_MARGIN = 2.0F
+    companion object {
+        private const val EVENT_HEIGHT = 15.0F
+        private const val TOP_MARGIN = 27.0F
+        private const val LEFT_MARGIN = 1.0F
+    }
 
     fun addEventUI(
             context: Context,

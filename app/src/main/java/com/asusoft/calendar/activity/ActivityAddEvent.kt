@@ -33,6 +33,7 @@ class ActivityAddEvent : AppCompatActivity() {
     lateinit var adapter: RecyclerViewAdapter
     var isEdit: Boolean = false
     var key = -1L
+    var confirmFlag = false
 
     companion object {
         fun toStringActivity(): String {
@@ -94,8 +95,12 @@ class ActivityAddEvent : AppCompatActivity() {
 
         val confirmBtn = findViewById<Button>(R.id.confirm_btn)
         confirmBtn.setOnClickListener {
-            if ((adapter.list[0] as EditTextItem).context != "")
-                addEventRealm()
+            if ((adapter.list[0] as EditTextItem).context != "") {
+                if (!confirmFlag) {
+                    confirmFlag = true
+                    addEventRealm()
+                }
+            }
             else
                 Toast.makeText(applicationContext,"제목을 입력해주세요.",
                         Toast.LENGTH_SHORT).show()

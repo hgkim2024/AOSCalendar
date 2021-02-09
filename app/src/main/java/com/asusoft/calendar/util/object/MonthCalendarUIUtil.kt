@@ -25,6 +25,7 @@ object MonthCalendarUIUtil {
     private const val WEIGHT_SUM = 100.0F
 
     public const val FONT_SIZE = 12F
+    public const val EVENT_HEIGHT = 26.0F
 
     fun getEventOrderList(
             weekDate: Date
@@ -135,17 +136,18 @@ object MonthCalendarUIUtil {
 
             eventLayout.layoutParams = ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    CalculatorUtil.dpToPx(30.0F)
+                    CalculatorUtil.dpToPx(EVENT_HEIGHT)
             )
 
             edgeView.layoutParams = ConstraintLayout.LayoutParams(
-                    CalculatorUtil.dpToPx(5.0F),
+                    CalculatorUtil.dpToPx(4.0F),
                     0
             )
 
-            val startPadding = CalculatorUtil.dpToPx(5.0F)
+            val startPadding = CalculatorUtil.dpToPx(3.0F)
             textView.setPadding(startPadding, 0, startPadding, 0)
             textView.textSize = 14.0F
+            textView.ellipsize = TextUtils.TruncateAt.END
         } else {
 
             edgeView.layoutParams = ConstraintLayout.LayoutParams(
@@ -153,9 +155,10 @@ object MonthCalendarUIUtil {
                     0
             )
 
-            val startPadding = CalculatorUtil.dpToPx(2.0F)
-            textView.setPadding(startPadding, 0, startPadding, 0)
-            textView.textSize = 12.0F
+            val startPadding = CalculatorUtil.dpToPx(1.0F)
+            textView.setPadding(startPadding, 0, 0, 0)
+            textView.textSize = 11.0F
+            textView.ellipsize = null
         }
 
         textView.layoutParams = ConstraintLayout.LayoutParams(
@@ -169,13 +172,12 @@ object MonthCalendarUIUtil {
         textView.gravity = Gravity.CENTER_VERTICAL
         textView.maxLines = 1
         textView.text = name
-        textView.ellipsize = TextUtils.TruncateAt.END
 
         val set = ConstraintSet()
         set.clone(eventLayout)
 
-        val topMargin = CalculatorUtil.dpToPx(1.0F)
-        val startMargin = CalculatorUtil.dpToPx(3.0F)
+        val topMargin = CalculatorUtil.dpToPx(if (isDialog) 2.0F else 0.0F)
+        val startMargin = CalculatorUtil.dpToPx(if (isDialog) 7.0F else 0.0F)
 
         set.connect(edgeView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(edgeView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, topMargin)

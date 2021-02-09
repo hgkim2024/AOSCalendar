@@ -91,7 +91,6 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                         }
 
                 val view = MonthCalendarUIUtil.getEventView(context, name, true)
-                view.addSeparator(20.0F)
                 OneDayEventHolder(context, view, this)
             }
         }
