@@ -59,7 +59,6 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
 
             // 이틀 이상 이벤트 UI
             else -> {
-                // TODO: - 이틀 이상 뷰도 현재 달이 아닌 경우 알파처리
                 val eventView = TextView(context)
 
                 eventView.textSize = MonthCalendarUIUtil.FONT_SIZE

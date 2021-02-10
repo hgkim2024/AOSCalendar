@@ -28,6 +28,7 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -188,7 +189,7 @@ class FragmentMonthPage: Fragment() {
 
                 dayView.setOnClickListener {
                     if (prevClickDayView != null) {
-                        prevClickDayView!!.background = null
+                        prevClickDayView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
                     }
 
                     if (prevDayEventView != null) {
@@ -351,7 +352,8 @@ class FragmentMonthPage: Fragment() {
         dayView: View,
         idx: Int
     ) {
-        dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
+//        dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
+        dayView.setBackgroundColor(ContextCompat.getColor(context, R.color.separator))
         prevClickDayView = dayView
 
         postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
