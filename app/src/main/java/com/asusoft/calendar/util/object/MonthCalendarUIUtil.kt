@@ -197,13 +197,22 @@ object MonthCalendarUIUtil {
             startOfWeekDate: Date,
             currentMonthDate: Date
     ): WeekItem {
+        val rootLayout = ConstraintLayout(context)
+        rootLayout.id = View.generateViewId()
+
         val weekLayout = ConstraintLayout(context)
+        rootLayout.addView(weekLayout)
         weekLayout.id = View.generateViewId()
 
         val rate: Float = 1.0F / WEEK
         var date = startOfWeekDate
 
         val dayViewList = ArrayList<View>()
+
+        rootLayout.layoutParams = ConstraintLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        )
 
         weekLayout.layoutParams = ConstraintLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -249,7 +258,7 @@ object MonthCalendarUIUtil {
             date = date.tomorrow
         }
 
-        return WeekItem(startOfWeekDate, weekLayout, dayViewList)
+        return WeekItem(startOfWeekDate, rootLayout, weekLayout, dayViewList)
     }
 
     fun getMonthUI(
@@ -276,7 +285,7 @@ object MonthCalendarUIUtil {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
 
             if (idx < row - 1) {
-                weekItem.weekLayout.addSeparator(0.5F)
+                weekItem.rootLayout.addSeparator(0.0F)
             }
 
             val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
@@ -316,7 +325,7 @@ object MonthCalendarUIUtil {
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 2)
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 3)
 
-            val weekLayout = weekItem.weekLayout
+            val weekLayout = weekItem.rootLayout
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
@@ -324,6 +333,9 @@ object MonthCalendarUIUtil {
                 0,
                 WEIGHT_SUM / row
             )
+
+            val padding = CalculatorUtil.dpToPx(8.0F)
+            weekItem.weekLayout.setPadding(padding, 0, padding, 0)
 
             weekItemList.add(weekItem)
             date = date.nextWeek

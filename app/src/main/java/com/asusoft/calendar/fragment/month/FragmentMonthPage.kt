@@ -357,7 +357,7 @@ class FragmentMonthPage: Fragment() {
         postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
 
         val xPoint = dayView.getBoundsLocation()
-        val yPoint = weekItem.weekLayout.getBoundsLocation()
+        val yPoint = weekItem.rootLayout.getBoundsLocation()
         setOneDayEventView(
             dayView,
             weekItem.weekDate.getNextDay(idx),
