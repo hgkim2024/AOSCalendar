@@ -262,7 +262,7 @@ class FragmentMonthPage: Fragment() {
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
         dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
 
-        if (point.y + dayView.height < monthCalendar.height) {
+        if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < monthCalendar.height) {
             if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {
                 dialogHeight = monthCalendar.height - point.y - dayView.height - 10
             }
