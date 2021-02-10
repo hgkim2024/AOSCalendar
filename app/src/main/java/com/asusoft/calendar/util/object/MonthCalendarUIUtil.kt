@@ -27,7 +27,7 @@ object MonthCalendarUIUtil {
 
     public const val FONT_SIZE = 12F
     public const val EVENT_HEIGHT = 26.0F
-    public const val ALPHA = 0.4F
+    public const val ALPHA = 0.5F
 
     fun getEventOrderList(
             weekDate: Date
@@ -253,6 +253,7 @@ object MonthCalendarUIUtil {
 
             if (currentMonthDate.calendarMonth != date.calendarMonth) {
                 tv.alpha = ALPHA
+                tv.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
             }
 
             date = date.tomorrow
@@ -298,7 +299,6 @@ object MonthCalendarUIUtil {
                     weekItem.addEventUI(
                         context,
                         multiDay.name,
-                        startOfMonthDate,
                         multiDay.startTime,
                         multiDay.endTime,
                         order
@@ -312,7 +312,6 @@ object MonthCalendarUIUtil {
                     weekItem.addEventUI(
                         context,
                         oneDay.name,
-                        startOfMonthDate,
                         oneDay.time,
                         oneDay.time,
                         order
@@ -324,6 +323,12 @@ object MonthCalendarUIUtil {
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 1)
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 2)
 //            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 3)
+
+            for (dayView in weekItem.dayViewList) {
+                if (dayView.alpha == ALPHA) {
+                    dayView.bringToFront()
+                }
+            }
 
             val weekLayout = weekItem.rootLayout
             monthLayout.addView(weekLayout)

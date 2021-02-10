@@ -28,7 +28,6 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
     fun addEventUI(
             context: Context,
             name: String,
-            startOfMonthDate: Date,
             startTime: Long,
             endTime: Long,
             order: Int
@@ -55,14 +54,7 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
 
             // 하루 이벤트 UI
             isOneDay -> {
-                val eventView = MonthCalendarUIUtil.getEventView(context, name, false)
-                val curDate = Date(startTime)
-                if (startOfMonthDate.calendarMonth != curDate.calendarMonth
-                    || startOfMonthDate.calendarYear != curDate.calendarYear) {
-                    eventView.alpha = ALPHA
-                }
-
-                eventView
+                MonthCalendarUIUtil.getEventView(context, name, false)
             }
 
             // 이틀 이상 이벤트 UI
