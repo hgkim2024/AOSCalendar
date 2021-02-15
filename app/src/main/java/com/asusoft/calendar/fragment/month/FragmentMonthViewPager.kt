@@ -154,6 +154,7 @@ class FragmentMonthViewPager: Fragment() {
         }
     }
 
+    // TODO: - movePage 이 후에 페이지 모두 메모리에 로드 시키기
     private fun movePage(date: Date) {
         val diffYear = date.calendarYear - curPageDate.calendarYear
         val diffMonth = date.calendarMonth - curPageDate.calendarMonth
