@@ -281,6 +281,7 @@ class FragmentMonthPage: Fragment() {
         )
 
         Log.d("Asu", "Click Point: $point")
+        Log.d("Asu", "page height: ${monthCalendar.height }")
 
         val set = ConstraintSet()
         set.clone(monthCalendar)

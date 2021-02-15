@@ -21,8 +21,8 @@ import java.util.*
 class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLayout: ConstraintLayout, val dayViewList: ArrayList<View>) {
 
     companion object {
-        private const val EVENT_HEIGHT = 15.0F
-        private const val TOP_MARGIN = 27.0F
+        public const val EVENT_HEIGHT = 15.0F
+        public const val TOP_MARGIN = 27.0F
         private const val LEFT_MARGIN = 1.0F
     }
 

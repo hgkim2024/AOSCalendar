@@ -50,6 +50,8 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
+        Log.d("Asu", "toolbar height: ${toolbar.height}")
+
         toolbar.setOnClickListener {
             showDatePickerDialog()
         }

@@ -3,6 +3,7 @@ package com.asusoft.calendar.util.`object`
 import android.content.Context
 import android.graphics.Typeface
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -46,7 +47,8 @@ object MonthCalendarUIUtil {
     private fun getEventOrderList(
         weekDate: Date,
         realmEventMultiDayList: List<RealmEventMultiDay>,
-        realmEventOneDayList: List<RealmEventOneDay>
+        realmEventOneDayList: List<RealmEventOneDay>,
+        eventMaxCount: Int = 5
     ): HashMap<Long, Int> {
         val orderMap = HashMap<Long, Int>()
         val dayCheckList = java.util.ArrayList<Array<Boolean>>()
@@ -111,6 +113,16 @@ object MonthCalendarUIUtil {
                 }
 
                 index++
+            }
+        }
+
+        if (dayCheckList.size > eventMaxCount) {
+            for (idx in dayCheckList.indices) {
+                for (index in dayCheckList[idx].indices) {
+                    if (dayCheckList[idx][index]) {
+                        orderMap[index.toLong()] = idx + 1
+                    }
+                }
             }
         }
 
@@ -282,6 +294,24 @@ object MonthCalendarUIUtil {
             LinearLayout.LayoutParams.MATCH_PARENT
         )
 
+//        Log.d("Asu", "==================================")
+//        Log.d("Asu", "getStatusBarHeight: ${CalculatorUtil.getStatusBarHeight()}")
+//        Log.d("Asu", "getNavigationBarHeight: ${CalculatorUtil.getNavigationBarHeight()}")
+//        Log.d("Asu", "getActionBarHeight: ${CalculatorUtil.getActionBarHeight()}")
+//        Log.d("Asu", "getDeviceHeight: ${CalculatorUtil.getDeviceHeight()}")
+//        Log.d("Asu", "getActivityHeight: ${CalculatorUtil.getActivityHeight()}")
+//        Log.d("Asu", "getMonthCalendarHeight: ${CalculatorUtil.getMonthCalendarHeight()}")
+//
+//        Log.d("Asu", "status: ${CalculatorUtil.pxToDp(63.0F)}")
+//        Log.d("Asu", "bottom: ${CalculatorUtil.pxToDp(126.0F)}")
+//        Log.d("Asu", "action: ${CalculatorUtil.pxToDp(147.0F)}")
+//        Log.d("Asu", "device: ${CalculatorUtil.dpToPx(683.0F)}")
+
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
+        val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
+
+        Log.d("Asu", "eventMaxCount: ${eventMaxCount}")
+
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)
 
@@ -291,10 +321,41 @@ object MonthCalendarUIUtil {
 
             val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
             val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
-            val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList)
+            val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
+
+            for (index in 0 until WEEK) {
+                val item = orderMap[index.toLong()]
+                if (item != null) {
+                    if (eventMaxCount < item) {
+                        val dayView = weekItem.dayViewList[index]
+                        val countTextView = TextView(context)
+                        weekItem.weekLayout.addView(countTextView)
+                        countTextView.id = View.generateViewId()
+
+                        countTextView.text = "+${item - eventMaxCount}"
+                        countTextView.setTextColor(ContextCompat.getColor(context, R.color.lightFont))
+                        countTextView.textSize = 11.0F
+                        countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+                        countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
+
+                        val set = ConstraintSet()
+                        set.clone(weekItem.weekLayout)
+
+                        val topMargin = CalculatorUtil.dpToPx(5.0F)
+                        val leftMargin = CalculatorUtil.dpToPx(5.0F)
+
+                        set.connect(countTextView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+                        set.connect(countTextView.id, ConstraintSet.END, dayView.id, ConstraintSet.END, leftMargin)
+
+                        set.applyTo(weekItem.weekLayout)
+                    }
+                }
+            }
 
             for (multiDay in multiDayList) {
                 val order = orderMap.getOrDefault(multiDay.key, -1)
+                if (eventMaxCount <= order) continue
+
                 if(order != -1) {
                     weekItem.addEventUI(
                         context,
@@ -308,6 +369,8 @@ object MonthCalendarUIUtil {
 
             for (oneDay in oneDayList) {
                 val order = orderMap.getOrDefault(oneDay.key, -1)
+                if (eventMaxCount <= order) continue
+
                 if(order != -1) {
                     weekItem.addEventUI(
                         context,
