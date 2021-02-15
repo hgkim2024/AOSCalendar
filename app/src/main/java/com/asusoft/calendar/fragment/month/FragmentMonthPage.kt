@@ -265,6 +265,8 @@ class FragmentMonthPage: Fragment() {
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
         dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
 
+        // TODO: - 밑에서 두 번째 칸에서 이벤트가 3개 만 되도 스크롤 이 생긴다
+        // TODO: - 이런 경우 위로 나타나게 만들고 싶다.
         if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < monthCalendar.height) {
             if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {
                 dialogHeight = monthCalendar.height - point.y - dayView.height - 10
