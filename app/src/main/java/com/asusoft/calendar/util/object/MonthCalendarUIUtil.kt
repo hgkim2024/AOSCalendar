@@ -266,7 +266,7 @@ object MonthCalendarUIUtil {
             context: Context,
             startOfMonthDate: Date
     ): MonthItem {
-        val start = System.currentTimeMillis()
+//        val start = System.currentTimeMillis()
 
         val weekItemList = ArrayList<WeekItem>()
         val row = getMonthRow(startOfMonthDate)
@@ -319,11 +319,6 @@ object MonthCalendarUIUtil {
                 }
             }
 
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 0)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SATURDAY, false, 1)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 2)
-//            weekItem.addEventUI(context, WeekOfDayType.SUNDAY, WeekOfDayType.SUNDAY, true, 3)
-
             for (dayView in weekItem.dayViewList) {
                 if (dayView.alpha == ALPHA) {
                     dayView.bringToFront()
@@ -346,7 +341,7 @@ object MonthCalendarUIUtil {
             date = date.nextWeek
         }
 
-        val diff = System.currentTimeMillis() - start
+//        val diff = System.currentTimeMillis() - start
 //        Log.d("Asu", "getMonthUI diff: $diff")
 
         return MonthItem(startOfMonthDate, monthLayout, weekItemList)

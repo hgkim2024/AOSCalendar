@@ -1,6 +1,7 @@
 package com.asusoft.calendar.fragment.month.objects
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +68,10 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
                 eventView.text = name
                 eventView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                 eventView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
+
+                val startPadding = CalculatorUtil.dpToPx(2.0F)
+                eventView.setPadding(startPadding, 0, 0, 0)
+
                 eventView
             }
         }
@@ -85,9 +90,6 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
 
         val set = ConstraintSet()
         set.clone(weekLayout)
-
-        val padding = CalculatorUtil.dpToPx(LEFT_MARGIN)
-        eventView.setPadding(padding, 0, padding, 0)
 
         val topMargin = CalculatorUtil.dpToPx(TOP_MARGIN + (order * (EVENT_HEIGHT + 2)))
         val leftMargin = CalculatorUtil.dpToPx(LEFT_MARGIN)

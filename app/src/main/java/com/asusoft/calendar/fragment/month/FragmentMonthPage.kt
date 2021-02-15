@@ -9,8 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +29,6 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -56,6 +56,8 @@ class FragmentMonthPage: Fragment() {
     var prevDayEventView: ConstraintLayout? = null
     var monthCalendar: ConstraintLayout? = null
     var initFlag = false
+    var bottomFlag = false
+    var dialogHeight = 0
 
     companion object {
         fun newInstance(time: Long, initFlag: Boolean): FragmentMonthPage {
@@ -66,7 +68,7 @@ class FragmentMonthPage: Fragment() {
             f.arguments = args
             return f
         }
-        const val ANIMATION_DURATION: Long = 80
+        const val ANIMATION_DURATION: Long = 150
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,17 +196,17 @@ class FragmentMonthPage: Fragment() {
 
                     if (prevDayEventView != null) {
                         removeDayEventView(
-                            context,
-                            weekItem,
-                            dayView,
-                            idx
+                                context,
+                                weekItem,
+                                dayView,
+                                idx
                         )
                     } else {
                         showOneDayEventView(
-                            context,
-                            weekItem,
-                            dayView,
-                            idx
+                                context,
+                                weekItem,
+                                dayView,
+                                idx
                         )
                     }
 
@@ -257,7 +259,7 @@ class FragmentMonthPage: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         var dialogWidth: Int = 150
-        var dialogHeight: Int = 30 + 14 + (EVENT_HEIGHT.toInt() * eventList.size)
+        dialogHeight = 30 + 14 + (EVENT_HEIGHT.toInt() * eventList.size)
         if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT.toInt()
 
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
@@ -284,10 +286,14 @@ class FragmentMonthPage: Fragment() {
         set.clone(monthCalendar)
 
         val topMargin =
-                if (point.y + dayView.height + dialogHeight >= monthCalendar.height)
+                if (point.y + dayView.height + dialogHeight >= monthCalendar.height) {
+                    bottomFlag = true
                     point.y - dialogHeight
-                else
+                }
+                else {
+                    bottomFlag = false
                     point.y + dayView.height
+                }
 
         val startMargin =
                 if (point.x + dialogWidth >= monthCalendar.width)
@@ -300,23 +306,39 @@ class FragmentMonthPage: Fragment() {
 
         set.applyTo(monthCalendar)
 
-        val anim = ScaleAnimation(1F, 1F, 0F, 1F)
-        anim.duration = ANIMATION_DURATION
-        eventLayout.startAnimation(anim)
+        val animationSet = AnimationSet(false)
+
+        val scaleAnim = ScaleAnimation(1F, 1F, 0F, 1F)
+        animationSet.addAnimation(scaleAnim)
+
+        val translateAnim = TranslateAnimation(0F, 0F, if (bottomFlag) dialogHeight.toFloat() else 0F, 0F)
+        animationSet.addAnimation(translateAnim)
+
+        animationSet.duration = ANIMATION_DURATION
+        eventLayout.startAnimation(animationSet)
     }
 
     private fun removeDayEventView(
-        context: Context,
-        weekItem: WeekItem,
-        dayView: View,
-        idx: Int
+            context: Context,
+            weekItem: WeekItem,
+            dayView: View,
+            idx: Int
     ) {
         if (prevDayEventView != null) {
             val view = prevDayEventView!!
             prevDayEventView = null
 
-            val anim = ScaleAnimation(1F, 1F, 1F, 0F)
-            anim.setAnimationListener(object: Animation.AnimationListener{
+            val animationSet = AnimationSet(false)
+
+            val scaleAnim = ScaleAnimation(1F, 1F, 1F, 0F)
+            animationSet.addAnimation(scaleAnim)
+
+            val translateAnim = TranslateAnimation(0F, 0F, 0F, if (bottomFlag) dialogHeight.toFloat() else 0F)
+            animationSet.addAnimation(translateAnim)
+
+            animationSet.duration = ANIMATION_DURATION
+
+            animationSet.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
                 override fun onAnimationRepeat(animation: Animation?) {}
 
@@ -326,16 +348,15 @@ class FragmentMonthPage: Fragment() {
                     if (prevClickDayView == dayView) return
 
                     showOneDayEventView(
-                        context,
-                        weekItem,
-                        dayView,
-                        idx
+                            context,
+                            weekItem,
+                            dayView,
+                            idx
                     )
                 }
             })
 
-            anim.duration = ANIMATION_DURATION
-            view.startAnimation(anim)
+            view.startAnimation(animationSet)
         }
     }
 
@@ -347,10 +368,10 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun showOneDayEventView(
-        context: Context,
-        weekItem: WeekItem,
-        dayView: View,
-        idx: Int
+            context: Context,
+            weekItem: WeekItem,
+            dayView: View,
+            idx: Int
     ) {
 //        dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
         dayView.setBackgroundColor(ContextCompat.getColor(context, R.color.separator))
@@ -361,9 +382,9 @@ class FragmentMonthPage: Fragment() {
         val xPoint = dayView.getBoundsLocation()
         val yPoint = weekItem.rootLayout.getBoundsLocation()
         setOneDayEventView(
-            dayView,
-            weekItem.weekDate.getNextDay(idx),
-            Point(xPoint.x, yPoint.y)
+                dayView,
+                weekItem.weekDate.getNextDay(idx),
+                Point(xPoint.x, yPoint.y)
         )
     }
 
