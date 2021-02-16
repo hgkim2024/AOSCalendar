@@ -3,11 +3,9 @@ package com.asusoft.calendar.activity
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.DatePicker
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +16,8 @@ import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.holiday.Holiday
+import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.google.android.material.appbar.AppBarLayout
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

@@ -27,6 +27,7 @@ import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
@@ -34,10 +35,10 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
-import com.asusoft.calendar.util.getNextDay
+import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.event.OneDayEventHolder
-import com.asusoft.calendar.util.startOfMonth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.greenrobot.eventbus.Subscribe
@@ -170,10 +171,8 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun setAsyncPageUI(context: Context) {
-        GlobalScope.async {
-            page.post {
-                setPageUI(context)
-            }
+        GlobalScope.async(Dispatchers.Main) {
+            setPageUI(context)
         }
     }
 
@@ -404,6 +403,18 @@ class FragmentMonthPage: Fragment() {
         val orderMap = MonthCalendarUIUtil.getEventOrderList(date)
 
         var order = 0
+
+        val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
+        val holidayMap = orderMap.filter { it.key <= 1231 }
+
+        if (holidayMap.isNotEmpty()) {
+            val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
+            if (holidayMap[dateString.toLong()] != null) {
+                val name = holidayList.first { it.date == dateString }.name
+                eventList.add(name)
+            }
+        }
+
         while (
                 !(oneDayCopyList.isEmpty()
                         && multiDayCopyList.isEmpty())

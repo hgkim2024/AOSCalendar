@@ -19,8 +19,12 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.extension.addSeparator
+import com.asusoft.calendar.util.holiday.Holiday
+import com.asusoft.calendar.util.holiday.LunarCalendar
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object MonthCalendarUIUtil {
     public const val WEEK = 7
@@ -50,8 +54,33 @@ object MonthCalendarUIUtil {
         realmEventOneDayList: List<RealmEventOneDay>,
         eventMaxCount: Int = 5
     ): HashMap<Long, Int> {
+
+        val startDateString = String.format("%02d", weekDate.startOfWeek.calendarMonth) + String.format("%02d", weekDate.startOfWeek.calendarDay)
+        val endDateString = String.format("%02d", weekDate.endOfWeek.calendarMonth) + String.format("%02d", weekDate.endOfWeek.calendarDay)
+
+        val holidayList = if (weekDate.startOfWeek.calendarMonth == 12 && weekDate.endOfWeek.calendarMonth == 1) {
+            LunarCalendar.holidayArray("${weekDate.calendarYear}").filter { it.date < endDateString }
+        } else {
+            LunarCalendar.holidayArray("${weekDate.calendarYear}").filter { it.date in startDateString..endDateString }
+        }
+
         val orderMap = HashMap<Long, Int>()
         val dayCheckList = java.util.ArrayList<Array<Boolean>>()
+        dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+
+        if (holidayList.isNotEmpty()) {
+            for (item in holidayList) {
+                val sdf = SimpleDateFormat("yyyyMMdd")
+                val cal = Calendar.getInstance()
+                cal.time = sdf.parse(item.year + item.date)
+                val weekOfDay = cal.time.weekOfDay
+
+                Log.d("Asu", "holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
+
+                orderMap[item.date.toLong()] = 0
+                dayCheckList[0][weekOfDay] = true
+            }
+        }
 
         for (eventMultiDay in realmEventMultiDayList) {
             val startOfWeek = if (eventMultiDay.startTime < weekDate.startOfWeek.time) {
@@ -132,7 +161,8 @@ object MonthCalendarUIUtil {
     fun getEventView(
             context: Context,
             name: String,
-            isDialog: Boolean
+            isDialog: Boolean,
+            isHoliday: Boolean = false
     ): ConstraintLayout {
         val eventLayout = ConstraintLayout(context)
         val edgeView = View(context)
@@ -159,7 +189,8 @@ object MonthCalendarUIUtil {
 
             val startPadding = CalculatorUtil.dpToPx(3.0F)
             textView.setPadding(startPadding, 0, startPadding, 0)
-            textView.textSize = 14.0F
+            textView.textSize = MonthCalendarUIUtil.FONT_SIZE + 2
+            textView.setSingleLine()
             textView.ellipsize = TextUtils.TruncateAt.END
         } else {
 
@@ -170,8 +201,9 @@ object MonthCalendarUIUtil {
 
             val startPadding = CalculatorUtil.dpToPx(1.0F)
             textView.setPadding(startPadding, 0, 0, 0)
-            textView.textSize = 11.0F
-            textView.ellipsize = null
+            textView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
+            textView.setSingleLine()
+            textView.ellipsize = TextUtils.TruncateAt.MARQUEE
         }
 
         textView.layoutParams = ConstraintLayout.LayoutParams(
@@ -179,7 +211,11 @@ object MonthCalendarUIUtil {
                 ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 
-        edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+        if (isHoliday) {
+            edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.holiday))
+        } else {
+            edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+        }
 
         textView.setTextColor(ContextCompat.getColor(context, R.color.font))
         textView.gravity = Gravity.CENTER_VERTICAL
@@ -348,6 +384,29 @@ object MonthCalendarUIUtil {
                         set.connect(countTextView.id, ConstraintSet.END, dayView.id, ConstraintSet.END, leftMargin)
 
                         set.applyTo(weekItem.weekLayout)
+                    }
+                }
+            }
+
+            val holidayMap = orderMap.filter { it.key <= 1231 }
+            if (holidayMap.isNotEmpty()) {
+                val holidayList = LunarCalendar.holidayArray("${weekItem.weekDate.calendarYear}")
+                for (index in weekItem.dayViewList.indices) {
+                    val date = weekItem.weekDate.getNextDay(index)
+
+                    val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
+                    val key = dateString.toLong()
+                    if (holidayMap[key] != null) {
+                        (weekItem.dayViewList[index] as TextView).setTextColor(ContextCompat.getColor(context, R.color.holiday))
+                        val name = holidayList.first { it.date == dateString }.name
+                        weekItem.addEventUI(
+                                context,
+                                name,
+                                date.time,
+                                date.time,
+                                0,
+                                true
+                        )
                     }
                 }
             }
