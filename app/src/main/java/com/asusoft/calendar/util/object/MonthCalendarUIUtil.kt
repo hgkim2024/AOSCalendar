@@ -59,7 +59,7 @@ object MonthCalendarUIUtil {
         val endDateString = String.format("%02d", weekDate.endOfWeek.calendarMonth) + String.format("%02d", weekDate.endOfWeek.calendarDay)
 
         val holidayList = if (weekDate.startOfWeek.calendarMonth == 12 && weekDate.endOfWeek.calendarMonth == 1) {
-            LunarCalendar.holidayArray("${weekDate.calendarYear}").filter { it.date < endDateString }
+            LunarCalendar.holidayArray("${weekDate.calendarYear}").filter { it.date <= endDateString }
         } else {
             LunarCalendar.holidayArray("${weekDate.calendarYear}").filter { it.date in startDateString..endDateString }
         }
