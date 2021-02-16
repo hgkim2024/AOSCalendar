@@ -23,6 +23,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            ext.alwaysUpdateBuildId = false
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
