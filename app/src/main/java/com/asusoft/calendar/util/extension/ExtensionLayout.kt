@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 
 fun View.getBoundsLocation(): Point {
@@ -31,7 +31,7 @@ fun ConstraintLayout.addSeparator(margin: Float) {
     val margin = CalculatorUtil.dpToPx(margin)
 
     val separator = View(context)
-    separator.setBackgroundColor(ContextCompat.getColor(context, R.color.separator))
+    separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
     separator.id = View.generateViewId()
 
     separator.layoutParams = ConstraintLayout.LayoutParams(

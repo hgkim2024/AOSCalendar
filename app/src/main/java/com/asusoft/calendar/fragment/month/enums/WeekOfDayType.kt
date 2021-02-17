@@ -1,8 +1,8 @@
 package com.asusoft.calendar.fragment.month.enums
 
 import android.content.Context
-import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 
 enum class WeekOfDayType(val value: Int) {
     SUNDAY(0),
@@ -35,9 +35,9 @@ enum class WeekOfDayType(val value: Int) {
 
     fun getFontColor(context: Context): Int {
         return when(this) {
-            SUNDAY -> ContextCompat.getColor(context, R.color.holiday)
-            SATURDAY -> ContextCompat.getColor(context, R.color.saturday)
-            else -> ContextCompat.getColor(context, R.color.font)
+            SUNDAY -> CalendarApplication.getColor(R.color.holiday)
+            SATURDAY -> CalendarApplication.getColor(R.color.saturday)
+            else -> CalendarApplication.getColor(R.color.font)
         }
     }
 

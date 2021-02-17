@@ -1,18 +1,14 @@
 package com.asusoft.calendar.fragment.month.objects
 
 import android.content.Context
-import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
@@ -72,11 +68,11 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
                 eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
 
                 if (isHoliday) {
-                    eventView.setBackgroundColor(ContextCompat.getColor(context, R.color.holidayBackground))
-                    eventView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
+                    eventView.setBackgroundColor(CalendarApplication.getColor(R.color.holidayBackground))
+                    eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
                 } else {
-                    eventView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    eventView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
+                    eventView.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
+                    eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
                 }
 
                 val startPadding = CalculatorUtil.dpToPx(2.0F)

@@ -3,15 +3,14 @@ package com.asusoft.calendar.util.`object`
 import android.content.Context
 import android.graphics.Typeface
 import android.text.TextUtils
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
@@ -19,8 +18,6 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.extension.addSeparator
-import com.asusoft.calendar.util.extension.removeFromSuperView
-import com.asusoft.calendar.util.holiday.Holiday
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +39,7 @@ object MonthCalendarUIUtil {
         todayView.setBackgroundResource(R.drawable.today_corner_radius)
 
         todayView.text = dayView.text
-        todayView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
+        todayView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         todayView.textSize = FONT_SIZE
         todayView.setTypeface(todayView.typeface, Typeface.BOLD)
 
@@ -245,12 +242,12 @@ object MonthCalendarUIUtil {
         )
 
         if (isHoliday) {
-            edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.holiday))
+            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
         } else {
-            edgeView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
         }
 
-        textView.setTextColor(ContextCompat.getColor(context, R.color.font))
+        textView.setTextColor(CalendarApplication.getColor(R.color.font))
         textView.gravity = Gravity.CENTER_VERTICAL
         textView.maxLines = 1
         textView.text = name
@@ -334,7 +331,7 @@ object MonthCalendarUIUtil {
 
             if (currentMonthDate.calendarMonth != date.calendarMonth) {
                 tv.alpha = ALPHA
-                tv.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
+                tv.setBackgroundColor(CalendarApplication.getColor(R.color.background))
             }
 
             date = date.tomorrow
@@ -402,7 +399,7 @@ object MonthCalendarUIUtil {
                         countTextView.id = View.generateViewId()
 
                         countTextView.text = "+${item - eventMaxCount}"
-                        countTextView.setTextColor(ContextCompat.getColor(context, R.color.lightFont))
+                        countTextView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
                         countTextView.textSize = 11.0F
                         countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
                         countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
@@ -430,7 +427,7 @@ object MonthCalendarUIUtil {
                     val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
                     val key = dateString.toLong()
                     if (holidayMap[key] != null) {
-                        weekItem.dayViewList[index].setTextColor(ContextCompat.getColor(context, R.color.holiday))
+                        weekItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
                         val name = holidayList.first { it.date == dateString }.name
                         weekItem.addEventUI(
                                 context,

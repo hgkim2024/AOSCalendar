@@ -83,7 +83,6 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
         if (fragmentMonthViewPager != null) {
             if (event.map["date"] !is Date) return
             date = event.map["date"] as Date
-//            Log.d("Asu", "current page date: ${date.toStringDay()}")
         }
     }
 

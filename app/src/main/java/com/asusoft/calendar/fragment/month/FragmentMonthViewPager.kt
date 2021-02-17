@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -30,13 +29,12 @@ class FragmentMonthViewPager: Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var todayLayout: TextView
 
-    private var selectedDate = Date().getToday()
-    private var curPageDate = Date().getToday()
-
-    private var curPosition = 0
-
     private val pageCount = 1
+
+    private var selectedDate = Date().getToday()
+    private var curPosition = 0
     private var isScroll = false
+    private var isMovePage = false
 
     companion object {
         fun newInstance(): FragmentMonthViewPager {
@@ -80,6 +78,7 @@ class FragmentMonthViewPager: Fragment() {
         todayLayout.visibility = View.INVISIBLE
 
         todayLayout.setOnClickListener {
+            isScroll = false
             movePage(Date().getToday())
             todayLayout.visibility = View.INVISIBLE
         }
@@ -100,14 +99,11 @@ class FragmentMonthViewPager: Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                if (curPosition < position) {
-                    Log.d("Asu", "오른쪾")
-                } else if (curPosition > position) {
-                    Log.d("Asu", "왼족")
+                if (!isMovePage) {
+                    curPosition = position
+                    isScroll = true
+                    viewPager.isUserInputEnabled = false
                 }
-
-                isScroll = true
-                viewPager.isUserInputEnabled = false
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -115,10 +111,11 @@ class FragmentMonthViewPager: Fragment() {
 //                Log.d("Asu", "position: ${position}, positionOffset: ${positionOffset}, positionOffsetPixels: ${positionOffsetPixels}")
 
                 if (isScroll
-                        && positionOffsetPixels == 0) {
+                    && positionOffsetPixels == 0
+                ) {
                     val diffMonth = viewPager.currentItem - AdapterMonthCalendar.START_POSITION
-//                        Log.d("Asu", "diffMonth: $diffMonth")
-                    loadPage(diffMonth)
+                    Log.d("Asu", "diffMonth: $diffMonth")
+                    loadPage()
 
                     isScroll = false
                     viewPager.isUserInputEnabled = true
@@ -136,10 +133,17 @@ class FragmentMonthViewPager: Fragment() {
                     }
 
                     SCROLL_STATE_IDLE -> {
-//                        Log.d("Asu", "SCROLL_STATE_IDLE")
-                        val today = Date().getToday().startOfMonth
-                        if (today != curPageDate) {
-                            if (today < curPageDate) {
+                        if (isMovePage) {
+                            isMovePage = false
+                        }
+
+
+                        val curPageTime = adapter.getItemId(curPosition)
+
+                        Log.d("Asu", "SCROLL_STATE_IDLE date: ${Date(curPageTime).toStringDay()}")
+                        val today = Date().getToday().startOfMonth.time
+                        if (today != curPageTime) {
+                            if (today < curPageTime) {
                                 todayLayout.text = "<  오늘"
                             } else {
                                 todayLayout.text = "오늘  >"
@@ -177,16 +181,18 @@ class FragmentMonthViewPager: Fragment() {
         }
     }
 
-    private fun loadPage(diffMonth: Int) {
+    private fun loadPage() {
         val event = HashMapEvent(HashMap())
         event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
-        curPageDate = Date(adapter.start).getNextMonth(diffMonth).startOfMonth
-        event.map["date"] = curPageDate
         GlobalBus.getBus().post(event)
     }
 
     private fun movePage(date: Date) {
         adapter.initFlag = true
+        isMovePage = true
+
+        val curPageDate = Date(adapter.getItemId(curPosition))
+
         val diffYear = date.calendarYear - curPageDate.calendarYear
         val diffMonth = date.calendarMonth - curPageDate.calendarMonth
         val diff = diffYear * 12 + diffMonth

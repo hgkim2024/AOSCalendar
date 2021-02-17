@@ -16,13 +16,13 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
@@ -229,7 +229,7 @@ class FragmentMonthPage: Fragment() {
 
                 dayView.setOnClickListener {
                     if (prevClickDayView != null) {
-                        prevClickDayView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
+                        prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
                     }
 
                     if (prevDayEventView != null) {
@@ -241,7 +241,6 @@ class FragmentMonthPage: Fragment() {
                         )
                     } else {
                         showOneDayEventView(
-                                context,
                                 weekItem,
                                 dayView,
                                 idx
@@ -395,7 +394,6 @@ class FragmentMonthPage: Fragment() {
                     if (prevClickDayView == dayView) return
 
                     showOneDayEventView(
-                            context,
                             weekItem,
                             dayView,
                             idx
@@ -415,13 +413,11 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun showOneDayEventView(
-            context: Context,
             weekItem: WeekItem,
             dayView: View,
             idx: Int
     ) {
-//        dayView.background = ContextCompat.getDrawable(context, R.drawable.border)
-        dayView.setBackgroundColor(ContextCompat.getColor(context, R.color.separator))
+        dayView.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
         prevClickDayView = dayView
 
         postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
