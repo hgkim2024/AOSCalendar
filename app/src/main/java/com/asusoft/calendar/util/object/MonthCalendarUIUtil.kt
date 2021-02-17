@@ -75,7 +75,7 @@ object MonthCalendarUIUtil {
                 cal.time = sdf.parse(item.year + item.date)
                 val weekOfDay = cal.time.weekOfDay
 
-                Log.d("Asu", "holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
+//                Log.d("Asu", "holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
 
                 orderMap[item.date.toLong()] = 0
                 dayCheckList[0][weekOfDay] = true
@@ -346,7 +346,7 @@ object MonthCalendarUIUtil {
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
         val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
 
-        Log.d("Asu", "eventMaxCount: ${eventMaxCount}")
+//        Log.d("Asu", "eventMaxCount: ${eventMaxCount}")
 
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate)

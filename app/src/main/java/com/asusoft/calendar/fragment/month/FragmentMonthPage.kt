@@ -287,8 +287,8 @@ class FragmentMonthPage: Fragment() {
                 dialogHeight
         )
 
-        Log.d("Asu", "Click Point: $point")
-        Log.d("Asu", "page height: ${monthCalendar.height }")
+//        Log.d("Asu", "Click Point: $point")
+//        Log.d("Asu", "page height: ${monthCalendar.height }")
 
         val set = ConstraintSet()
         set.clone(monthCalendar)
