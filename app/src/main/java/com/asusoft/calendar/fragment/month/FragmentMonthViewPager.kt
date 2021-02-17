@@ -133,12 +133,8 @@ class FragmentMonthViewPager: Fragment() {
                     }
 
                     SCROLL_STATE_IDLE -> {
-                        if (isMovePage) {
-                            isMovePage = false
-                        }
-
                         val date = Date(adapter.getItemId(curPosition))
-                        isVisibleTodayView(date)
+                        scrollStateIdle(date)
                     }
 
                     SCROLL_STATE_SETTLING -> {}
@@ -190,9 +186,16 @@ class FragmentMonthViewPager: Fragment() {
         viewPager.setCurrentItem(viewPager.currentItem + diff, isSmoothScroll)
 
         if (!isSmoothScroll) {
-            isVisibleTodayView(date)
+            scrollStateIdle(date)
+        }
+    }
+
+    private fun scrollStateIdle(date: Date) {
+        if (isMovePage) {
             isMovePage = false
         }
+
+        isVisibleTodayView(date)
     }
 
     fun isVisibleTodayView(date: Date) {
