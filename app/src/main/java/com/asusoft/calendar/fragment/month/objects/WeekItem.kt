@@ -20,7 +20,7 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import java.util.*
 
 
-class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLayout: ConstraintLayout, val dayViewList: ArrayList<View>) {
+class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLayout: ConstraintLayout, val dayViewList: ArrayList<TextView>) {
 
     companion object {
         public const val EVENT_HEIGHT = 15.0F

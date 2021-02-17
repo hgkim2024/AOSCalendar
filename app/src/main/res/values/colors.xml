@@ -16,4 +16,5 @@
     <color name="lightFont">#BDBDBD</color>
     <color name="invertFont">#FAFAFA</color>
 
+    <color name="today">#00b07b</color>
 </resources>

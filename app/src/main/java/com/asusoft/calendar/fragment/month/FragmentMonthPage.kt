@@ -49,16 +49,18 @@ import kotlin.collections.ArrayList
 
 class FragmentMonthPage: Fragment() {
 
-    lateinit var date: Date
-    lateinit var monthItem: MonthItem
-    lateinit var page: View
+    private lateinit var date: Date
+    private lateinit var monthItem: MonthItem
+    private lateinit var page: View
 
-    var prevClickDayView: View? = null
-    var prevDayEventView: ConstraintLayout? = null
-    var monthCalendar: ConstraintLayout? = null
-    var initFlag = false
-    var bottomFlag = false
-    var dialogHeight = 0
+    private var prevClickDayView: View? = null
+    private var prevDayEventView: ConstraintLayout? = null
+    private var monthCalendar: ConstraintLayout? = null
+    private var initFlag = false
+    private var bottomFlag = false
+    private var dialogHeight = 0
+
+    private var todayView: View? = null
 
     companion object {
         fun newInstance(time: Long, initFlag: Boolean): FragmentMonthPage {
@@ -105,9 +107,10 @@ class FragmentMonthPage: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val context = context!!
 
         setActionBarTitle()
-        setAsyncPageUI(context!!)
+        setAsyncPageUI(context)
 
         if (prevClickDayView != null) {
             for (weekItem in monthItem.WeekItemList) {
@@ -118,6 +121,42 @@ class FragmentMonthPage: Fragment() {
                     }
                 }
             }
+        }
+
+        if (todayView != null) {
+            todayView?.removeFromSuperView()
+            todayView = null
+        }
+
+        if (Date().getToday().startOfMonth.time == monthItem.monthDate.startOfMonth.time) {
+            val today = Date().getToday()
+
+            lateinit var weekItem: WeekItem
+            lateinit var dayView: TextView
+
+            for (item in monthItem.WeekItemList) {
+                val start = item.weekDate.startOfWeek
+                val end = item.weekDate.endOfWeek
+
+                if (start.time <= today.time && today.time <= end.time) {
+                    weekItem = item
+                    break
+                }
+            }
+
+            for (index in weekItem.dayViewList.indices) {
+                val date = weekItem.weekDate.getNextDay(index)
+
+                if (date.time == today.time) {
+                    dayView = weekItem.dayViewList[index]
+                }
+
+                if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
+                    return
+                }
+            }
+
+            todayView = MonthCalendarUIUtil.setTodayMarker(context, weekItem, dayView)
         }
     }
 

@@ -19,6 +19,7 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.extension.addSeparator
+import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.Holiday
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import java.text.SimpleDateFormat
@@ -33,6 +34,38 @@ object MonthCalendarUIUtil {
     public const val FONT_SIZE = 12F
     public const val EVENT_HEIGHT = 26.0F
     public const val ALPHA = 0.5F
+
+    fun setTodayMarker(context: Context, weekItem: WeekItem, dayView: TextView): TextView {
+
+        val todayView = TextView(context)
+        todayView.id = View.generateViewId()
+        todayView.setBackgroundResource(R.drawable.today_corner_radius)
+
+        todayView.text = dayView.text
+        todayView.setTextColor(ContextCompat.getColor(context, R.color.invertFont))
+        todayView.textSize = FONT_SIZE
+        todayView.setTypeface(todayView.typeface, Typeface.BOLD)
+
+        todayView.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(FONT_SIZE + 4.0F),
+                CalculatorUtil.dpToPx(FONT_SIZE + 4.0F)
+        )
+
+        val weekLayout = weekItem.weekLayout
+        weekLayout.addView(todayView)
+
+        val set = ConstraintSet()
+        set.clone(weekLayout)
+
+        val margin = CalculatorUtil.dpToPx(8.0F)
+
+        set.connect(todayView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, margin)
+        set.connect(todayView.id, ConstraintSet.START, dayView.id, ConstraintSet.START, margin)
+
+        set.applyTo(weekLayout)
+
+        return todayView
+    }
 
     fun getEventOrderList(
             weekDate: Date
@@ -255,7 +288,7 @@ object MonthCalendarUIUtil {
         val rate: Float = 1.0F / WEEK
         var date = startOfWeekDate
 
-        val dayViewList = ArrayList<View>()
+        val dayViewList = ArrayList<TextView>()
 
         rootLayout.layoutParams = ConstraintLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -397,7 +430,7 @@ object MonthCalendarUIUtil {
                     val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
                     val key = dateString.toLong()
                     if (holidayMap[key] != null) {
-                        (weekItem.dayViewList[index] as TextView).setTextColor(ContextCompat.getColor(context, R.color.holiday))
+                        weekItem.dayViewList[index].setTextColor(ContextCompat.getColor(context, R.color.holiday))
                         val name = holidayList.first { it.date == dateString }.name
                         weekItem.addEventUI(
                                 context,
