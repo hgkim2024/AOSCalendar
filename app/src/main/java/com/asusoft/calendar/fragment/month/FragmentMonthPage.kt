@@ -50,7 +50,7 @@ import kotlin.collections.ArrayList
 class FragmentMonthPage: Fragment() {
 
     private lateinit var date: Date
-    private lateinit var monthItem: MonthItem
+    private var monthItem: MonthItem? = null
     private lateinit var page: View
 
     private var prevClickDayView: View? = null
@@ -112,52 +112,20 @@ class FragmentMonthPage: Fragment() {
         setActionBarTitle()
         setAsyncPageUI(context)
 
+        if (monthItem == null) return
+        val monthItem = monthItem!!
+
         if (prevClickDayView != null) {
             for (weekItem in monthItem.WeekItemList) {
                 for (idx in weekItem.dayViewList.indices) {
-                    val dayView = weekItem.dayViewList[idx]
-                    if (prevClickDayView == dayView) {
+                    if (prevClickDayView == weekItem.dayViewList[idx]) {
                         postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
                     }
                 }
             }
         }
 
-        if (todayView != null) {
-            todayView?.removeFromSuperView()
-            todayView = null
-        }
-
-        if (Date().getToday().startOfMonth.time == monthItem.monthDate.startOfMonth.time) {
-            val today = Date().getToday()
-
-            lateinit var weekItem: WeekItem
-            lateinit var dayView: TextView
-
-            for (item in monthItem.WeekItemList) {
-                val start = item.weekDate.startOfWeek
-                val end = item.weekDate.endOfWeek
-
-                if (start.time <= today.time && today.time <= end.time) {
-                    weekItem = item
-                    break
-                }
-            }
-
-            for (index in weekItem.dayViewList.indices) {
-                val date = weekItem.weekDate.getNextDay(index)
-
-                if (date.time == today.time) {
-                    dayView = weekItem.dayViewList[index]
-                }
-
-                if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
-                    return
-                }
-            }
-
-            todayView = MonthCalendarUIUtil.setTodayMarker(context, weekItem, dayView)
-        }
+        setTodayView(context)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -209,6 +177,48 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
+    private fun setTodayView(context: Context) {
+        if (monthItem == null) return
+
+        val monthItem = monthItem!!
+
+        if (todayView != null) {
+            todayView?.removeFromSuperView()
+            todayView = null
+        }
+
+        if (Date().getToday().startOfMonth.time == monthItem.monthDate.startOfMonth.time) {
+            val today = Date().getToday()
+
+            lateinit var weekItem: WeekItem
+            lateinit var dayView: TextView
+
+            for (item in monthItem.WeekItemList) {
+                val start = item.weekDate.startOfWeek
+                val end = item.weekDate.endOfWeek
+
+                if (start.time <= today.time && today.time <= end.time) {
+                    weekItem = item
+                    break
+                }
+            }
+
+            for (index in weekItem.dayViewList.indices) {
+                val date = weekItem.weekDate.getNextDay(index)
+
+                if (date.time == today.time) {
+                    dayView = weekItem.dayViewList[index]
+                }
+
+                if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
+                    return
+                }
+            }
+
+            todayView = MonthCalendarUIUtil.setTodayMarker(context, weekItem, dayView)
+        }
+    }
+
     private fun setAsyncPageUI(context: Context) {
         GlobalScope.async(Dispatchers.Main) {
             setPageUI(context)
@@ -219,8 +229,11 @@ class FragmentMonthPage: Fragment() {
         monthCalendar = page.findViewById(R.id.month_calendar)
         if (monthCalendar?.childCount == 0) {
             monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)
-            monthCalendar?.addView(monthItem.monthView)
+            monthCalendar?.addView(monthItem!!.monthView)
+            setTodayView(context)
         }
+
+        val monthItem: MonthItem = monthItem!!
 
         for (weekItem in monthItem.WeekItemList) {
             for (idx in weekItem.dayViewList.indices) {
@@ -234,7 +247,6 @@ class FragmentMonthPage: Fragment() {
 
                     if (prevDayEventView != null) {
                         removeDayEventView(
-                                context,
                                 weekItem,
                                 dayView,
                                 idx
@@ -365,7 +377,6 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun removeDayEventView(
-            context: Context,
             weekItem: WeekItem,
             dayView: View,
             idx: Int
@@ -487,6 +498,10 @@ class FragmentMonthPage: Fragment() {
             event.map["add"] = true
         }
         GlobalBus.getBus().post(event)
+
+        if (activity is ActivityStart) {
+            (activity as ActivityStart).setDate(date)
+        }
     }
 
     private fun refreshPage() {

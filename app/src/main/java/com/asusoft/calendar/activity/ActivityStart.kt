@@ -37,8 +37,6 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        GlobalBus.getBus().register(this)
-
         // TODO: - 실제 기기에서 적용되는지 테스트해보기 - 안드로이드 10 기기가 없음
 //        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
 //            setTheme(R.style.DarkTheme);
@@ -71,21 +69,6 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
             onBackStackChanged()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        GlobalBus.getBus().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-        val fragmentMonthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
-        if (fragmentMonthViewPager != null) {
-            if (event.map["date"] !is Date) return
-            date = event.map["date"] as Date
-        }
-    }
-
     override fun onBackStackChanged() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
     }
@@ -93,6 +76,10 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    fun setDate(date: Date) {
+        this.date = date
     }
 
     fun setTitle(text: String) {
@@ -111,7 +98,7 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
             event.map["date"] = date
             GlobalBus.getBus().post(event)
 
-            Log.d("Asu", "change date: ${date.toStringDay()}")
+//            Log.d("Asu", "change date: ${date.toStringDay()}")
         }
 
         val datePickerDialog = DatePickerDialog(
