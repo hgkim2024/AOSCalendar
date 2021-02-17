@@ -100,10 +100,11 @@ class FragmentMonthViewPager: Fragment() {
                 super.onPageSelected(position)
 
                 if (!isMovePage) {
-                    curPosition = position
                     isScroll = true
                     viewPager.isUserInputEnabled = false
                 }
+
+                curPosition = position
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
