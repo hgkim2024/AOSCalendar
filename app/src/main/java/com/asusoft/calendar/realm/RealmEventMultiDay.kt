@@ -11,7 +11,8 @@ import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
 
-open class RealmEventMultiDay: RealmObject() {
+open class
+RealmEventMultiDay: RealmObject() {
 
     @PrimaryKey
     var key: Long = System.currentTimeMillis()

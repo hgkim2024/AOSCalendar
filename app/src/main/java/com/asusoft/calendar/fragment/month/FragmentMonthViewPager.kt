@@ -26,6 +26,12 @@ import kotlin.math.abs
 
 class FragmentMonthViewPager: Fragment() {
 
+    companion object {
+        fun newInstance(): FragmentMonthViewPager {
+            return FragmentMonthViewPager()
+        }
+    }
+
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
     private lateinit var todayLayout: TextView
@@ -36,12 +42,6 @@ class FragmentMonthViewPager: Fragment() {
     private var curPosition = 0
     private var isScroll = false
     private var isMovePage = false
-
-    companion object {
-        fun newInstance(): FragmentMonthViewPager {
-            return FragmentMonthViewPager()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

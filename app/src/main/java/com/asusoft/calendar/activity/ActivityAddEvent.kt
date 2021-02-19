@@ -48,7 +48,6 @@ class ActivityAddEvent : AppCompatActivity() {
         val startDate = intent.getSerializableExtra("startDate") as Date
         val endDate = intent.getSerializableExtra("endDate") as Date
 
-        // TODO: - 수정 시 아래 변수 추가로 보내줄 것
         val title = intent.getStringExtra("title")
         isEdit = intent.getBooleanExtra("isEdit", false)
         key = intent.getLongExtra("key", -1)

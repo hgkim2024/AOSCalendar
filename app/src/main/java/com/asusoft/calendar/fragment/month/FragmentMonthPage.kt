@@ -49,6 +49,18 @@ import kotlin.collections.ArrayList
 
 class FragmentMonthPage: Fragment() {
 
+    companion object {
+        fun newInstance(time: Long, initFlag: Boolean): FragmentMonthPage {
+            val f = FragmentMonthPage()
+            val args = Bundle()
+            args.putLong("time", time)
+            args.putBoolean("initFlag", initFlag)
+            f.arguments = args
+            return f
+        }
+        const val ANIMATION_DURATION: Long = 150
+    }
+
     private lateinit var date: Date
     private var monthItem: MonthItem? = null
     private lateinit var page: View
@@ -61,18 +73,6 @@ class FragmentMonthPage: Fragment() {
     private var dialogHeight = 0
 
     private var todayView: View? = null
-
-    companion object {
-        fun newInstance(time: Long, initFlag: Boolean): FragmentMonthPage {
-            val f = FragmentMonthPage()
-            val args = Bundle()
-            args.putLong("time", time)
-            args.putBoolean("initFlag", initFlag)
-            f.arguments = args
-            return f
-        }
-        const val ANIMATION_DURATION: Long = 150
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -514,10 +514,6 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun setActionBarTitle() {
-        val sdf = SimpleDateFormat("yyyy년 MM월")
-        val title = sdf.format(date)
-
-        (activity as ActivityStart).setTitle(title)
-//        Log.d("Asu", "onResume date: $title")
+        (activity as ActivityStart).setTitle(date.toStringMonth())
     }
 }

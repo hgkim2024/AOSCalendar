@@ -31,6 +31,7 @@ object MonthCalendarUIUtil {
     public const val FONT_SIZE = 12F
     public const val EVENT_HEIGHT = 26.0F
     public const val ALPHA = 0.5F
+    public const val SELECT_DAY_HEIGHT = 40.0F
 
     fun setTodayMarker(context: Context, weekItem: WeekItem, dayView: TextView): TextView {
 
@@ -273,7 +274,8 @@ object MonthCalendarUIUtil {
     private fun getOneWeekUI(
             context: Context,
             startOfWeekDate: Date,
-            currentMonthDate: Date
+            currentMonthDate: Date,
+            isPopup: Boolean = false
     ): WeekItem {
         val rootLayout = ConstraintLayout(context)
         rootLayout.id = View.generateViewId()
@@ -307,8 +309,12 @@ object MonthCalendarUIUtil {
             tv.textSize = FONT_SIZE
             tv.setTypeface(tv.typeface, Typeface.BOLD)
 
-            val padding = CalculatorUtil.dpToPx( 8.0F)
-            tv.setPadding(padding, padding, 0, 0)
+            if (isPopup) {
+                tv.gravity = Gravity.CENTER
+            } else {
+                val padding = CalculatorUtil.dpToPx( 8.0F)
+                tv.setPadding(padding, padding, 0, 0)
+            }
 
             tv.layoutParams = ConstraintLayout.LayoutParams(
                 0,
@@ -342,7 +348,8 @@ object MonthCalendarUIUtil {
 
     fun getMonthUI(
             context: Context,
-            startOfMonthDate: Date
+            startOfMonthDate: Date,
+            isPopup: Boolean = false
     ): MonthItem {
 //        val start = System.currentTimeMillis()
 
@@ -355,10 +362,17 @@ object MonthCalendarUIUtil {
         monthLayout.weightSum = WEIGHT_SUM
         monthLayout.orientation = LinearLayout.VERTICAL
 
-        monthLayout.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
+        if (isPopup) {
+            monthLayout.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    CalculatorUtil.dpToPx((SELECT_DAY_HEIGHT * row))
+            )
+        } else {
+            monthLayout.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            )
+        }
 
 //        Log.d("Asu", "==================================")
 //        Log.d("Asu", "getStatusBarHeight: ${CalculatorUtil.getStatusBarHeight()}")
@@ -379,101 +393,28 @@ object MonthCalendarUIUtil {
 //        Log.d("Asu", "eventMaxCount: ${eventMaxCount}")
 
         for (idx in 0 until row) {
-            val weekItem = getOneWeekUI(context, date, startOfMonthDate)
+            val weekItem = getOneWeekUI(context, date, startOfMonthDate, isPopup)
 
             if (idx < row - 1) {
                 weekItem.rootLayout.addSeparator(0.0F)
             }
 
-            val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
-            val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
-            val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
-
-            for (index in 0 until WEEK) {
-                val item = orderMap[index.toLong()]
-                if (item != null) {
-                    if (eventMaxCount < item) {
-                        val dayView = weekItem.dayViewList[index]
-                        val countTextView = TextView(context)
-                        weekItem.weekLayout.addView(countTextView)
-                        countTextView.id = View.generateViewId()
-
-                        countTextView.text = "+${item - eventMaxCount}"
-                        countTextView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
-                        countTextView.textSize = 11.0F
-                        countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
-                        countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
-
-                        val set = ConstraintSet()
-                        set.clone(weekItem.weekLayout)
-
-                        val topMargin = CalculatorUtil.dpToPx(5.0F)
-                        val leftMargin = CalculatorUtil.dpToPx(5.0F)
-
-                        set.connect(countTextView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
-                        set.connect(countTextView.id, ConstraintSet.END, dayView.id, ConstraintSet.END, leftMargin)
-
-                        set.applyTo(weekItem.weekLayout)
-                    }
-                }
-            }
-
-            val holidayMap = orderMap.filter { it.key <= 1231 }
-            if (holidayMap.isNotEmpty()) {
-                val holidayList = LunarCalendar.holidayArray("${weekItem.weekDate.calendarYear}")
-                for (index in weekItem.dayViewList.indices) {
-                    val date = weekItem.weekDate.getNextDay(index)
-
-                    val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
-                    val key = dateString.toLong()
-                    if (holidayMap[key] != null) {
-                        weekItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
-                        val name = holidayList.first { it.date == dateString }.name
-                        weekItem.addEventUI(
-                                context,
-                                name,
-                                date.time,
-                                date.time,
-                                0,
-                                true
-                        )
-                    }
-                }
-            }
-
-            for (multiDay in multiDayList) {
-                val order = orderMap.getOrDefault(multiDay.key, -1)
-                if (eventMaxCount <= order) continue
-
-                if(order != -1) {
-                    weekItem.addEventUI(
+            if (!isPopup) {
+                addEvent(
                         context,
-                        multiDay.name,
-                        multiDay.startTime,
-                        multiDay.endTime,
-                        order
-                    )
-                }
+                        weekItem,
+                        eventMaxCount,
+                )
             }
 
-            for (oneDay in oneDayList) {
-                val order = orderMap.getOrDefault(oneDay.key, -1)
-                if (eventMaxCount <= order) continue
-
-                if(order != -1) {
-                    weekItem.addEventUI(
-                        context,
-                        oneDay.name,
-                        oneDay.time,
-                        oneDay.time,
-                        order
-                    )
-                }
-            }
-
-            for (dayView in weekItem.dayViewList) {
+            for (index in weekItem.dayViewList.indices) {
+                val dayView = weekItem.dayViewList[index]
                 if (dayView.alpha == ALPHA) {
                     dayView.bringToFront()
+                }
+
+                if (isPopup) {
+                    dayView.tag = (idx * WEEK) + index
                 }
             }
 
@@ -499,8 +440,172 @@ object MonthCalendarUIUtil {
         return MonthItem(startOfMonthDate, monthLayout, weekItemList)
     }
 
+    private fun addEvent(
+            context: Context,
+            weekItem: WeekItem,
+            eventMaxCount: Int,
+    ) {
+        val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
+        val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
+        val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
+
+        val holidayMap = orderMap.filter { it.key <= 1231 }
+        if (holidayMap.isNotEmpty()) {
+            val holidayList = LunarCalendar.holidayArray("${weekItem.weekDate.calendarYear}")
+            for (index in weekItem.dayViewList.indices) {
+                val date = weekItem.weekDate.getNextDay(index)
+
+                val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
+                val key = dateString.toLong()
+                if (holidayMap[key] != null) {
+                    weekItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
+
+                    val name = holidayList.first { it.date == dateString }.name
+                    weekItem.addEventUI(
+                            context,
+                            name,
+                            date.time,
+                            date.time,
+                            0,
+                            true
+                    )
+                }
+            }
+        }
+
+        for (multiDay in multiDayList) {
+            val order = orderMap.getOrDefault(multiDay.key, -1)
+            if (eventMaxCount <= order) continue
+
+            if (order != -1) {
+                weekItem.addEventUI(
+                        context,
+                        multiDay.name,
+                        multiDay.startTime,
+                        multiDay.endTime,
+                        order
+                )
+            }
+        }
+
+        for (oneDay in oneDayList) {
+            val order = orderMap.getOrDefault(oneDay.key, -1)
+            if (eventMaxCount <= order) continue
+
+            if (order != -1) {
+                weekItem.addEventUI(
+                        context,
+                        oneDay.name,
+                        oneDay.time,
+                        oneDay.time,
+                        order
+                )
+            }
+        }
+
+        for (index in 0 until WEEK) {
+            val item = orderMap[index.toLong()]
+            if (item != null) {
+                if (eventMaxCount < item) {
+                    val dayView = weekItem.dayViewList[index]
+                    val countTextView = TextView(context)
+                    weekItem.weekLayout.addView(countTextView)
+                    countTextView.id = View.generateViewId()
+
+                    countTextView.text = "+${item - eventMaxCount}"
+                    countTextView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
+                    countTextView.textSize = 11.0F
+                    countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+                    countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
+
+                    val set = ConstraintSet()
+                    set.clone(weekItem.weekLayout)
+
+                    val topMargin = CalculatorUtil.dpToPx(5.0F)
+                    val leftMargin = CalculatorUtil.dpToPx(5.0F)
+
+                    set.connect(countTextView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+                    set.connect(countTextView.id, ConstraintSet.END, dayView.id, ConstraintSet.END, leftMargin)
+
+                    set.applyTo(weekItem.weekLayout)
+                }
+            }
+        }
+
+    }
+
+    fun setSelectedDay(
+            selectedStartDate: Date? = null,
+            selectedEndDate: Date? = null,
+            date: Date,
+            dayViewList: ArrayList<TextView>
+    ) {
+
+        val monthDate = date.startOfMonth
+        val startDate = monthDate.startOfWeek
+        val row = getMonthRow(monthDate)
+
+        when {
+            selectedStartDate == null
+                    && selectedEndDate == null
+            -> return
+
+            selectedStartDate != null
+                    && selectedEndDate == null
+            -> {
+                if (monthDate.startOfMonth.time != selectedStartDate.startOfMonth.time) return
+
+                for (idx in 0 until row) {
+                    val weekDate = startDate.getNextDay(idx * WEEK)
+
+                    if (weekDate.startOfWeek.time <= selectedStartDate.time
+                            && selectedStartDate.time  <= weekDate.endOfWeek.time) {
+                        for (index in 0 until WEEK) {
+                            val i = (idx * WEEK) + index
+                            val date = startDate.getNextDay(i)
+                            val dayView = dayViewList[i]
+
+                            if (date.time == selectedStartDate.time) {
+                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.today))
+                            }
+                        }
+                    }
+                }
+            }
+
+            selectedStartDate != null
+                    && selectedEndDate != null
+            -> {
+
+                if (
+                        !(selectedStartDate.calendarYear <= monthDate.calendarYear
+                        && selectedStartDate.calendarMonth <= monthDate.calendarMonth
+                        && monthDate.calendarYear <= selectedEndDate.calendarYear
+                        && monthDate.calendarMonth <= selectedEndDate.calendarMonth)
+                ) {
+                    return
+                }
+
+                for (idx in 0 until row) {
+                    for (index in 0 until WEEK) {
+                        val i = (idx * WEEK) + index
+                        val dayView = dayViewList[i]
+
+                        if (dayView.alpha != ALPHA) {
+                            val date = startDate.getNextDay(i)
+                            if (selectedStartDate <= date && date <= selectedEndDate) {
+                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.today))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun getWeekHeader(
-        context: Context
+        context: Context,
+        isPopup: Boolean = false
     ): View {
         val weekHeaderLayout = LinearLayout(context)
         weekHeaderLayout.weightSum = WEIGHT_SUM
@@ -522,20 +627,25 @@ object MonthCalendarUIUtil {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 WEIGHT_SUM / WEEK
             )
-            val leftPadding = CalculatorUtil.dpToPx(8.0F)
-            tv.setPadding(leftPadding, 0, 0, 0)
+
+            if (isPopup) {
+                tv.gravity = Gravity.CENTER
+            } else {
+                val leftPadding = CalculatorUtil.dpToPx(8.0F)
+                tv.setPadding(leftPadding, 0, 0, 0)
+                tv.gravity = Gravity.CENTER_VERTICAL
+            }
 
             tv.text = days[idx].getShortTitle()
             tv.setTextColor(days[idx].getFontColor(context))
 
             tv.textSize = FONT_SIZE
-            tv.gravity = Gravity.CENTER_VERTICAL
         }
 
         return weekHeaderLayout
     }
 
-    private fun getMonthRow(date: Date): Int {
+    fun getMonthRow(date: Date): Int {
         val currentDate = date.startOfMonth
         var row = 5
         var day = currentDate.weekOfDay

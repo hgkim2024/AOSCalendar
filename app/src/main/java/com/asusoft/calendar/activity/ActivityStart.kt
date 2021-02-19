@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
+import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -51,7 +52,9 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 //        Log.d("Asu", "toolbar height: ${toolbar.height}")
 
         toolbar.setOnClickListener {
-            showDatePickerDialog()
+            // TODO: 원래대로 고칠 것
+//            showDatePickerDialog()
+            DialogFragmentDaySelectCalendar.newInstance().show(supportFragmentManager, "DialogFragmentDaySelectCalendar")
         }
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);

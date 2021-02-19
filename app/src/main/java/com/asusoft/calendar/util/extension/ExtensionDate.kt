@@ -277,6 +277,11 @@ fun Date.toStringDay(): String {
 }
 
 
+fun Date.toStringMonth(): String {
+    val sdf = SimpleDateFormat("  yyyy년 MM월  ")
+    return sdf.format(this)
+}
+
 /*
 
 * yyyy-MM-dd String 을 Date 로 변환

@@ -2,6 +2,8 @@ package com.asusoft.calendar.util.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
@@ -20,6 +22,8 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.Edi
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.event.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
+import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
+import kotlin.collections.ArrayList
 
 class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -98,6 +102,11 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 val view = MonthCalendarUIUtil.getEventView(context, name, true, isHoliday)
                 OneDayEventHolder(context, view, this)
             }
+
+            SELECT_DAY -> {
+                val view = inflater.inflate(R.layout.holder_select_day, parent, false)
+                SelectDayHolder(typeObject, context, view, this)
+            }
         }
     }
 
@@ -113,6 +122,7 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
             }
 
             ONE_DAY_EVENT -> (holder as OneDayEventHolder).bind(position)
+            SELECT_DAY -> (holder as SelectDayHolder).bind(position)
         }
     }
 
