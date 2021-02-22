@@ -208,10 +208,9 @@ class FragmentMonthPage: Fragment() {
 
                 if (date.time == today.time) {
                     dayView = weekItem.dayViewList[index]
-                }
-
-                if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
-                    return
+                    if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
+                        return
+                    }
                 }
             }
 

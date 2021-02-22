@@ -43,6 +43,7 @@ object MonthCalendarUIUtil {
         todayView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         todayView.textSize = FONT_SIZE
         todayView.setTypeface(todayView.typeface, Typeface.BOLD)
+        todayView.gravity = Gravity.CENTER_HORIZONTAL
 
         todayView.layoutParams = ConstraintLayout.LayoutParams(
                 CalculatorUtil.dpToPx(FONT_SIZE + 4.0F),
@@ -55,10 +56,17 @@ object MonthCalendarUIUtil {
         val set = ConstraintSet()
         set.clone(weekLayout)
 
-        val margin = CalculatorUtil.dpToPx(8.0F)
+        val textInt = todayView.text.toString().toInt()
 
-        set.connect(todayView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, margin)
-        set.connect(todayView.id, ConstraintSet.START, dayView.id, ConstraintSet.START, margin)
+        val topMargin = CalculatorUtil.dpToPx(8.0F)
+        val startMargin =
+                if (textInt >= 10)
+                    CalculatorUtil.dpToPx(6.0F)
+                else
+                    CalculatorUtil.dpToPx(4.0F)
+
+        set.connect(todayView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        set.connect(todayView.id, ConstraintSet.START, dayView.id, ConstraintSet.START, startMargin)
 
         set.applyTo(weekLayout)
 
