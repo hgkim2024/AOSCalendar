@@ -4,10 +4,7 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +20,7 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
+import com.asusoft.calendar.util.recyclerview.snap.StartSnapHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -79,6 +77,9 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        val snapHelper = StartSnapHelper()
+        snapHelper.attachToRecyclerView(recyclerView)
+
         recyclerView.scrollToPosition(weight)
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -134,7 +135,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
             params.width = maxWidth
         }
 
-        val maxHeight = CalculatorUtil.dpToPx(450.0F)
+        val maxHeight = CalculatorUtil.dpToPx(400.0F)
         params.height = (size.y * 0.9).toInt()
         if (params.height > maxHeight) {
             params.height = maxHeight

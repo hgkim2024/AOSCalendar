@@ -566,7 +566,7 @@ object MonthCalendarUIUtil {
                             val dayView = dayViewList[i]
 
                             if (date.time == selectedStartDate.time) {
-                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.today))
+                                dayView.setBackgroundResource(R.drawable.today_corner_radius)
                             }
                         }
                     }
@@ -593,8 +593,14 @@ object MonthCalendarUIUtil {
 
                         if (dayView.alpha != ALPHA) {
                             val date = startDate.getNextDay(i)
-                            if (selectedStartDate <= date && date <= selectedEndDate) {
+                            if (selectedStartDate < date && date < selectedEndDate) {
                                 dayView.setBackgroundColor(CalendarApplication.getColor(R.color.today))
+                            } else if (selectedStartDate == date && selectedEndDate != date) {
+                                dayView.setBackgroundResource(R.drawable.corner_radius_left)
+                            } else if (selectedEndDate == date && selectedStartDate != date) {
+                                dayView.setBackgroundResource(R.drawable.corner_radius_right)
+                            } else if (selectedEndDate == selectedStartDate && selectedStartDate == date) {
+                                dayView.setBackgroundResource(R.drawable.today_corner_radius)
                             }
                         }
                     }

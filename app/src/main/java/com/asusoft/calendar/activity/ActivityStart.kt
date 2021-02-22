@@ -5,23 +5,17 @@ import android.animation.StateListAnimator
 import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
-import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.asusoft.calendar.util.holiday.Holiday
-import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.google.android.material.appbar.AppBarLayout
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 
@@ -52,9 +46,8 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 //        Log.d("Asu", "toolbar height: ${toolbar.height}")
 
         toolbar.setOnClickListener {
-            // TODO: 원래대로 고칠 것
-//            showDatePickerDialog()
-            DialogFragmentDaySelectCalendar.newInstance().show(supportFragmentManager, "DialogFragmentDaySelectCalendar")
+            showDatePickerDialog()
+//            FragmentDaySelectCalendar.newInstance().show(supportFragmentManager, "DialogFragmentDaySelectCalendar")
         }
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);
