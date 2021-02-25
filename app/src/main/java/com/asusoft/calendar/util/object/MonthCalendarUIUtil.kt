@@ -17,7 +17,7 @@ import com.asusoft.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.extension.addSeparator
+import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -404,7 +404,7 @@ object MonthCalendarUIUtil {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate, isPopup)
 
             if (idx < row - 1) {
-                weekItem.rootLayout.addSeparator(0.0F)
+                weekItem.rootLayout.addBottomSeparator(0.0F)
             }
 
             if (!isPopup) {
@@ -585,13 +585,16 @@ object MonthCalendarUIUtil {
                     && selectedEndDate != null
             -> {
 
-                if (
-                        !(selectedStartDate.calendarYear <= monthDate.calendarYear
-                        && selectedStartDate.calendarMonth <= monthDate.calendarMonth
-                        && monthDate.calendarYear <= selectedEndDate.calendarYear
-                        && monthDate.calendarMonth <= selectedEndDate.calendarMonth)
-                ) {
-                    return
+                if (selectedStartDate.calendarYear > monthDate.calendarYear) return
+
+                if (selectedStartDate.calendarYear == monthDate.calendarYear) {
+                    if (selectedStartDate.calendarMonth > monthDate.calendarMonth) return
+                }
+
+                if (monthDate.calendarYear > selectedEndDate.calendarYear) return
+
+                if (monthDate.calendarYear == selectedEndDate.calendarYear) {
+                    if (monthDate.calendarMonth > selectedEndDate.calendarMonth) return
                 }
 
                 for (idx in 0 until row) {

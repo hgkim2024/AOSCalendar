@@ -4,8 +4,8 @@
     <item>
         <shape android:shape="rectangle">
             <corners
-                android:bottomRightRadius="100dp"
-                android:topRightRadius="100dp"/>
+                android:bottomRightRadius="200dp"
+                android:topRightRadius="200dp"/>
             <solid android:color="@color/today" />
         </shape>
     </item>

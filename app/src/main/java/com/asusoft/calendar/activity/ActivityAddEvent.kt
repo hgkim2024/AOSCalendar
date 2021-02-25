@@ -4,11 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
@@ -16,11 +19,13 @@ import com.asusoft.calendar.util.`object`.AlertUtil
 import com.asusoft.calendar.util.endOfDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
+import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.startOfDay
 import com.asusoft.calendar.util.toStringDay
 import org.greenrobot.eventbus.Subscribe
@@ -86,6 +91,38 @@ class ActivityAddEvent : AppCompatActivity() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(baseContext)
+
+        recyclerView.addOnItemTouchListener(
+                RecyclerItemClickListener(
+                        this,
+                        recyclerView,
+                        object : RecyclerItemClickListener.OnItemClickListener {
+                            override fun onItemClick(view: View?, position: Int) {
+                                val item = adapter.list[position]
+                                if (item is StartDayItem) {
+                                    // TODO: - 이미 설정된 날짜가 있는 경우 생성자로 넣어주기
+
+                                    val selectDayList = ArrayList<StartDayItem>()
+
+                                    for (item in adapter.list) {
+                                        if (item is StartDayItem) {
+                                            selectDayList.add(item)
+                                        }
+                                    }
+
+                                    DialogFragmentDaySelectCalendar
+                                            .newInstance(
+                                                    selectDayList[0].date,
+                                                    selectDayList[1].date.startOfDay
+                                            )
+                                            .show(supportFragmentManager, "DialogFragmentDaySelectCalendar")
+                                }
+                            }
+
+                            override fun onItemLongClick(view: View?, position: Int) {}
+                        }
+                )
+        )
 
         val cancelBtn = findViewById<Button>(R.id.cancel_btn)
         cancelBtn.setOnClickListener {
@@ -211,6 +248,33 @@ class ActivityAddEvent : AppCompatActivity() {
             ) { _, _ ->
                 removeEvent(key)
             }
+        }
+
+        val dialogFragmentDaySelectCalendar = event.map.getOrDefault(DialogFragmentDaySelectCalendar.toString(), null)
+        if (dialogFragmentDaySelectCalendar != null) {
+            val selectedStartDate = event.map["selectedStartDate"] as? Date
+            val selectedEndDate = event.map["selectedEndDate"] as? Date
+
+            Log.d("Asu", "selectedStartDate: ${selectedStartDate?.toStringDay()}")
+            Log.d("Asu", "selectedEndDate: ${selectedEndDate?.toStringDay()}")
+
+            val selectDayList = ArrayList<StartDayItem>()
+
+            for (item in adapter.list) {
+                if (item is StartDayItem) {
+                    selectDayList.add(item)
+                }
+            }
+
+            if (selectedStartDate != null) {
+                selectDayList[0].date = selectedStartDate
+            }
+
+            if (selectedEndDate != null) {
+                selectDayList[1].date = selectedEndDate
+            }
+
+            adapter.notifyDataSetChanged()
         }
     }
 }

@@ -2,8 +2,6 @@ package com.asusoft.calendar.util.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
@@ -11,7 +9,7 @@ import com.asusoft.calendar.activity.enums.AddEventType.*
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.extension.addSeparator
+import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.datepicker.DatePickerHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.datepicker.DatePickerItem
@@ -58,19 +56,19 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 when(viewType) {
                     TITLE.value -> {
                         val view = inflater.inflate(R.layout.holder_edit_text, parent, false)
-                        view.findViewById<ConstraintLayout>(R.id.root_layout).addSeparator(20.0F)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         EditTextHolder(context, view,this)
                     }
 
                     START_DAY.value -> {
                         val view = inflater.inflate(R.layout.holder_start_end_day, parent, false)
-                        view.findViewById<ConstraintLayout>(R.id.root_layout).addSeparator(20.0F)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         StartDayHolder(context, view,this)
                     }
 
                     DATE_PICKER.value -> {
                         val view = inflater.inflate(R.layout.holder_date_picker, parent, false)
-                        view.findViewById<ConstraintLayout>(R.id.root_layout).addSeparator(20.0F)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         DatePickerHolder(context, view,this)
                     }
 

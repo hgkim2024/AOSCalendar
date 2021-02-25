@@ -26,7 +26,7 @@ fun View.removeFromSuperView() {
     }
 }
 
-fun ConstraintLayout.addSeparator(margin: Float) {
+fun ConstraintLayout.addBottomSeparator(margin: Float) {
     val height = CalculatorUtil.dpToPx(0.7F)
     val margin = CalculatorUtil.dpToPx(margin)
 
@@ -47,6 +47,31 @@ fun ConstraintLayout.addSeparator(margin: Float) {
     set.connect(separator.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, margin)
     set.connect(separator.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
     set.connect(separator.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+
+    set.applyTo(this)
+}
+
+fun ConstraintLayout.addTopSeparator(margin: Float) {
+    val height = CalculatorUtil.dpToPx(0.7F)
+    val margin = CalculatorUtil.dpToPx(margin)
+
+    val separator = View(context)
+    separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+    separator.id = View.generateViewId()
+
+    separator.layoutParams = ConstraintLayout.LayoutParams(
+            0,
+            height
+    )
+
+    addView(separator)
+
+    val set = ConstraintSet()
+    set.clone(this)
+
+    set.connect(separator.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, margin)
+    set.connect(separator.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+    set.connect(separator.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
 
     set.applyTo(this)
 }

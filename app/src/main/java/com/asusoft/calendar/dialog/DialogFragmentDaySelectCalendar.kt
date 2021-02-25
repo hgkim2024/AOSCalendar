@@ -1,10 +1,13 @@
 package com.asusoft.calendar.dialog
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +20,9 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.SELECT_DAY_HEIGHT
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.addTopSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.recyclerview.snap.StartSnapHelper
@@ -31,8 +36,23 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     companion object {
         const val DEFAULT_MONTH_COUNT = 20
 
-        fun newInstance(): DialogFragmentDaySelectCalendar {
-            return DialogFragmentDaySelectCalendar()
+        fun newInstance(
+                selectedStartDate: Date? = null,
+                selectedEndDate: Date? = null
+        ): DialogFragmentDaySelectCalendar {
+            val f = DialogFragmentDaySelectCalendar()
+
+            val args = Bundle()
+            if (selectedStartDate != null) {
+                args.putLong("selectedStartDate", selectedStartDate.time)
+            }
+
+            if (selectedEndDate != null) {
+                args.putLong("selectedEndDate", selectedEndDate.time)
+            }
+
+            f.arguments = args
+            return f
         }
     }
 
@@ -44,6 +64,17 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val args = arguments!!
+        val selectedStartTime = args.getLong("selectedStartDate") as Long
+        if (selectedStartTime != 0L) {
+            selectedStartDate = Date(selectedStartTime)
+        }
+
+        val selectedEndTime = args.getLong("selectedEndDate") as Long
+        if (selectedEndTime != 0L) {
+            selectedEndDate = Date(selectedEndTime)
+        }
 
         GlobalBus.getBus().register(this)
     }
@@ -59,10 +90,28 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
         val view = inflater.inflate(R.layout.dialog_select_day, container, false)
 
+        if (dialog != null && dialog?.window != null) {
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
+
+        val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
+
+        rootLayout.apply {
+            measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            clipToOutline= true
+        }
+
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context, true))
 
-        val today = Date().getToday().startOfMonth
+        val today =
+                if (selectedStartDate != null) {
+                    selectedStartDate!!.startOfMonth
+                } else {
+                    Date().getToday().startOfMonth
+                }
+
         val list = ArrayList<SelectDayItem>()
 
         val weight = DEFAULT_MONTH_COUNT / 2
@@ -105,6 +154,33 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
             }
         })
 
+        val bottomLayout = view.findViewById<ConstraintLayout>(R.id.button_layout)
+        bottomLayout.addTopSeparator(0.0F)
+
+        val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
+        val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
+
+        confirmBtn.setOnClickListener {
+            // TODO: - 데이터 post 할 것
+            val event = HashMapEvent(HashMap())
+            event.map[DialogFragmentDaySelectCalendar.toString()] = DialogFragmentDaySelectCalendar.toString()
+
+            if (selectedStartDate != null) {
+                event.map["selectedStartDate"] = selectedStartDate!!
+            }
+
+            if (selectedEndDate != null) {
+                event.map["selectedEndDate"] = selectedEndDate!!
+            }
+
+            GlobalBus.getBus().post(event)
+            dismiss()
+        }
+
+        cancelBtn.setOnClickListener {
+            dismiss()
+        }
+
         return view
     }
 
@@ -129,13 +205,13 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         display.getSize(size)
         val params: WindowManager.LayoutParams = dialog?.window?.attributes ?: return
 
-        val maxWidth = CalculatorUtil.dpToPx((SELECT_DAY_HEIGHT * WEEK) + 32.0F + 16.0F)
+        val maxWidth = CalculatorUtil.dpToPx((SELECT_DAY_HEIGHT * WEEK) + 4.0F + 16.0F)
         params.width = (size.x * 0.9).toInt()
         if (params.width > maxWidth) {
             params.width = maxWidth
         }
 
-        val maxHeight = CalculatorUtil.dpToPx(400.0F)
+        val maxHeight = CalculatorUtil.dpToPx(500.0F)
         params.height = (size.y * 0.9).toInt()
         if (params.height > maxHeight) {
             params.height = maxHeight
