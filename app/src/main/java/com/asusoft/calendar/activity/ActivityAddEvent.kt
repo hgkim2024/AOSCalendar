@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.AlertUtil
 import com.asusoft.calendar.util.endOfDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -28,6 +30,9 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.Sta
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.startOfDay
 import com.asusoft.calendar.util.toStringDay
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -36,6 +41,7 @@ import kotlin.collections.ArrayList
 class ActivityAddEvent : AppCompatActivity() {
 
     lateinit var adapter: RecyclerViewAdapter
+    lateinit var adView: AdView
     var isEdit: Boolean = false
     var key = -1L
     var confirmFlag = false
@@ -100,8 +106,6 @@ class ActivityAddEvent : AppCompatActivity() {
                             override fun onItemClick(view: View?, position: Int) {
                                 val item = adapter.list[position]
                                 if (item is StartDayItem) {
-                                    // TODO: - 이미 설정된 날짜가 있는 경우 생성자로 넣어주기
-
                                     val selectDayList = ArrayList<StartDayItem>()
 
                                     for (item in adapter.list) {
@@ -141,6 +145,19 @@ class ActivityAddEvent : AppCompatActivity() {
                 Toast.makeText(applicationContext,"제목을 입력해주세요.",
                         Toast.LENGTH_SHORT).show()
         }
+
+
+        // 광고 추가
+        adView = AdView(baseContext)
+
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = AdUtil.adMobAddEventTopBannerId
+
+        val layout = findViewById<ConstraintLayout>(R.id.ad_layout)
+        layout.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     override fun onStart() {
@@ -155,7 +172,21 @@ class ActivityAddEvent : AppCompatActivity() {
         GlobalBus.getBus().unregister(this)
     }
 
-    // TODO: - update 와 add 분기
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
+    }
+
     private fun addEventRealm() {
         lateinit var titleItem: EditTextItem
         lateinit var startDayItem: StartDayItem

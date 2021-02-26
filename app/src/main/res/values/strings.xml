@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">CalendarProject</string>
 
+
+    <!-- 광고 id -->
+    <string name="admod_app_id">ca-app-pub-1887982661173003~5933219858</string>
+
     <!-- 얼럿 버튼 -->
     <string name="close">닫기</string>
     <string name="ok">확인</string>
