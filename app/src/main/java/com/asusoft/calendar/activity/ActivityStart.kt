@@ -17,6 +17,7 @@ import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.appbar.AppBarLayout
+import com.orhanobut.logger.Logger
 import java.util.*
 
 
@@ -44,8 +45,8 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-//        Log.d("Asu", "toolbar height: ${toolbar.height}")
-
+//        Logger.d("toolbar height: ${toolbar.height}")
+        
         toolbar.setOnClickListener {
             showDatePickerDialog()
         }
@@ -94,7 +95,7 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
             event.map["date"] = date
             GlobalBus.getBus().post(event)
 
-//            Log.d("Asu", "change date: ${date.toStringDay()}")
+//            Logger.d("change date: ${date.toStringDay()}")
         }
 
         val datePickerDialog = DatePickerDialog(

@@ -26,6 +26,7 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.Delet
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.recyclerview.snap.StartSnapHelper
+import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -136,7 +137,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 val position = (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstCompletelyVisibleItemPosition()
 
-//                Log.d("Asu", "onScrolled position: $position")
+//                Logger.d("onScrolled position: $position")
 
                 if (-1 < position && position < 2) {
                     val list = getList(adapter.list.first() as SelectDayItem, true)
@@ -161,7 +162,6 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
 
         confirmBtn.setOnClickListener {
-            // TODO: - 데이터 post 할 것
             val event = HashMapEvent(HashMap())
             event.map[DialogFragmentDaySelectCalendar.toString()] = DialogFragmentDaySelectCalendar.toString()
 
@@ -226,7 +226,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         if (selectDayHolder != null) {
             val date = event.map["date"] as Date
 
-            Log.d("Asu", "selectDayHolder received date: ${date.toStringDay()}")
+//            Logger.d("selectDayHolder received date: ${date.toStringDay()}")
 
             if (selectedIsStart) {
                 selectedStartDate = date

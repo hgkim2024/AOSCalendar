@@ -5,14 +5,14 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.*
+import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
 
-open class
-RealmEventMultiDay: RealmObject() {
+open class RealmEventMultiDay: RealmObject() {
 
     @PrimaryKey
     var key: Long = System.currentTimeMillis()
@@ -55,11 +55,11 @@ RealmEventMultiDay: RealmObject() {
             
             realm.commitTransaction()
 
-//            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+//            Logger.d("RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
 
-        fun selectOneDay(date: Date): List<RealmEventMultiDay> {
+        private fun selectOneDay(date: Date): List<RealmEventMultiDay> {
             val startTime = date.startOfDay.time
             val endTime = date.endOfDay.time
 
@@ -88,12 +88,12 @@ RealmEventMultiDay: RealmObject() {
 
             realm.commitTransaction()
 
-//            Log.d("Asu", "RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
+//            Logger.d("RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
 
         fun getOneDayCopyList(date: Date): ArrayList<CopyEventMultiDay> {
-            val realmList = RealmEventMultiDay.selectOneDay(date)
+            val realmList = selectOneDay(date)
             val copyList = ArrayList<CopyEventMultiDay>()
 
             for (item in realmList) {
@@ -144,7 +144,7 @@ RealmEventMultiDay: RealmObject() {
             this.endTime = endTime
         }
 
-//        Log.d("Asu", "RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
+//        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
         realm.commitTransaction()
     }
 

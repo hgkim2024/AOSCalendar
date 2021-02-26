@@ -3,6 +3,7 @@ package com.asusoft.calendar.fragment.month
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.asusoft.calendar.util.*
+import com.orhanobut.logger.Logger
 import java.util.*
 
 class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
@@ -13,7 +14,7 @@ class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
     override fun getItemCount(): Int = Int.MAX_VALUE
 
     override fun createFragment(position: Int): FragmentMonthPage {
-//        Log.d("Asu", "createFragment position: $position")
+//        Logger.d("createFragment position: $position")
         val time = getItemId(position)
         return FragmentMonthPage.newInstance(time, initFlag)
     }

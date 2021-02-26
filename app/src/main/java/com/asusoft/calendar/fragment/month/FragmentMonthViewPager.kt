@@ -19,6 +19,7 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -110,7 +111,7 @@ class FragmentMonthViewPager: Fragment() {
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-//                Log.d("Asu", "position: ${position}, positionOffset: ${positionOffset}, positionOffsetPixels: ${positionOffsetPixels}")
+//                Logger.d("position: ${position}, positionOffset: ${positionOffset}, positionOffsetPixels: ${positionOffsetPixels}")
 
                 if (isScroll
                     && positionOffsetPixels == 0
@@ -149,7 +150,7 @@ class FragmentMonthViewPager: Fragment() {
         val fragmentMonthPage = event.map.getOrDefault(FragmentMonthPage.toString(), null)
         if (fragmentMonthPage != null) {
             selectedDate = event.map["date"] as Date
-//            Log.d("Asu", "selected day date: ${selectedDate.toStringDay()}")
+//            Logger.d("selected day date: ${selectedDate.toStringDay()}")
 
             val addFlag = event.map["add"]
             if (addFlag != null) {
@@ -168,7 +169,7 @@ class FragmentMonthViewPager: Fragment() {
         val event = HashMapEvent(HashMap())
         event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
         GlobalBus.getBus().post(event)
-//        Log.d("Asu", "page refresh")
+//        Logger.d("page refresh")
     }
 
     private fun movePage(date: Date) {
@@ -181,11 +182,18 @@ class FragmentMonthViewPager: Fragment() {
         val diffMonth = date.calendarMonth - curPageDate.calendarMonth
         val diff = diffYear * 12 + diffMonth
 
+        if (diff == 0) {
+            adapter.initFlag = false
+            isMovePage = false
+            return
+        }
+
         val isSmoothScroll = abs(diff) <= pageCount + 1
 
         viewPager.setCurrentItem(viewPager.currentItem + diff, isSmoothScroll)
 
         if (!isSmoothScroll) {
+            adapter.initFlag = false
             scrollStateIdle(date)
         }
     }
@@ -198,7 +206,7 @@ class FragmentMonthViewPager: Fragment() {
         isVisibleTodayView(date)
     }
 
-    fun isVisibleTodayView(date: Date) {
+    private fun isVisibleTodayView(date: Date) {
         val today = Date().getToday().startOfMonth.time
         val curTime = date.startOfMonth.time
         if (today != curTime) {

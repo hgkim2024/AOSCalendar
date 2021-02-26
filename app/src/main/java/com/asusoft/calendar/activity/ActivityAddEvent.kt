@@ -33,6 +33,7 @@ import com.asusoft.calendar.util.toStringDay
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -286,8 +287,8 @@ class ActivityAddEvent : AppCompatActivity() {
             val selectedStartDate = event.map["selectedStartDate"] as? Date
             val selectedEndDate = event.map["selectedEndDate"] as? Date
 
-            Log.d("Asu", "selectedStartDate: ${selectedStartDate?.toStringDay()}")
-            Log.d("Asu", "selectedEndDate: ${selectedEndDate?.toStringDay()}")
+//            Logger.d("selectedStartDate: ${selectedStartDate?.toStringDay()}")
+//            Logger.d("selectedEndDate: ${selectedEndDate?.toStringDay()}")
 
             val selectDayList = ArrayList<StartDayItem>()
 

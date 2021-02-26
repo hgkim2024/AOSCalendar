@@ -19,6 +19,7 @@ import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.holiday.LunarCalendar
+import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -114,7 +115,7 @@ object MonthCalendarUIUtil {
                 cal.time = sdf.parse(item.year + item.date)
                 val weekOfDay = cal.time.weekOfDay
 
-//                Log.d("Asu", "holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
+//                Logger.d("holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
 
                 orderMap[item.date.toLong()] = 0
                 dayCheckList[0][weekOfDay] = true
@@ -382,23 +383,23 @@ object MonthCalendarUIUtil {
             )
         }
 
-//        Log.d("Asu", "==================================")
-//        Log.d("Asu", "getStatusBarHeight: ${CalculatorUtil.getStatusBarHeight()}")
-//        Log.d("Asu", "getNavigationBarHeight: ${CalculatorUtil.getNavigationBarHeight()}")
-//        Log.d("Asu", "getActionBarHeight: ${CalculatorUtil.getActionBarHeight()}")
-//        Log.d("Asu", "getDeviceHeight: ${CalculatorUtil.getDeviceHeight()}")
-//        Log.d("Asu", "getActivityHeight: ${CalculatorUtil.getActivityHeight()}")
-//        Log.d("Asu", "getMonthCalendarHeight: ${CalculatorUtil.getMonthCalendarHeight()}")
+//        Logger.d("==================================")
+//        Logger.d("getStatusBarHeight: ${CalculatorUtil.getStatusBarHeight()}")
+//        Logger.d("getNavigationBarHeight: ${CalculatorUtil.getNavigationBarHeight()}")
+//        Logger.d("getActionBarHeight: ${CalculatorUtil.getActionBarHeight()}")
+//        Logger.d("getDeviceHeight: ${CalculatorUtil.getDeviceHeight()}")
+//        Logger.d("getActivityHeight: ${CalculatorUtil.getActivityHeight()}")
+//        Logger.d("getMonthCalendarHeight: ${CalculatorUtil.getMonthCalendarHeight()}")
 //
-//        Log.d("Asu", "status: ${CalculatorUtil.pxToDp(63.0F)}")
-//        Log.d("Asu", "bottom: ${CalculatorUtil.pxToDp(126.0F)}")
-//        Log.d("Asu", "action: ${CalculatorUtil.pxToDp(147.0F)}")
-//        Log.d("Asu", "device: ${CalculatorUtil.dpToPx(683.0F)}")
+//        Logger.d("status: ${CalculatorUtil.pxToDp(63.0F)}")
+//        Logger.d("bottom: ${CalculatorUtil.pxToDp(126.0F)}")
+//        Logger.d("action: ${CalculatorUtil.pxToDp(147.0F)}")
+//        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
         val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
 
-//        Log.d("Asu", "eventMaxCount: ${eventMaxCount}")
+//        Logger.d("eventMaxCount: ${eventMaxCount}")
 
         for (idx in 0 until row) {
             val weekItem = getOneWeekUI(context, date, startOfMonthDate, isPopup)
@@ -443,7 +444,7 @@ object MonthCalendarUIUtil {
         }
 
 //        val diff = System.currentTimeMillis() - start
-//        Log.d("Asu", "getMonthUI diff: $diff")
+//        Logger.d("getMonthUI diff: $diff")
 
         return MonthItem(startOfMonthDate, monthLayout, weekItemList)
     }

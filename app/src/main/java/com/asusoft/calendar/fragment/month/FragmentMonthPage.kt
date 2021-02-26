@@ -38,6 +38,7 @@ import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.event.OneDayEventHolder
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -336,8 +337,8 @@ class FragmentMonthPage: Fragment() {
                 dialogHeight
         )
 
-//        Log.d("Asu", "Click Point: $point")
-//        Log.d("Asu", "page height: ${monthCalendar.height }")
+//        Logger.d("Click Point: $point")
+//        Logger.d("page height: ${monthCalendar.height }")
 
         val set = ConstraintSet()
         set.clone(monthCalendar)

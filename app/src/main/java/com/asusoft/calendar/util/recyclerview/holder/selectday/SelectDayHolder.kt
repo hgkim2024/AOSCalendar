@@ -16,6 +16,7 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.orhanobut.logger.Logger
 import java.util.HashMap
 
 class SelectDayHolder(
@@ -28,7 +29,7 @@ class SelectDayHolder(
     fun bind(position: Int) {
         val item = adapter.list[position] as SelectDayItem
 
-        Log.d("Asu", "SelectDayHolder date: ${item.date.toStringMonth()}")
+//        Logger.d("SelectDayHolder date: ${item.date.toStringMonth()}")
 
         val header = view.findViewById<TextView>(R.id.tv_header)
         header.text = item.date.toStringMonth()

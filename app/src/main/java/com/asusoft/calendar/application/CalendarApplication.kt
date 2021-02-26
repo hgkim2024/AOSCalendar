@@ -9,8 +9,11 @@ import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmConfiguration
+
 
 class CalendarApplication: Application() {
 
@@ -30,11 +33,16 @@ class CalendarApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Realm 초기화
         Realm.init(this)
+
+        // Util 초기화
         CalculatorUtil.setContext(baseContext)
         AdUtil.setContext(baseContext)
         context = baseContext
 
+        // AdMob 광고 초기화
         MobileAds.initialize(this) {}
 
         if (BuildConfig.DEBUG) {
@@ -44,6 +52,13 @@ class CalendarApplication: Application() {
                     .build()
             )
         }
+
+        // 로그 초기화
+        Logger.addLogAdapter(object : AndroidLogAdapter() {
+            override fun isLoggable(priority: Int, tag: String?): Boolean {
+                return BuildConfig.DEBUG
+            }
+        })
     }
 
 }

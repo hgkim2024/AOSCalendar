@@ -69,4 +69,7 @@ dependencies {
 
     // AdMob
     implementation 'com.google.android.gms:play-services-ads:19.6.0'
+
+    // Log
+    implementation 'com.orhanobut:logger:2.2.0'
 }

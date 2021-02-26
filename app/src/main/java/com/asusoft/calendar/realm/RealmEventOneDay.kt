@@ -4,6 +4,7 @@ import android.util.Log
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.*
+import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.Index
@@ -37,7 +38,7 @@ open class RealmEventOneDay: RealmObject() {
 
             realm.commitTransaction()
 
-//            Log.d("Asu", "RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
+//            Logger.d("RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
             return item
         }
 
@@ -56,7 +57,7 @@ open class RealmEventOneDay: RealmObject() {
 
             realm.commitTransaction()
 
-//            Log.d("Asu", "RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
+//            Logger.d("RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
             return item
         }
 
@@ -106,7 +107,7 @@ open class RealmEventOneDay: RealmObject() {
             this.time = time
         }
 
-//        Log.d("Asu", "RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
+//        Logger.d("RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
         realm.commitTransaction()
     }
 
