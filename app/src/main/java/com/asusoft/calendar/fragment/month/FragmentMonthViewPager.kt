@@ -193,7 +193,8 @@ class FragmentMonthViewPager: Fragment() {
         viewPager.setCurrentItem(viewPager.currentItem + diff, isSmoothScroll)
 
         if (!isSmoothScroll) {
-            adapter.initFlag = false
+            adapter.initFlag = true
+            isMovePage = false
             scrollStateIdle(date)
         }
     }
@@ -204,6 +205,7 @@ class FragmentMonthViewPager: Fragment() {
         }
 
         isVisibleTodayView(date)
+        // TODO: - 날짜 post 날리기 - 받아서 날짜 클릭 한 것과 동일하게 나타나게 만들 것
     }
 
     private fun isVisibleTodayView(date: Date) {
