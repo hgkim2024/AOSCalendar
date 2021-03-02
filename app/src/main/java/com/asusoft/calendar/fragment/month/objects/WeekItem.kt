@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -94,6 +95,22 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
         val startDayView = dayViewList[startDay.value]
         val endDayView = dayViewList[endDay.value]
 
+        // TODO: - 분기처리 할 것 - 완료 이미지 추가
+        val iv = ImageView(context)
+        iv.id = View.generateViewId()
+//        iv.scaleType = ImageView.ScaleType.FIT_CENTER
+        iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
+        iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
+        iv.bringToFront()
+        eventView.alpha = 0.3F
+
+        iv.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(EVENT_HEIGHT),
+                CalculatorUtil.dpToPx(EVENT_HEIGHT)
+        )
+        weekLayout.addView(iv)
+        //
+
         val set = ConstraintSet()
         set.clone(weekLayout)
 
@@ -103,6 +120,12 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
         set.connect(eventView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(eventView.id, ConstraintSet.START, startDayView.id, ConstraintSet.START, leftMargin)
         set.connect(eventView.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
+
+        //  TODO: - 분기처리 할 것 - 완료 이미지 추가
+        set.connect(iv.id, ConstraintSet.TOP, eventView.id, ConstraintSet.TOP)
+        set.connect(iv.id, ConstraintSet.BOTTOM, eventView.id, ConstraintSet.BOTTOM)
+        set.connect(iv.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
+        //
 
         set.applyTo(weekLayout)
     }
