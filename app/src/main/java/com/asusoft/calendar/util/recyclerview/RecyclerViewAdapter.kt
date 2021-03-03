@@ -9,6 +9,8 @@ import com.asusoft.calendar.activity.enums.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextHolder
@@ -33,6 +35,7 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 return when(list[position]) {
                     is EditTextItem -> TITLE.value
                     is StartDayItem -> START_DAY.value
+                    is CompleteItem -> COMPLETE.value
                     is DeleteItem -> DELETE.value
                     else -> 0
                 }
@@ -58,6 +61,11 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                         val view = inflater.inflate(R.layout.holder_start_end_day, parent, false)
                         view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         StartDayHolder(context, view,this)
+                    }
+
+                    COMPLETE.value -> {
+                        val view = inflater.inflate(R.layout.holder_switch_button, parent, false)
+                        CompleteHolder(context, view, this)
                     }
 
                     DELETE.value -> {
@@ -90,6 +98,7 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 when(holder) {
                     is EditTextHolder -> holder.bind(position)
                     is StartDayHolder -> holder.bind(position)
+                    is CompleteHolder -> holder.bind(position)
                     is DeleteHolder -> holder.bind(position)
                 }
             }

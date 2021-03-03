@@ -23,6 +23,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
@@ -61,6 +62,7 @@ class ActivityAddEvent : AppCompatActivity() {
         val endDate = intent.getSerializableExtra("endDate") as Date
 
         val title = intent.getStringExtra("title")
+        val isComplete = intent.getBooleanExtra("isComplete", false)
         isEdit = intent.getBooleanExtra("isEdit", false)
         key = intent.getLongExtra("key", -1)
 
@@ -85,6 +87,8 @@ class ActivityAddEvent : AppCompatActivity() {
                 "종료 날짜"
             )
         )
+
+        list.add(CompleteItem(isComplete))
 
         if (isEdit) {
             list.add(
@@ -192,10 +196,13 @@ class ActivityAddEvent : AppCompatActivity() {
         lateinit var titleItem: EditTextItem
         lateinit var startDayItem: StartDayItem
         lateinit var endDayItem: StartDayItem
+        lateinit var completeItem: CompleteItem
 
         var startDayCount = 0
         for (item in adapter.list) {
             when (item) {
+                is EditTextItem -> titleItem = item
+
                 is StartDayItem -> {
                     if (startDayCount == 0)
                         startDayItem = item
@@ -205,7 +212,7 @@ class ActivityAddEvent : AppCompatActivity() {
                     startDayCount++
                 }
 
-                is EditTextItem -> titleItem = item
+                is CompleteItem -> completeItem = item
             }
         }
 
@@ -221,23 +228,21 @@ class ActivityAddEvent : AppCompatActivity() {
 
         if (startDayItem.date.startOfDay == endDayItem.date.startOfDay) {
             // 하루 이벤트
-            // TODO: - isComplete 설정하는 기능 추가
             val eventOneDay = RealmEventOneDay()
             eventOneDay.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
-                    false
+                    completeItem.isComplete
             )
             eventOneDay.insert()
         } else {
             // 이틀 이상 이벤트
-            // TODO: - isComplete 설정하는 기능 추가
             val eventMultiDay = RealmEventMultiDay()
             eventMultiDay.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
                     endDayItem.date.endOfDay.time,
-                    false
+                    completeItem.isComplete
             )
             eventMultiDay.insert()
         }
