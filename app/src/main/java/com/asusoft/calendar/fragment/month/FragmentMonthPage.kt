@@ -118,7 +118,7 @@ class FragmentMonthPage: Fragment() {
             for (weekItem in monthItem.weekItemList) {
                 for (idx in weekItem.dayViewList.indices) {
                     if (prevClickDayView == weekItem.dayViewList[idx]) {
-                        postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
+                        selectedDayDate(weekItem.weekDate.getNextDay(idx))
                     }
                 }
             }
@@ -287,7 +287,7 @@ class FragmentMonthPage: Fragment() {
         title.text = "${eventList.size}개 이벤트"
 
         val addEventListener = View.OnClickListener {
-            postSelectedDayDate(date, true)
+            selectedDayDate(date, true)
         }
 
         addButton.setOnClickListener(addEventListener)
@@ -430,7 +430,7 @@ class FragmentMonthPage: Fragment() {
         prevClickDayView = dayView
 
         val selectedDate = weekItem.weekDate.getNextDay(idx)
-        postSelectedDayDate(selectedDate)
+        selectedDayDate(selectedDate)
         eventViewDate = selectedDate
 
         val xPoint = dayView.getBoundsLocation()
@@ -442,14 +442,13 @@ class FragmentMonthPage: Fragment() {
         )
     }
 
-    private fun postSelectedDayDate(date: Date, isAdd: Boolean = false) {
-        val event = HashMapEvent(HashMap())
-        event.map[FragmentMonthPage.toString()] = FragmentMonthPage.toString()
-        event.map["date"] = date
+    private fun selectedDayDate(date: Date, isAdd: Boolean = false) {
         if (isAdd) {
-            event.map["add"] = true
+            val intent = Intent(context, ActivityAddEvent::class.java)
+            intent.putExtra("startDate", date)
+            intent.putExtra("endDate", date)
+            startActivity(intent)
         }
-        GlobalBus.getBus().post(event)
 
         if (activity is ActivityStart) {
             (activity as ActivityStart).setDate(date)
