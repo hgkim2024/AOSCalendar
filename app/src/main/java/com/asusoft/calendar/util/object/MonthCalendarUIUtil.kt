@@ -667,6 +667,13 @@ object MonthCalendarUIUtil {
                 weekItem,
                 eventMaxCount,
         )
+
+        for (index in weekItem.dayViewList.indices) {
+            val dayView = weekItem.dayViewList[index]
+            if (dayView.alpha == ALPHA) {
+                dayView.bringToFront()
+            }
+        }
     }
 
     fun setSelectedDay(
