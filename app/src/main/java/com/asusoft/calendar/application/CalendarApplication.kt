@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
+import com.asusoft.calendar.realm.MyRealmMigration
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.google.android.gms.ads.AdRequest
@@ -21,25 +22,14 @@ class CalendarApplication: Application() {
         lateinit var context: Context
 
         fun getRealmConfig(): RealmConfiguration {
-//            return RealmConfiguration.Builder()
-//                    .deleteRealmIfMigrationNeeded()
-//                    .build()
-
             return RealmConfiguration.Builder()
-                    .schemaVersion(1)
-                    .migration { realm, oldVersion, newVersion ->
-
-                        val schema = realm.schema
-
-                        if (oldVersion == 0L) {
-                            val realmEventMultiDay = schema.get("RealmEventMultiDay")
-                            realmEventMultiDay?.addField("isComplete", Boolean.javaClass, null)
-
-                            val realmEventOneDay = schema.get("RealmEventOneDay")
-                            realmEventOneDay?.addField("isComplete", Boolean.javaClass, null)
-                        }
-                    }
+                    .deleteRealmIfMigrationNeeded()
                     .build()
+
+//            return RealmConfiguration.Builder()
+//                    .schemaVersion(1)
+//                    .migration(MyRealmMigration())
+//                    .build()
         }
 
         fun getColor(id: Int): Int {
