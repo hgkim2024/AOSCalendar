@@ -21,8 +21,24 @@ class CalendarApplication: Application() {
         lateinit var context: Context
 
         fun getRealmConfig(): RealmConfiguration {
+//            return RealmConfiguration.Builder()
+//                    .deleteRealmIfMigrationNeeded()
+//                    .build()
+
             return RealmConfiguration.Builder()
-                    .deleteRealmIfMigrationNeeded()
+                    .schemaVersion(1)
+                    .migration { realm, oldVersion, newVersion ->
+
+                        val schema = realm.schema
+
+                        if (oldVersion == 0L) {
+                            val realmEventMultiDay = schema.get("RealmEventMultiDay")
+                            realmEventMultiDay?.addField("isComplete", Boolean.javaClass, null)
+
+                            val realmEventOneDay = schema.get("RealmEventOneDay")
+                            realmEventOneDay?.addField("isComplete", Boolean.javaClass, null)
+                        }
+                    }
                     .build()
         }
 

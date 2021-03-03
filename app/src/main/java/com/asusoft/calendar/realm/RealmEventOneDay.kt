@@ -22,6 +22,8 @@ open class RealmEventOneDay: RealmObject() {
     @Index
     var time: Long = 0
 
+    var isComplete: Boolean = false
+
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventOneDay> {
             val startTime = date.startOfWeek.time

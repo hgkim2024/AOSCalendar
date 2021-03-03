@@ -476,7 +476,8 @@ object MonthCalendarUIUtil {
                             date.time,
                             date.time,
                             0,
-                            true
+                            true,
+                            isComplete = false
                     )
                 }
             }

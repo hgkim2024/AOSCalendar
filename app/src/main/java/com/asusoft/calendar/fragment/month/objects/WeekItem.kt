@@ -31,7 +31,8 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
             startTime: Long,
             endTime: Long,
             order: Int,
-            isHoliday: Boolean = false
+            isHoliday: Boolean = false,
+            isComplete: Boolean = true
     ) {
         val startDay =
                 if (startTime < weekDate.startOfWeek.time)
@@ -54,9 +55,9 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
         val eventView: View = when {
 
             // 하루 이벤트 UI
-            isOneDay && !isHoliday-> {
-                MonthCalendarUIUtil.getEventView(context, name, false)
-            }
+//            isOneDay && !isHoliday-> {
+//                MonthCalendarUIUtil.getEventView(context, name, false)
+//            }
 
             // 이틀 이상 이벤트 UI
             else -> {
@@ -95,21 +96,24 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
         val startDayView = dayViewList[startDay.value]
         val endDayView = dayViewList[endDay.value]
 
-        // TODO: - 분기처리 할 것 - 완료 이미지 추가
-        val iv = ImageView(context)
-        iv.id = View.generateViewId()
-//        iv.scaleType = ImageView.ScaleType.FIT_CENTER
-        iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
-        iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
-        iv.bringToFront()
-        eventView.alpha = 0.3F
+        var imageView: ImageView? = null
 
-        iv.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.dpToPx(EVENT_HEIGHT),
-                CalculatorUtil.dpToPx(EVENT_HEIGHT)
-        )
-        weekLayout.addView(iv)
-        //
+        if (isComplete) {
+            val iv = ImageView(context)
+            iv.id = View.generateViewId()
+            iv.scaleType = ImageView.ScaleType.FIT_CENTER
+            iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
+            iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
+            iv.bringToFront()
+            eventView.alpha = 0.3F
+
+            iv.layoutParams = ConstraintLayout.LayoutParams(
+                    CalculatorUtil.dpToPx(EVENT_HEIGHT),
+                    CalculatorUtil.dpToPx(EVENT_HEIGHT)
+            )
+            weekLayout.addView(iv)
+            imageView = iv
+        }
 
         val set = ConstraintSet()
         set.clone(weekLayout)
@@ -121,11 +125,12 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
         set.connect(eventView.id, ConstraintSet.START, startDayView.id, ConstraintSet.START, leftMargin)
         set.connect(eventView.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
 
-        //  TODO: - 분기처리 할 것 - 완료 이미지 추가
-        set.connect(iv.id, ConstraintSet.TOP, eventView.id, ConstraintSet.TOP)
-        set.connect(iv.id, ConstraintSet.BOTTOM, eventView.id, ConstraintSet.BOTTOM)
-        set.connect(iv.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
-        //
+        if (isComplete
+                && imageView != null) {
+            set.connect(imageView.id, ConstraintSet.TOP, eventView.id, ConstraintSet.TOP)
+            set.connect(imageView.id, ConstraintSet.BOTTOM, eventView.id, ConstraintSet.BOTTOM)
+            set.connect(imageView.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
+        }
 
         set.applyTo(weekLayout)
     }
