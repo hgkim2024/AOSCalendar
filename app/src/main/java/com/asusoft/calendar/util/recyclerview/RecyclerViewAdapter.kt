@@ -6,8 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.enums.AddEventType.*
-import com.asusoft.calendar.realm.copy.CopyEventMultiDay
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
@@ -67,10 +65,10 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                         DeleteHolder(context, view,this)
                     }
 
-                     else -> {
-                         val view = inflater.inflate(R.layout.holder_edit_text, parent, false)
-                         EditTextHolder(context, view,this)
-                     }
+                    else -> {
+                        val view = inflater.inflate(R.layout.holder_edit_text, parent, false)
+                        EditTextHolder(context, view,this)
+                    }
                 }
             }
 

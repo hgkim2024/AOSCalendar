@@ -11,6 +11,7 @@
 
     <color name="background">#FAFAFA</color>
     <color name="separator">#E0E0E0</color>
+    <color name="lightSeparator">#EAEAEA</color>
 
     <color name="font">#424242</color>
     <color name="lightFont">#BDBDBD</color>
