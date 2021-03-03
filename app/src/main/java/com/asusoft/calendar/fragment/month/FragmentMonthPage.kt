@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,22 +30,19 @@ import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
-import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.event.OneDayEventHolder
-import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FragmentMonthPage: Fragment() {
 
@@ -65,6 +61,7 @@ class FragmentMonthPage: Fragment() {
     private lateinit var date: Date
     private var monthItem: MonthItem? = null
     private lateinit var page: View
+    lateinit var eventViewDate: Date
 
     private var prevClickDayView: View? = null
     private var prevDayEventView: ConstraintLayout? = null
@@ -83,6 +80,7 @@ class FragmentMonthPage: Fragment() {
         initFlag = args.getBoolean("initFlag", false)
 
         date = Date(time)
+        eventViewDate = date
 
         GlobalBus.getBus().register(this)
     }
@@ -117,7 +115,7 @@ class FragmentMonthPage: Fragment() {
         val monthItem = monthItem!!
 
         if (prevClickDayView != null) {
-            for (weekItem in monthItem.WeekItemList) {
+            for (weekItem in monthItem.weekItemList) {
                 for (idx in weekItem.dayViewList.indices) {
                     if (prevClickDayView == weekItem.dayViewList[idx]) {
                         postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
@@ -194,7 +192,7 @@ class FragmentMonthPage: Fragment() {
             lateinit var weekItem: WeekItem
             lateinit var dayView: TextView
 
-            for (item in monthItem.WeekItemList) {
+            for (item in monthItem.weekItemList) {
                 val start = item.weekDate.startOfWeek
                 val end = item.weekDate.endOfWeek
 
@@ -235,7 +233,7 @@ class FragmentMonthPage: Fragment() {
 
         val monthItem: MonthItem = monthItem!!
 
-        for (weekItem in monthItem.WeekItemList) {
+        for (weekItem in monthItem.weekItemList) {
             for (idx in weekItem.dayViewList.indices) {
                 val dayView = weekItem.dayViewList[idx]
 
@@ -284,7 +282,7 @@ class FragmentMonthPage: Fragment() {
         monthCalendar.addView(eventLayout)
         prevDayEventView = eventLayout
 
-        val eventList = getEventList(date)
+        val eventList = getDayEventList(date)
 
         title.text = "${eventList.size}개 이벤트"
 
@@ -431,7 +429,9 @@ class FragmentMonthPage: Fragment() {
         dayView.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
         prevClickDayView = dayView
 
-        postSelectedDayDate(weekItem.weekDate.getNextDay(idx))
+        val selectedDate = weekItem.weekDate.getNextDay(idx)
+        postSelectedDayDate(selectedDate)
+        eventViewDate = selectedDate
 
         val xPoint = dayView.getBoundsLocation()
         val yPoint = weekItem.rootLayout.getBoundsLocation()
@@ -440,54 +440,6 @@ class FragmentMonthPage: Fragment() {
                 weekItem.weekDate.getNextDay(idx),
                 Point(xPoint.x, yPoint.y)
         )
-    }
-
-    private fun getEventList(date: Date): ArrayList<Any> {
-        val eventList: ArrayList<Any> = ArrayList<Any>()
-        val oneDayCopyList = RealmEventOneDay.getOneDayCopyList(date)
-        val multiDayCopyList = RealmEventMultiDay.getOneDayCopyList(date)
-        val orderMap = MonthCalendarUIUtil.getEventOrderList(date)
-
-        var order = 0
-
-        val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
-        val holidayMap = orderMap.filter { it.key <= 1231 }
-
-        if (holidayMap.isNotEmpty()) {
-            val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
-            if (holidayMap[dateString.toLong()] != null) {
-                val name = holidayList.first { it.date == dateString }.name
-                eventList.add(name)
-            }
-        }
-
-        while (
-                !(oneDayCopyList.isEmpty()
-                        && multiDayCopyList.isEmpty())
-        ) {
-            for (item in orderMap) {
-                if (order == item.value) {
-                    val dayFilter = oneDayCopyList.filter { it.key == item.key }
-                    if (dayFilter.isNotEmpty()) {
-                        val filterItem = dayFilter.first()
-                        eventList.add(filterItem)
-                        oneDayCopyList.remove(filterItem)
-                        break
-                    }
-
-                    val multiDayFilter = multiDayCopyList.filter { it.key == item.key }
-                    if (multiDayFilter.isNotEmpty()) {
-                        val filterItem = multiDayFilter.first()
-                        eventList.add(filterItem)
-                        multiDayCopyList.remove(filterItem)
-                        break
-                    }
-                }
-            }
-            order++
-        }
-
-        return eventList
     }
 
     private fun postSelectedDayDate(date: Date, isAdd: Boolean = false) {
@@ -507,6 +459,34 @@ class FragmentMonthPage: Fragment() {
     private fun refreshPage() {
         removePage()
         setAsyncPageUI(context!!)
+    }
+
+    fun refreshWeek() {
+        if (monthItem == null) return
+        var weekItem: WeekItem? = null
+        val monthItem = monthItem!!
+        for (item in monthItem.weekItemList) {
+            val startDate = item.weekDate.startOfWeek
+            val endDate = item.weekDate.endOfWeek
+
+            if (eventViewDate in startDate..endDate) {
+                weekItem = item
+                break
+            }
+        }
+
+        if (weekItem == null) return
+
+        val context = context!!
+        MonthCalendarUIUtil.refreshWeek(context, weekItem, date)
+
+        val startDate = weekItem.weekDate.startOfWeek
+        val endDate = weekItem.weekDate.endOfWeek
+        val today = Date().getToday()
+
+        if (today in startDate..endDate) {
+            setTodayView(context)
+        }
     }
 
     private fun removePage() {

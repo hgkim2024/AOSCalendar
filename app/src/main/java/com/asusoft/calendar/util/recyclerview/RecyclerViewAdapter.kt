@@ -40,7 +40,6 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 }
             }
 
-            ONE_DAY_EVENT -> return position
             else -> 0
         }
     }
@@ -76,20 +75,8 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
             }
 
             ONE_DAY_EVENT -> {
-                var isHoliday = false
-                val name =
-                        when (val item = list[viewType]) {
-                            is CopyEventOneDay -> item.name
-                            is CopyEventMultiDay -> item.name
-                            is String -> {
-                                isHoliday = true
-                                item
-                            }
-                            else -> ""
-                        }
-
-                val view = MonthCalendarUIUtil.getEventView(context, name, true, isHoliday)
-                OneDayEventHolder(context, view, this)
+                val view = MonthCalendarUIUtil.getEventView(context)
+                OneDayEventHolder(typeObject, context, view, this)
             }
 
             SELECT_DAY -> {

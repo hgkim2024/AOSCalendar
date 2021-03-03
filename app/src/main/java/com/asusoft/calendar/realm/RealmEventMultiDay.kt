@@ -104,7 +104,8 @@ open class RealmEventMultiDay: RealmObject() {
                                 item.key,
                                 item.name,
                                 item.startTime,
-                                item.endTime
+                                item.endTime,
+                                item.isComplete
                         )
                 )
             }
@@ -128,7 +129,8 @@ open class RealmEventMultiDay: RealmObject() {
     fun update(
         name: String,
         startTime: Long,
-        endTime: Long
+        endTime: Long,
+        isComplete: Boolean
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -146,8 +148,12 @@ open class RealmEventMultiDay: RealmObject() {
             this.endTime = endTime
         }
 
+        this.isComplete = isComplete
+        Logger.d("update isComplete: ${this.isComplete}")
+
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
         realm.commitTransaction()
+        realm.refresh()
     }
 
     fun insert() {

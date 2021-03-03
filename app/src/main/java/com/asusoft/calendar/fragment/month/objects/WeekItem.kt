@@ -14,6 +14,7 @@ import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
 import java.util.*
 
 
@@ -31,8 +32,8 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
             startTime: Long,
             endTime: Long,
             order: Int,
-            isHoliday: Boolean = false,
-            isComplete: Boolean = true
+            isComplete: Boolean = true,
+            isHoliday: Boolean = false
     ) {
         val startDay =
                 if (startTime < weekDate.startOfWeek.time)
@@ -47,42 +48,27 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
                 else
                     WeekOfDayType.fromInt(weekDate.endOfWeek.weekOfDay)
 
-        val isOneDay = startDay == endDay
-
         if (endDay.value < startDay.value) return
 
         // UI 생성
-        val eventView: View = when {
+        val eventView = TextView(context)
 
-            // 하루 이벤트 UI
-//            isOneDay && !isHoliday-> {
-//                MonthCalendarUIUtil.getEventView(context, name, false)
-//            }
+        eventView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
+        eventView.gravity = Gravity.CENTER_VERTICAL
+        eventView.setSingleLine()
+        eventView.text = name
+        eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
 
-            // 이틀 이상 이벤트 UI
-            else -> {
-                val eventView = TextView(context)
-
-                eventView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
-                eventView.gravity = Gravity.CENTER_VERTICAL
-                eventView.setSingleLine()
-                eventView.text = name
-                eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
-
-                if (isHoliday) {
-                    eventView.setBackgroundColor(CalendarApplication.getColor(R.color.holidayBackground))
-                    eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
-                } else {
-                    eventView.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
-                    eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
-                }
-
-                val startPadding = CalculatorUtil.dpToPx(2.0F)
-                eventView.setPadding(startPadding, 0, 0, 0)
-
-                eventView
-            }
+        if (isHoliday) {
+            MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
+            eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+        } else {
+            MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
+            eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
+
+        val startPadding = CalculatorUtil.dpToPx(2.0F)
+        eventView.setPadding(startPadding, 0, 0, 0)
 
         // UI 배치
         eventView.id = View.generateViewId()
@@ -105,7 +91,7 @@ class WeekItem(val weekDate: Date, val rootLayout: ConstraintLayout, val weekLay
             iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
             iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
             iv.bringToFront()
-            eventView.alpha = 0.3F
+            eventView.alpha = COMPLETE_ALPHA
 
             iv.layoutParams = ConstraintLayout.LayoutParams(
                     CalculatorUtil.dpToPx(EVENT_HEIGHT),

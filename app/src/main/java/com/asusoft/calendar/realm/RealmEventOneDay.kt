@@ -72,7 +72,8 @@ open class RealmEventOneDay: RealmObject() {
                         CopyEventOneDay(
                                 item.key,
                                 item.name,
-                                item.time
+                                item.time,
+                                item.isComplete
                         )
                 )
             }
@@ -95,7 +96,8 @@ open class RealmEventOneDay: RealmObject() {
 
     fun update(
         name: String,
-        time: Long
+        time: Long,
+        isComplete: Boolean
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -109,8 +111,12 @@ open class RealmEventOneDay: RealmObject() {
             this.time = time
         }
 
+        this.isComplete = isComplete
+        Logger.d("update isComplete: ${this.isComplete}")
+
 //        Logger.d("RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
         realm.commitTransaction()
+        realm.refresh()
     }
 
     fun insert() {

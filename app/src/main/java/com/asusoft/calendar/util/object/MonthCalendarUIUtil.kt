@@ -2,9 +2,11 @@ package com.asusoft.calendar.util.`object`
 
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,12 +20,13 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.extension.addBottomSeparator
+import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
-import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
 
 object MonthCalendarUIUtil {
     public const val WEEK = 7
@@ -32,6 +35,7 @@ object MonthCalendarUIUtil {
     public const val FONT_SIZE = 12F
     public const val EVENT_HEIGHT = 26.0F
     public const val ALPHA = 0.5F
+    public const val COMPLETE_ALPHA = 0.5F
     public const val SELECT_DAY_HEIGHT = 40.0F
 
     fun setTodayMarker(context: Context, weekItem: WeekItem, dayView: TextView): TextView {
@@ -74,6 +78,54 @@ object MonthCalendarUIUtil {
         return todayView
     }
 
+    fun getDayEventList(date: Date): ArrayList<Any> {
+        val eventList: ArrayList<Any> = ArrayList()
+        val oneDayCopyList = RealmEventOneDay.getOneDayCopyList(date)
+        val multiDayCopyList = RealmEventMultiDay.getOneDayCopyList(date)
+        val orderMap = getEventOrderList(date)
+
+        var order = 0
+
+        val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
+        val holidayMap = orderMap.filter { it.key <= 1231 }
+
+        if (holidayMap.isNotEmpty()) {
+            val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
+            if (holidayMap[dateString.toLong()] != null) {
+                val name = holidayList.first { it.date == dateString }.name
+                eventList.add(name)
+            }
+        }
+
+        while (
+                !(oneDayCopyList.isEmpty()
+                        && multiDayCopyList.isEmpty())
+        ) {
+            for (item in orderMap) {
+                if (order == item.value) {
+                    val dayFilter = oneDayCopyList.filter { it.key == item.key }
+                    if (dayFilter.isNotEmpty()) {
+                        val filterItem = dayFilter.first()
+                        eventList.add(filterItem)
+                        oneDayCopyList.remove(filterItem)
+                        break
+                    }
+
+                    val multiDayFilter = multiDayCopyList.filter { it.key == item.key }
+                    if (multiDayFilter.isNotEmpty()) {
+                        val filterItem = multiDayFilter.first()
+                        eventList.add(filterItem)
+                        multiDayCopyList.remove(filterItem)
+                        break
+                    }
+                }
+            }
+            order++
+        }
+
+        return eventList
+    }
+
     fun getEventOrderList(
             weekDate: Date
     ): HashMap<Long, Int> {
@@ -89,10 +141,10 @@ object MonthCalendarUIUtil {
 
 
     private fun getEventOrderList(
-        weekDate: Date,
-        realmEventMultiDayList: List<RealmEventMultiDay>,
-        realmEventOneDayList: List<RealmEventOneDay>,
-        eventMaxCount: Int = 5
+            weekDate: Date,
+            realmEventMultiDayList: List<RealmEventMultiDay>,
+            realmEventOneDayList: List<RealmEventOneDay>,
+            eventMaxCount: Int = 5
     ): HashMap<Long, Int> {
 
         val startDateString = String.format("%02d", weekDate.startOfWeek.calendarMonth) + String.format("%02d", weekDate.startOfWeek.calendarDay)
@@ -105,7 +157,7 @@ object MonthCalendarUIUtil {
         }
 
         val orderMap = HashMap<Long, Int>()
-        val dayCheckList = java.util.ArrayList<Array<Boolean>>()
+        val dayCheckList = ArrayList<Array<Boolean>>()
         dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
 
         if (holidayList.isNotEmpty()) {
@@ -122,6 +174,51 @@ object MonthCalendarUIUtil {
             }
         }
 
+        orderMultiDay(
+                weekDate,
+                realmEventMultiDayList.filter { !it.isComplete },
+                dayCheckList,
+                orderMap
+        )
+
+        orderOneDay(
+                realmEventOneDayList.filter { !it.isComplete },
+                dayCheckList,
+                orderMap
+        )
+
+        orderMultiDay(
+                weekDate,
+                realmEventMultiDayList.filter { it.isComplete },
+                dayCheckList,
+                orderMap
+        )
+
+        orderOneDay(
+                realmEventOneDayList.filter { it.isComplete },
+                dayCheckList,
+                orderMap
+        )
+
+        if (dayCheckList.size > eventMaxCount) {
+            for (idx in dayCheckList.indices) {
+                for (index in dayCheckList[idx].indices) {
+                    if (dayCheckList[idx][index]) {
+                        orderMap[index.toLong()] = idx + 1
+                    }
+                }
+            }
+        }
+
+        return orderMap
+    }
+
+    private fun orderMultiDay(
+            weekDate: Date,
+            realmEventMultiDayList: List<RealmEventMultiDay>,
+            dayCheckList: ArrayList<Array<Boolean>>,
+            orderMap: HashMap<Long, Int>
+    ) {
         for (eventMultiDay in realmEventMultiDayList) {
             val startOfWeek = if (eventMultiDay.startTime < weekDate.startOfWeek.time) {
                 weekDate.startOfWeek.weekOfDay
@@ -164,7 +261,13 @@ object MonthCalendarUIUtil {
                 index++
             }
         }
+    }
 
+    private fun orderOneDay(
+            realmEventOneDayList: List<RealmEventOneDay>,
+            dayCheckList: ArrayList<Array<Boolean>>,
+            orderMap: HashMap<Long, Int>
+    ) {
         for (eventOneDay in realmEventOneDayList) {
             val weekOfDay = Date(eventOneDay.time).weekOfDay
 
@@ -184,96 +287,76 @@ object MonthCalendarUIUtil {
                 index++
             }
         }
-
-        if (dayCheckList.size > eventMaxCount) {
-            for (idx in dayCheckList.indices) {
-                for (index in dayCheckList[idx].indices) {
-                    if (dayCheckList[idx][index]) {
-                        orderMap[index.toLong()] = idx + 1
-                    }
-                }
-            }
-        }
-
-        return orderMap
     }
 
     fun getEventView(
-            context: Context,
-            name: String,
-            isDialog: Boolean,
-            isHoliday: Boolean = false
+            context: Context
     ): ConstraintLayout {
         val eventLayout = ConstraintLayout(context)
         val edgeView = View(context)
         val textView = TextView(context)
+        val checkBox = CheckBox(context)
 
         eventLayout.id = View.generateViewId()
         edgeView.id = View.generateViewId()
         textView.id = View.generateViewId()
+        checkBox.id = View.generateViewId()
+
+        edgeView.tag = 0
+        textView.tag = 1
+        checkBox.tag = 2
 
         eventLayout.addView(edgeView)
         eventLayout.addView(textView)
+        eventLayout.addView(checkBox)
 
-        if (isDialog) {
+        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                CalculatorUtil.dpToPx(EVENT_HEIGHT)
+        )
 
-            eventLayout.layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    CalculatorUtil.dpToPx(EVENT_HEIGHT)
-            )
+        edgeView.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(4.0F),
+                0
+        )
 
-            edgeView.layoutParams = ConstraintLayout.LayoutParams(
-                    CalculatorUtil.dpToPx(4.0F),
-                    0
-            )
-
-            val startPadding = CalculatorUtil.dpToPx(3.0F)
-            textView.setPadding(startPadding, 0, startPadding, 0)
-            textView.textSize = MonthCalendarUIUtil.FONT_SIZE + 2
-            textView.setSingleLine()
-            textView.ellipsize = TextUtils.TruncateAt.END
-        } else {
-
-            edgeView.layoutParams = ConstraintLayout.LayoutParams(
-                    CalculatorUtil.dpToPx(2.7F),
-                    0
-            )
-
-            val startPadding = CalculatorUtil.dpToPx(1.0F)
-            textView.setPadding(startPadding, 0, 0, 0)
-            textView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
-            textView.setSingleLine()
-            textView.ellipsize = TextUtils.TruncateAt.MARQUEE
-        }
+        val startPadding = CalculatorUtil.dpToPx(3.0F)
+        textView.setPadding(startPadding, 0, startPadding, 0)
+        textView.textSize = MonthCalendarUIUtil.FONT_SIZE + 2
+        textView.setSingleLine()
+        textView.ellipsize = TextUtils.TruncateAt.END
 
         textView.layoutParams = ConstraintLayout.LayoutParams(
                 0,
                 ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 
-        if (isHoliday) {
-            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
-        } else {
-            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
-        }
-
         textView.setTextColor(CalendarApplication.getColor(R.color.font))
         textView.gravity = Gravity.CENTER_VERTICAL
         textView.maxLines = 1
-        textView.text = name
+
+        checkBox.buttonTintList = CalendarApplication.getColorList(R.color.colorAccent)
+        checkBox.alpha = 0.7F
+
+        checkBox.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(35.0F),
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+        )
 
         val set = ConstraintSet()
         set.clone(eventLayout)
 
-        val topMargin = CalculatorUtil.dpToPx(if (isDialog) 2.0F else 0.0F)
-        val startMargin = CalculatorUtil.dpToPx(if (isDialog) 7.0F else 0.0F)
+        val topMargin = CalculatorUtil.dpToPx(2.0F)
+        val startMargin = CalculatorUtil.dpToPx(7.0F)
 
         set.connect(edgeView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(edgeView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, topMargin)
         set.connect(edgeView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
 
         set.connect(textView.id, ConstraintSet.START, edgeView.id, ConstraintSet.END)
-        set.connect(textView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        set.connect(textView.id, ConstraintSet.END, checkBox.id, ConstraintSet.START)
+
+        set.connect(checkBox.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
 
         set.applyTo(eventLayout)
 
@@ -304,8 +387,8 @@ object MonthCalendarUIUtil {
         )
 
         weekLayout.layoutParams = ConstraintLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
         )
 
         for(idx in 0 until WEEK) {
@@ -321,13 +404,13 @@ object MonthCalendarUIUtil {
             if (isPopup) {
                 tv.gravity = Gravity.CENTER
             } else {
-                val padding = CalculatorUtil.dpToPx( 8.0F)
+                val padding = CalculatorUtil.dpToPx(8.0F)
                 tv.setPadding(padding, padding, 0, 0)
             }
 
             tv.layoutParams = ConstraintLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT
+                    0,
+                    LinearLayout.LayoutParams.MATCH_PARENT
             )
 
             val set = ConstraintSet()
@@ -431,9 +514,9 @@ object MonthCalendarUIUtil {
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                WEIGHT_SUM / row
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    WEIGHT_SUM / row
             )
 
             val padding = CalculatorUtil.dpToPx(8.0F)
@@ -476,8 +559,8 @@ object MonthCalendarUIUtil {
                             date.time,
                             date.time,
                             0,
-                            true,
-                            isComplete = false
+                            isComplete = false,
+                            isHoliday = true
                     )
                 }
             }
@@ -493,7 +576,9 @@ object MonthCalendarUIUtil {
                         multiDay.name,
                         multiDay.startTime,
                         multiDay.endTime,
-                        order
+                        order,
+                        isComplete = multiDay.isComplete,
+                        isHoliday = false
                 )
             }
         }
@@ -508,7 +593,9 @@ object MonthCalendarUIUtil {
                         oneDay.name,
                         oneDay.time,
                         oneDay.time,
-                        order
+                        order,
+                        isComplete = oneDay.isComplete,
+                        isHoliday = false
                 )
             }
         }
@@ -542,6 +629,44 @@ object MonthCalendarUIUtil {
             }
         }
 
+    }
+
+    fun refreshWeek(
+            context: Context,
+            weekItem: WeekItem,
+            startOfMonthDate: Date
+    ) {
+        val removeViewList = ArrayList<View>()
+
+        for (idx in 0 until weekItem.weekLayout.childCount) {
+            val v = weekItem.weekLayout.getChildAt(idx)
+
+            var addFlag = true
+            for (dayView in weekItem.dayViewList) {
+                if (v == dayView) {
+                    addFlag = false
+                    break
+                }
+            }
+
+            if (addFlag) {
+                removeViewList.add(v)
+            }
+        }
+
+        for (v in removeViewList) {
+            v.removeFromSuperView()
+        }
+
+        val row = getMonthRow(startOfMonthDate)
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
+        val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
+
+        addEvent(
+                context,
+                weekItem,
+                eventMaxCount,
+        )
     }
 
     fun setSelectedDay(
@@ -607,7 +732,7 @@ object MonthCalendarUIUtil {
                         if (dayView.alpha != ALPHA) {
                             val date = startDate.getNextDay(i)
                             if (selectedStartDate < date && date < selectedEndDate) {
-                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.today))
+                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.selectDay))
                             } else if (selectedStartDate == date && selectedEndDate != date) {
                                 dayView.setBackgroundResource(R.drawable.corner_radius_left)
                             } else if (selectedEndDate == date && selectedStartDate != date) {
@@ -623,16 +748,16 @@ object MonthCalendarUIUtil {
     }
 
     fun getWeekHeader(
-        context: Context,
-        isPopup: Boolean = false
+            context: Context,
+            isPopup: Boolean = false
     ): View {
         val weekHeaderLayout = LinearLayout(context)
         weekHeaderLayout.weightSum = WEIGHT_SUM
         weekHeaderLayout.orientation = LinearLayout.HORIZONTAL
 
         weekHeaderLayout.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
         )
 
         val days = WeekOfDayType.values()
@@ -642,9 +767,9 @@ object MonthCalendarUIUtil {
             weekHeaderLayout.addView(tv)
 
             tv.layoutParams = LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                WEIGHT_SUM / WEEK
+                    0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    WEIGHT_SUM / WEEK
             )
 
             if (isPopup) {
@@ -675,5 +800,15 @@ object MonthCalendarUIUtil {
         }
 
         return row
+    }
+
+    fun setCornerRadiusDrawable(v: View, backgroundColor: Int) {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        val r = CalculatorUtil.dpToPx(2.0F).toFloat()
+        shape.cornerRadii = floatArrayOf(r, r, r, r, r, r, r, r)
+        shape.setColor(backgroundColor)
+//        shape.setStroke(3, borderColor)
+        v.background = shape
     }
 }

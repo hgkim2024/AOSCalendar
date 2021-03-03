@@ -221,19 +221,23 @@ class ActivityAddEvent : AppCompatActivity() {
 
         if (startDayItem.date.startOfDay == endDayItem.date.startOfDay) {
             // 하루 이벤트
+            // TODO: - isComplete 설정하는 기능 추가
             val eventOneDay = RealmEventOneDay()
             eventOneDay.update(
                     titleItem.context,
-                    startDayItem.date.startOfDay.time
+                    startDayItem.date.startOfDay.time,
+                    false
             )
             eventOneDay.insert()
         } else {
             // 이틀 이상 이벤트
+            // TODO: - isComplete 설정하는 기능 추가
             val eventMultiDay = RealmEventMultiDay()
             eventMultiDay.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
-                    endDayItem.date.endOfDay.time
+                    endDayItem.date.endOfDay.time,
+                    false
             )
             eventMultiDay.insert()
         }

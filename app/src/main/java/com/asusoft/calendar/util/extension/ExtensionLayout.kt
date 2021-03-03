@@ -20,6 +20,9 @@ fun View.getBoundsLocation(): Point {
 }
 
 fun View.removeFromSuperView() {
+    // 이미 삭제된 경우 return
+    if (parent !is ViewGroup) return
+
     val viewGroup = parent as ViewGroup
     if (viewGroup.childCount > 0) {
         viewGroup.removeView(this)

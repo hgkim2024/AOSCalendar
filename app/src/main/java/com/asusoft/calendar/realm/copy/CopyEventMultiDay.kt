@@ -1,11 +1,26 @@
 package com.asusoft.calendar.realm.copy
 
+import com.asusoft.calendar.realm.RealmEventMultiDay
+import com.asusoft.calendar.realm.RealmEventOneDay
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 
-data class CopyEventMultiDay(
+class CopyEventMultiDay(
         val key: Long,
         var name: String,
         var startTime: Long,
-        var endTime: Long
-)
+        var endTime: Long,
+        var isComplete: Boolean = false
+) {
+
+    fun updateIsCompete(isComplete: Boolean) {
+        this.isComplete = isComplete
+        val item = RealmEventMultiDay.select(key)
+        item?.update(
+                name,
+                startTime,
+                endTime,
+                isComplete
+        )
+    }
+}

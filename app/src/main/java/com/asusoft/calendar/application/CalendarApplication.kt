@@ -2,6 +2,7 @@ package com.asusoft.calendar.application
 
 import android.app.Application
 import android.content.Context
+import android.content.res.ColorStateList
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
 import com.asusoft.calendar.realm.MyRealmMigration
@@ -34,6 +35,10 @@ class CalendarApplication: Application() {
 
         fun getColor(id: Int): Int {
             return ContextCompat.getColor(context, id)
+        }
+
+        fun getColorList(id: Int): ColorStateList? {
+            return ContextCompat.getColorStateList(context, id)
         }
     }
 

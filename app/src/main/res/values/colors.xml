@@ -17,4 +17,5 @@
     <color name="invertFont">#FAFAFA</color>
 
     <color name="today">#00b07b</color>
+    <color name="selectDay">#33d993</color>
 </resources>
