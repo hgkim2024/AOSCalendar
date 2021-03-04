@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
@@ -156,7 +157,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         })
 
         val bottomLayout = view.findViewById<ConstraintLayout>(R.id.button_layout)
-        bottomLayout.addTopSeparator(0.0F)
+        bottomLayout.addTopSeparator(0.0F, CalendarApplication.getColor(R.color.colorAccent), 1.0F)
 
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
         val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)

@@ -1,5 +1,6 @@
 package com.asusoft.calendar.util.extension
 
+import android.graphics.Color
 import android.graphics.Point
 import android.view.View
 import android.view.ViewGroup
@@ -29,14 +30,19 @@ fun View.removeFromSuperView() {
     }
 }
 
-fun ConstraintLayout.addBottomSeparator(margin: Float) {
-    val height = CalculatorUtil.dpToPx(0.7F)
+fun ConstraintLayout.addBottomSeparator(margin: Float, color: Int? = null, height: Float = 0.7F) {
+    val height = CalculatorUtil.dpToPx(height)
     val margin = CalculatorUtil.dpToPx(margin)
 
     val separator = View(context)
-    separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
-    separator.id = View.generateViewId()
 
+    if(color == null) {
+        separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+    } else {
+        separator.setBackgroundColor(color)
+    }
+
+    separator.id = View.generateViewId()
     separator.layoutParams = ConstraintLayout.LayoutParams(
             0,
             height
@@ -54,12 +60,18 @@ fun ConstraintLayout.addBottomSeparator(margin: Float) {
     set.applyTo(this)
 }
 
-fun ConstraintLayout.addTopSeparator(margin: Float) {
-    val height = CalculatorUtil.dpToPx(0.7F)
+fun ConstraintLayout.addTopSeparator(margin: Float, color: Int? = null, height: Float = 0.7F) {
+    val height = CalculatorUtil.dpToPx(height)
     val margin = CalculatorUtil.dpToPx(margin)
 
     val separator = View(context)
-    separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+
+    if(color == null) {
+        separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+    } else {
+        separator.setBackgroundColor(color)
+    }
+
     separator.id = View.generateViewId()
 
     separator.layoutParams = ConstraintLayout.LayoutParams(

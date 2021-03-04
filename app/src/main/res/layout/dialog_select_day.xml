@@ -47,7 +47,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_layout"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -57,10 +57,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.2"
+            app:layout_constraintWidth_percent="0.5"
             android:gravity="center"
             android:layout_marginTop="2dp"
-            android:textColor="@color/colorAccent"
+            android:background="@color/colorAccent"
+            android:textColor="@color/background"
             android:textStyle="bold"
             android:text="@string/ok"/>
 
@@ -69,10 +70,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toStartOf="@+id/confirm_button"
-            app:layout_constraintWidth_percent="0.2"
+            app:layout_constraintWidth_percent="0.5"
             android:gravity="center"
             android:layout_marginTop="2dp"
-            android:textColor="@color/font"
+            android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:text="@string/cancel"/>
 
