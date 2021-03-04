@@ -2,7 +2,6 @@ package com.asusoft.calendar.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
-import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
@@ -11,24 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
-import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.eventbus.GlobalBus
-import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.appbar.AppBarLayout
-import com.orhanobut.logger.Logger
 import java.util.*
 
 
 class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
     private var date = Date().getToday()
-
-    companion object {
-        fun toStringActivity(): String {
-            return "ActivityStart"
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +38,8 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 //        Logger.d("toolbar height: ${toolbar.height}")
         
         toolbar.setOnClickListener {
-            showDatePickerDialog()
+            DialogFragmentSelectYearMonth.newInstance(date)
+                    .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
         }
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);
@@ -82,31 +73,5 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     fun setTitle(text: String) {
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.text = text
-    }
-
-    private fun showDatePickerDialog() {
-
-        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
-            date = date.stringToDate(dateString)
-
-            val event = HashMapEvent(HashMap())
-            event.map[toStringActivity()] = toStringActivity()
-            event.map["date"] = date
-            GlobalBus.getBus().post(event)
-
-//            Logger.d("change date: ${date.toStringDay()}")
-        }
-
-        val datePickerDialog = DatePickerDialog(
-                this,
-                dateSetListener,
-                date.calendarYear,
-                date.calendarMonth - 1,
-                date.calendarDay
-        )
-
-        datePickerDialog.setCancelable(true)
-        datePickerDialog.show()
     }
 }

@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -76,7 +77,9 @@ class FragmentMonthViewPager: Fragment() {
 
         todayLayout.setOnClickListener {
             isScroll = false
-            movePage(Date().getToday())
+            val moveDate = Date().getToday()
+            movePage(moveDate)
+            (activity as? ActivityStart)?.setDate(moveDate)
             todayLayout.visibility = View.INVISIBLE
         }
 
@@ -142,8 +145,8 @@ class FragmentMonthViewPager: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val activityStart = event.map.getOrDefault(ActivityStart.toStringActivity(), null)
-        if (activityStart != null) {
+        val dialogFragmentSelectYearMonth = event.map.getOrDefault(DialogFragmentSelectYearMonth.toString(), null)
+        if (dialogFragmentSelectYearMonth != null) {
             val date = event.map["date"] as Date
             movePage(date)
         }
@@ -189,7 +192,6 @@ class FragmentMonthViewPager: Fragment() {
         }
 
         isVisibleTodayView(date)
-        // TODO: - 날짜 post 날리기 - 받아서 날짜 클릭 한 것과 동일하게 나타나게 만들 것
     }
 
     private fun isVisibleTodayView(date: Date) {

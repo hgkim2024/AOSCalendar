@@ -124,7 +124,7 @@ class ActivityAddEvent : AppCompatActivity() {
                                                     selectDayList[0].date,
                                                     selectDayList[1].date.startOfDay
                                             )
-                                            .show(supportFragmentManager, "DialogFragmentDaySelectCalendar")
+                                            .show(supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
                                 }
                             }
 

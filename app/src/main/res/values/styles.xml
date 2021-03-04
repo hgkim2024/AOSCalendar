@@ -31,6 +31,10 @@
         <item name="android:tint">@color/background</item>
     </style>
 
+    <style name="AppTheme.NumberPicker" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorAccent</item>
+    </style>
+
 <!--    <style name="LightTheme" parent="AppTheme">-->
 <!--        <item name="textColor">#000000</item>-->
 <!--        <item name="metaTextColor">#606060</item>-->

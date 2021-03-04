@@ -156,9 +156,6 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
             }
         })
 
-        val bottomLayout = view.findViewById<ConstraintLayout>(R.id.button_layout)
-        bottomLayout.addTopSeparator(0.0F, CalendarApplication.getColor(R.color.colorAccent), 1.0F)
-
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
         val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
 
