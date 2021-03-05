@@ -17,9 +17,11 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.fragment.month.FragmentMonthPage.Companion.ANIMATION_DURATION
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
 import com.asusoft.calendar.util.toStringDay
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -41,6 +43,7 @@ class DayCalendarHeaderHolder(
 
         title.text = item.date.toStringDay()
 
+        item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
         val list = getDayCalendarItemList(item.itemList, item.date)
         adapter = RecyclerViewAdapter(this, list)
 
@@ -50,22 +53,31 @@ class DayCalendarHeaderHolder(
 
 //        Logger.d("list: ${list.size}")
 
-        headerLayout.setOnClickListener {
-            val size = adapter.list.size
+        if (item.isExpand) {
+            upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+        } else {
+            adapter.list.clear()
+            upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+        }
 
-            if (size > 0) {
+        headerLayout.setOnClickListener {
+            if (item.isExpand) {
+//                logItemList(adapter.list)
                 collapseAnimation(recyclerView)
                 adapter.list.clear()
                 adapter.notifyDataSetChanged()
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             } else {
+                item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
                 val list = getDayCalendarItemList(item.itemList, item.date)
-
+//                logItemList(list)
                 adapter.list = list
                 adapter.notifyDataSetChanged()
                 expandAnimation(recyclerView)
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
+
+            item.isExpand = !item.isExpand
         }
     }
 
@@ -165,5 +177,20 @@ class DayCalendarHeaderHolder(
         })
 
         anim.start()
+    }
+
+    private fun logItemList(list: ArrayList<Any>) {
+        for (idx in list.indices) {
+
+            when(val item = list[idx]) {
+                is DayCalendarBodyItem -> {
+                    when (val event = item.event) {
+                        is CopyEventOneDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                        is CopyEventMultiDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                    }
+                }
+            }
+
+        }
     }
 }

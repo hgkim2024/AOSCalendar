@@ -5,9 +5,10 @@ import android.text.TextWatcher
 import android.widget.EditText
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.util.extension.ExtendedEditText
 import java.util.*
 
-class DayCalendarBodyItem(var date: Date, var event: Any, var editText: EditText? = null) {
+class DayCalendarBodyItem(var date: Date, var event: Any, var editText: ExtendedEditText? = null) {
     val textWatcher: TextWatcher
 
     init {

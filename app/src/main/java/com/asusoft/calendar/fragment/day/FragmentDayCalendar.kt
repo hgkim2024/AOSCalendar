@@ -15,6 +15,7 @@ import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderItem
 import com.asusoft.calendar.util.recyclerview.snap.StartSnapHelper
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FragmentDayCalendar: Fragment() {
 
@@ -40,9 +41,7 @@ class FragmentDayCalendar: Fragment() {
 
         for (index in 0 until DEFAULT_DAY_COUNT) {
             val date = today.getNextDay(index)
-            val itemList = MonthCalendarUIUtil.getDayEventList(date, false)
-
-            val item = DayCalendarHeaderItem(date, itemList)
+            val item = DayCalendarHeaderItem(date, ArrayList())
             list.add(item)
         }
 
@@ -92,11 +91,9 @@ class FragmentDayCalendar: Fragment() {
             val weight = if (isUp) -(index) else index + 1
 
             val date = dayItem.date.getNextDay(weight)
-            val itemList = MonthCalendarUIUtil.getDayEventList(date, false)
-
 //            Logger.d("date: ${date.toStringDay()}")
 
-            val item = DayCalendarHeaderItem(date, itemList)
+            val item = DayCalendarHeaderItem(date, ArrayList())
             list.add(item)
         }
 

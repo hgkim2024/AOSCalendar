@@ -125,6 +125,15 @@ open class RealmEventMultiDay: RealmObject() {
         }
     }
 
+    fun getCopy(): CopyEventMultiDay {
+        return CopyEventMultiDay(
+                key,
+                name,
+                startTime,
+                endTime,
+                isComplete
+        )
+    }
 
     fun update(
         name: String,
@@ -161,6 +170,7 @@ open class RealmEventMultiDay: RealmObject() {
         realm.beginTransaction()
         realm.insertOrUpdate(this)
         realm.commitTransaction()
+        realm.refresh()
     }
 
     fun delete() {
@@ -168,5 +178,6 @@ open class RealmEventMultiDay: RealmObject() {
         realm.beginTransaction()
         this.deleteFromRealm()
         realm.commitTransaction()
+        realm.refresh()
     }
 }

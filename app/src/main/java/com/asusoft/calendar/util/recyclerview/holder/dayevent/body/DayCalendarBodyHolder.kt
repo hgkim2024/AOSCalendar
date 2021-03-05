@@ -13,7 +13,9 @@ import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.extension.ExtendedEditText
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -42,8 +44,7 @@ class DayCalendarBodyHolder (
         }
 
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
-        val editText = view.findViewById<EditText>(R.id.tv_edit)
-        item.editText = editText
+        val editText = view.findViewById<ExtendedEditText>(R.id.tv_edit)
 
         if (isComplete) {
             editText.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -66,16 +67,7 @@ class DayCalendarBodyHolder (
             val itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
             val list = getDayCalendarItemList(itemList, item.date)
 
-            for (i in adapter.list) {
-                if (i is DayCalendarBodyItem) {
-                    for (j in adapter.list) {
-                        if (j is DayCalendarBodyItem) {
-                            i.editText?.removeTextChangedListener(j.textWatcher)
-                        }
-                    }
-                }
-            }
-
+//            logItemList(list)
             adapter.list = list
 
             // TODO: - post 날리기 - 좀 더 생각해보고 결정
@@ -85,13 +77,8 @@ class DayCalendarBodyHolder (
             }
         }
 
+        editText.clearTextChangedListeners()
         editText.setText(name)
-        for (item in adapter.list) {
-            if (item is DayCalendarBodyItem) {
-                editText.removeTextChangedListener(item.textWatcher)
-            }
-        }
-
         editText.addTextChangedListener(item.textWatcher)
     }
 
@@ -132,5 +119,20 @@ class DayCalendarBodyHolder (
         addEventItem(list, date)
 
         return  list
+    }
+
+    private fun logItemList(list: ArrayList<Any>) {
+        for (idx in list.indices) {
+
+            when(val item = list[idx]) {
+                is DayCalendarBodyItem -> {
+                    when (val event = item.event) {
+                        is CopyEventOneDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                        is CopyEventMultiDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                    }
+                }
+            }
+
+        }
     }
 }

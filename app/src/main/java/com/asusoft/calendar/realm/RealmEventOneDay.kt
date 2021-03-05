@@ -93,6 +93,14 @@ open class RealmEventOneDay: RealmObject() {
         }
     }
 
+    fun getCopy(): CopyEventOneDay {
+        return CopyEventOneDay(
+                key,
+                name,
+                time,
+                isComplete
+        )
+    }
 
     fun update(
         name: String,
@@ -124,6 +132,7 @@ open class RealmEventOneDay: RealmObject() {
         realm.beginTransaction()
         realm.insertOrUpdate(this)
         realm.commitTransaction()
+        realm.refresh()
     }
 
     fun delete() {
@@ -131,5 +140,6 @@ open class RealmEventOneDay: RealmObject() {
         realm.beginTransaction()
         this.deleteFromRealm()
         realm.commitTransaction()
+        realm.refresh()
     }
 }
