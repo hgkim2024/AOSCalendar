@@ -28,7 +28,7 @@
             android:textColor="@color/lightFont"
             android:textSize="20sp"
             android:text="  2021년 2월  "
-            android:background="@color/background"
+            android:background="@color/invertFont"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

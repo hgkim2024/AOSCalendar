@@ -112,7 +112,7 @@ open class RealmEventOneDay: RealmObject() {
         }
 
         this.isComplete = isComplete
-        Logger.d("update isComplete: ${this.isComplete}")
+//        Logger.d("update isComplete: ${this.isComplete}")
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
         realm.commitTransaction()

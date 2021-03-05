@@ -78,7 +78,7 @@ object MonthCalendarUIUtil {
         return todayView
     }
 
-    fun getDayEventList(date: Date): ArrayList<Any> {
+    fun getDayEventList(date: Date, isHoliday: Boolean = true): ArrayList<Any> {
         val eventList: ArrayList<Any> = ArrayList()
         val oneDayCopyList = RealmEventOneDay.getOneDayCopyList(date)
         val multiDayCopyList = RealmEventMultiDay.getOneDayCopyList(date)
@@ -86,14 +86,16 @@ object MonthCalendarUIUtil {
 
         var order = 0
 
-        val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
-        val holidayMap = orderMap.filter { it.key <= 1231 }
+        if (isHoliday) {
+            val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
+            val holidayMap = orderMap.filter { it.key <= 1231 }
 
-        if (holidayMap.isNotEmpty()) {
-            val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
-            if (holidayMap[dateString.toLong()] != null) {
-                val name = holidayList.first { it.date == dateString }.name
-                eventList.add(name)
+            if (holidayMap.isNotEmpty()) {
+                val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
+                if (holidayMap[dateString.toLong()] != null) {
+                    val name = holidayList.first { it.date == dateString }.name
+                    eventList.add(name)
+                }
             }
         }
 

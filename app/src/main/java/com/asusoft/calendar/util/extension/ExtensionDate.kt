@@ -267,7 +267,7 @@ fun Date.getToday(): Date {
 
 /*
 *
-* Date 를 0000년 00월 00일 String 으로 변환
+* Date 를 0000년 00월 00일 (요일) String 으로 변환
 */
 fun Date.toStringDay(): String {
     val sdf = SimpleDateFormat("yyyy년 MM월 dd일")

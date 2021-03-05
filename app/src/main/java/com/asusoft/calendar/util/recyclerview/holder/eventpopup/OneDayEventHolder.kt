@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.recyclerview.holder.addeventholder.event
+package com.asusoft.calendar.util.recyclerview.holder.eventpopup
 
 import android.content.Context
 import android.graphics.Paint

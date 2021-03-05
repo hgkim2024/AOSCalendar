@@ -5,23 +5,33 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.enums.AddEventType.*
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
+import com.asusoft.calendar.util.recyclerview.RecyclerViewType.ADD_EVENT
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.event.OneDayEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarAddEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyHolder
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderHolder
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType.*
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
+import java.util.*
 import kotlin.collections.ArrayList
 
-class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecyclerViewAdapter(
+        private val typeObject: Any,
+        var list: ArrayList<Any>
+        ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val type = RecyclerViewType.getType(typeObject)
 
@@ -38,6 +48,13 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                     is CompleteItem -> COMPLETE.value
                     is DeleteItem -> DELETE.value
                     else -> 0
+                }
+            }
+
+            DAY_CALENDAR_BODY -> {
+                return when(list[position]) {
+                    is Date -> DayCalendarType.ADD_EVENT.value
+                    else -> CHECK_BOX.value
                 }
             }
 
@@ -89,6 +106,25 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
                 val view = inflater.inflate(R.layout.holder_select_day, parent, false)
                 SelectDayHolder(typeObject, context, view, this)
             }
+
+            DAY_CALENDAR_HEADER -> {
+                val view = inflater.inflate(R.layout.holder_day_event_header, parent, false)
+                DayCalendarHeaderHolder(context, view, this)
+            }
+
+            DAY_CALENDAR_BODY -> {
+                return when(viewType) {
+                    DayCalendarType.ADD_EVENT.value -> {
+                        val view = inflater.inflate(R.layout.holder_add_event, parent, false)
+                        DayCalendarAddEventHolder(context, view, this)
+                    }
+
+                    else -> {
+                        val view = inflater.inflate(R.layout.holder_day_event, parent, false)
+                        DayCalendarBodyHolder(context, view, this)
+                    }
+                }
+            }
         }
     }
 
@@ -105,6 +141,13 @@ class RecyclerViewAdapter(private val typeObject: Any, var list: ArrayList<Any>)
 
             ONE_DAY_EVENT -> (holder as OneDayEventHolder).bind(position)
             SELECT_DAY -> (holder as SelectDayHolder).bind(position)
+            DAY_CALENDAR_HEADER -> (holder as DayCalendarHeaderHolder).bind(position)
+            DAY_CALENDAR_BODY -> {
+                when(holder) {
+                    is DayCalendarAddEventHolder -> holder.bind(position)
+                    is DayCalendarBodyHolder -> holder.bind(position)
+                }
+            }
         }
     }
 

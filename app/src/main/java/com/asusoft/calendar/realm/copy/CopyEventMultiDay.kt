@@ -23,4 +23,15 @@ class CopyEventMultiDay(
                 isComplete
         )
     }
+
+    fun updateName(name: String) {
+        this.name = name
+        val item = RealmEventMultiDay.select(key)
+        item?.update(
+                name,
+                startTime,
+                endTime,
+                isComplete
+        )
+    }
 }

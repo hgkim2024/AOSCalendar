@@ -18,4 +18,14 @@ class CopyEventOneDay(
                 isComplete
         )
     }
+
+    fun updateName(name: String) {
+        this.name = name
+        val item = RealmEventOneDay.select(key)
+        item?.update(
+                name,
+                time,
+                isComplete
+        )
+    }
 }

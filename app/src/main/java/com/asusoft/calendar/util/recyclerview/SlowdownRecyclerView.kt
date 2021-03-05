@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.Interpolator
 import androidx.recyclerview.widget.RecyclerView
-import com.asusoft.calendar.util.recyclerview.SlowdownRecyclerView
 import kotlin.math.abs
 import kotlin.math.pow
 

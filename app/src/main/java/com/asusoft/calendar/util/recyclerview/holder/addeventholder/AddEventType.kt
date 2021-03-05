@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.enums
+package com.asusoft.calendar.util.recyclerview.holder.addeventholder
 
 enum class AddEventType(val value: Int) {
 

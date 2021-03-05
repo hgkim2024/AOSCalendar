@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.*
 import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
+import com.asusoft.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.util.*
 import com.google.android.material.appbar.AppBarLayout
@@ -23,14 +24,6 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: - 실제 기기에서 적용되는지 테스트해보기 - 안드로이드 10 기기가 없음
-//        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-//            setTheme(R.style.DarkTheme);
-//        } else {
-//            setTheme(R.style.LightTheme);
-//        }
-
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -41,6 +34,7 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
             DialogFragmentSelectYearMonth.newInstance(date)
                     .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
         }
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false);
         supportFragmentManager.addOnBackStackChangedListener(this)
@@ -51,10 +45,12 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
         stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(appBarLayout, "elevation", 0f))
         appBarLayout.stateListAnimator = stateListAnimator
 
-        if (savedInstanceState == null)
-            supportFragmentManager.beginTransaction().add(R.id.fragment, FragmentMonthViewPager.newInstance(), "FragmentMonthViewPager").commit()
-        else
+        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction().add(R.id.fragment, FragmentMonthViewPager.newInstance(), "FragmentMonthViewPager").commit()
+            supportFragmentManager.beginTransaction().add(R.id.fragment, FragmentDayCalendar.newInstance(), "FragmentMonthViewPager").commit()
+        } else {
             onBackStackChanged()
+        }
     }
 
     override fun onBackStackChanged() {
