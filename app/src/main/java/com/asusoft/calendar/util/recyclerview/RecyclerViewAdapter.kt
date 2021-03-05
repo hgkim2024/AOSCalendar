@@ -165,8 +165,6 @@ class RecyclerViewAdapter(
     }
 
     override fun onItemDismiss(position: Int) {
-        // TODO: - 삭제 시 realm 에서 삭제되도록 수정, when 문으로 거르기
-
         when(type) {
             DAY_CALENDAR_BODY -> {
                 when(list[position]) {

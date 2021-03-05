@@ -113,8 +113,8 @@ class SwipeBackgroundHelper {
             val backgroundRectangle = getBackGroundRectangle(viewItem, dX)
             val circleRadius = (abs(dX / viewItem.width) - threshold) * viewItem.width * CIRCLE_ACCELERATION
 
-            Logger.d("width: ${abs(dX / viewItem.width)}")
-            Logger.d("circleRadius: ${circleRadius}")
+//            Logger.d("width: ${abs(dX / viewItem.width)}")
+//            Logger.d("circleRadius: $circleRadius")
 
             canvas.clipRect(backgroundRectangle)
             canvas.drawColor(backgroundPaint.color)

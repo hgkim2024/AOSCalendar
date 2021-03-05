@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfDay
+import com.orhanobut.logger.Logger
 import java.util.*
 
 class DayCalendarAddEventHolder (
@@ -28,8 +29,17 @@ class DayCalendarAddEventHolder (
 
             val copyItem = item.getCopy()
 
-            adapter.list.add(position, DayCalendarBodyItem(date, copyItem))
-            adapter.notifyItemInserted(position)
+            var addEventIndex = 0
+            for (item in adapter.list) {
+                if (item is Date) {
+                    break
+                }
+                addEventIndex++
+            }
+
+//            Logger.d("addEventIndex: $addEventIndex")
+            adapter.list.add(addEventIndex, DayCalendarBodyItem(date, copyItem))
+            adapter.notifyItemInserted(addEventIndex)
         }
     }
 }
