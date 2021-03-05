@@ -8,7 +8,7 @@ import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.extension.ExtendedEditText
 import java.util.*
 
-class DayCalendarBodyItem(var date: Date, var event: Any, var editText: ExtendedEditText? = null) {
+class DayCalendarBodyItem(var date: Date, var event: Any) {
     val textWatcher: TextWatcher
 
     init {

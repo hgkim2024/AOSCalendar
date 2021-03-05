@@ -14,7 +14,6 @@ class DayCalendarAddEventHolder (
         private val adapter: RecyclerViewAdapter
 ) : RecyclerView.ViewHolder(view) {
 
-    // TODO: - 삭제 로직도 만들 것
     fun bind(position: Int) {
         val date = adapter.list[position] as Date
 

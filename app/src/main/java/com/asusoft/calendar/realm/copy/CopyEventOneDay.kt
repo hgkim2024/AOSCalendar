@@ -28,4 +28,9 @@ class CopyEventOneDay(
                 isComplete
         )
     }
+
+    fun delete() {
+        val item = RealmEventOneDay.select(key)
+        item?.delete()
+    }
 }

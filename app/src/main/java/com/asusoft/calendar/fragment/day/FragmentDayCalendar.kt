@@ -8,12 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.getToday
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderItem
-import com.asusoft.calendar.util.recyclerview.snap.StartSnapHelper
+import com.asusoft.calendar.util.recyclerview.helper.StartSnapHelper
 import java.util.*
 import kotlin.collections.ArrayList
 

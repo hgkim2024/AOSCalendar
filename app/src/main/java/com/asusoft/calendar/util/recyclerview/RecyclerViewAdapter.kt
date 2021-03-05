@@ -5,11 +5,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.realm.copy.CopyEventMultiDay
+import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.ADD_EVENT
+import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
@@ -21,6 +24,7 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.Sta
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarAddEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyHolder
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType.*
@@ -31,7 +35,7 @@ import kotlin.collections.ArrayList
 class RecyclerViewAdapter(
         private val typeObject: Any,
         var list: ArrayList<Any>
-        ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        ): RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     private val type = RecyclerViewType.getType(typeObject)
 
@@ -155,4 +159,36 @@ class RecyclerViewAdapter(
         return list.size
     }
 
+    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+        // TODO: - 정렬 기능 넣을지 생각해보기
+//        swapItems(fromPosition, toPosition)
+    }
+
+    override fun onItemDismiss(position: Int) {
+        // TODO: - 삭제 시 realm 에서 삭제되도록 수정, when 문으로 거르기
+
+        when(type) {
+            DAY_CALENDAR_BODY -> {
+                when(list[position]) {
+                    is DayCalendarBodyItem -> {
+                        val item = list.removeAt(position)
+                        notifyItemRemoved(position)
+
+                        val dayItem = (item as DayCalendarBodyItem)
+                        when(val event = dayItem.event) {
+                            is CopyEventOneDay -> event.delete()
+                            is CopyEventMultiDay -> event.delete()
+                        }
+                    }
+                }
+            }
+
+            else -> return
+        }
+    }
+
+    private fun swapItems(positionFrom: Int, positionTo: Int) {
+        Collections.swap(list, positionFrom, positionTo)
+        notifyItemMoved(positionFrom, positionTo)
+    }
 }

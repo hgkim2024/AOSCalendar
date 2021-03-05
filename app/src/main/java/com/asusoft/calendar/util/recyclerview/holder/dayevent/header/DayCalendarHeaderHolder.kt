@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
@@ -19,6 +20,7 @@ import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
 import com.asusoft.calendar.util.toStringDay
 import com.orhanobut.logger.Logger
@@ -50,6 +52,9 @@ class DayCalendarHeaderHolder(
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        touchHelper.attachToRecyclerView(recyclerView)
 
 //        Logger.d("list: ${list.size}")
 

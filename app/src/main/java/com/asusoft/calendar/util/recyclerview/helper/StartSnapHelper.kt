@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.recyclerview.snap
+package com.asusoft.calendar.util.recyclerview.helper
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
