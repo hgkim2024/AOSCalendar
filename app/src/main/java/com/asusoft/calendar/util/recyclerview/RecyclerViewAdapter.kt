@@ -172,13 +172,12 @@ class RecyclerViewAdapter(
                 when(list[position]) {
                     is DayCalendarBodyItem -> {
                         val item = list.removeAt(position)
-                        notifyItemRemoved(position)
-
                         val dayItem = (item as DayCalendarBodyItem)
                         when(val event = dayItem.event) {
                             is CopyEventOneDay -> event.delete()
                             is CopyEventMultiDay -> event.delete()
                         }
+                        notifyItemRemoved(position)
                     }
                 }
             }
