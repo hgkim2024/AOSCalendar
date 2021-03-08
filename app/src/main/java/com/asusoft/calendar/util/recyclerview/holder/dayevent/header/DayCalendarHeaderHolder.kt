@@ -18,20 +18,23 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.fragment.month.FragmentMonthPage.Companion.ANIMATION_DURATION
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
-import com.asusoft.calendar.util.toStringDay
 import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class DayCalendarHeaderHolder(
+        private val typeObject: Any,
         val context: Context,
         val view: View,
         private val adapter: RecyclerViewAdapter
@@ -47,6 +50,15 @@ class DayCalendarHeaderHolder(
         lateinit var adapter: RecyclerViewAdapter
 
         title.text = item.date.toStringDay()
+
+        if(item.date == item.date.endOfMonth.startOfDay) {
+            if (typeObject is FragmentDayCalendar) {
+                if (typeObject.activity is ActivityStart) {
+                    (typeObject.activity as ActivityStart).setTitle(item.date.toStringMonth())
+                    (typeObject.activity as ActivityStart).setDate(item.date.startOfMonth)
+                }
+            }
+        }
 
         item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
         val list = getDayCalendarItemList(item.itemList, item.date)

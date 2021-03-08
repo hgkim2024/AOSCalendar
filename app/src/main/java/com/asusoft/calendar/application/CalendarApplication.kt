@@ -3,11 +3,14 @@ package com.asusoft.calendar.application
 import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
 import com.asusoft.calendar.realm.MyRealmMigration
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.CalculatorUtil
+import com.asusoft.calendar.util.`object`.PreferenceKey
+import com.asusoft.calendar.util.`object`.PreferenceManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -40,6 +43,10 @@ class CalendarApplication: Application() {
         fun getColorList(id: Int): ColorStateList? {
             return ContextCompat.getColorStateList(context, id)
         }
+
+        fun getDrawable(id: Int): Drawable? {
+            return ContextCompat.getDrawable(context, id)
+        }
     }
 
     override fun onCreate() {
@@ -70,6 +77,19 @@ class CalendarApplication: Application() {
                 return BuildConfig.DEBUG
             }
         })
+
+        // 공유 레퍼런스 context 초기화
+        PreferenceManager.setApplicationContext(baseContext)
+        initPreference()
     }
 
+
+    private fun initPreference() {
+
+        val selectedCalendarType = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE)
+        if (selectedCalendarType == PreferenceManager.DEFAULT_VALUE_INT) {
+            PreferenceManager.setInt(PreferenceKey.SELECTED_CALENDAR_TYPE, 0)
+        }
+
+    }
 }

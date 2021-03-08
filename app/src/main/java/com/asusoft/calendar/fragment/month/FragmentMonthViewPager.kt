@@ -1,8 +1,6 @@
 package com.asusoft.calendar.fragment.month
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.ActivityStart
 import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -29,18 +25,28 @@ import kotlin.math.abs
 class FragmentMonthViewPager: Fragment() {
 
     companion object {
-        fun newInstance(): FragmentMonthViewPager {
-            return FragmentMonthViewPager()
+        fun newInstance(
+                date: Date? = null
+        ): FragmentMonthViewPager {
+            val f = FragmentMonthViewPager()
+
+            val args = Bundle()
+            if (date != null) {
+                args.putLong("date", date.time)
+            }
+
+            f.arguments = args
+            return f
         }
     }
 
     private lateinit var adapter: AdapterMonthCalendar
     private lateinit var viewPager: ViewPager2
     private lateinit var todayLayout: TextView
+    var date = Date().getToday()
 
     private val pageCount = 1
 
-    private var selectedDate = Date().getToday()
     private var curPosition = 0
     private var isScroll = false
     private var isMovePage = false
@@ -48,11 +54,21 @@ class FragmentMonthViewPager: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val args = arguments!!
+        val dateTime = args.getLong("date") as Long
+        if (dateTime != 0L) {
+            date = Date(dateTime)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         GlobalBus.getBus().register(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
 
         GlobalBus.getBus().unregister(this)
     }
@@ -65,7 +81,7 @@ class FragmentMonthViewPager: Fragment() {
         val context = this.context!!
         val view = inflater.inflate(R.layout.fragment_view_pager, container, false)
 
-        adapter = AdapterMonthCalendar(activity!!)
+        adapter = AdapterMonthCalendar(activity!!, date)
         viewPager = view.findViewById(R.id.month_calendar)
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
@@ -143,15 +159,6 @@ class FragmentMonthViewPager: Fragment() {
         })
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-        val dialogFragmentSelectYearMonth = event.map.getOrDefault(DialogFragmentSelectYearMonth.toString(), null)
-        if (dialogFragmentSelectYearMonth != null) {
-            val date = event.map["date"] as Date
-            movePage(date)
-        }
-    }
-
     private fun loadPage() {
         val event = HashMapEvent(HashMap())
         event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
@@ -192,6 +199,10 @@ class FragmentMonthViewPager: Fragment() {
         }
 
         isVisibleTodayView(date)
+
+        if (activity is ActivityStart) {
+            (activity as ActivityStart).setDate(date)
+        }
     }
 
     private fun isVisibleTodayView(date: Date) {
@@ -206,6 +217,15 @@ class FragmentMonthViewPager: Fragment() {
             todayLayout.visibility = View.VISIBLE
         } else {
             todayLayout.visibility = View.INVISIBLE
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val dialogFragmentSelectYearMonth = event.map.getOrDefault(DialogFragmentSelectYearMonth.toString(), null)
+        if (dialogFragmentSelectYearMonth != null) {
+            val date = event.map["date"] as Date
+            movePage(date)
         }
     }
 }

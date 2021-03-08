@@ -72,12 +72,16 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         if (selectedEndTime != 0L) {
             selectedEndDate = Date(selectedEndTime)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         GlobalBus.getBus().register(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
 
         GlobalBus.getBus().unregister(this)
     }

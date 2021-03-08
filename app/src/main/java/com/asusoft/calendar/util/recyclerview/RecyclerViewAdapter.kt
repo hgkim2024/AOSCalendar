@@ -113,7 +113,7 @@ class RecyclerViewAdapter(
 
             DAY_CALENDAR_HEADER -> {
                 val view = inflater.inflate(R.layout.holder_day_event_header, parent, false)
-                DayCalendarHeaderHolder(context, view, this)
+                DayCalendarHeaderHolder(typeObject, context, view, this)
             }
 
             DAY_CALENDAR_BODY -> {

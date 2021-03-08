@@ -6,9 +6,9 @@ import com.asusoft.calendar.util.*
 import com.orhanobut.logger.Logger
 import java.util.*
 
-class AdapterMonthCalendar(fm: FragmentActivity) : FragmentStateAdapter(fm) {
+class AdapterMonthCalendar(fm: FragmentActivity, date: Date) : FragmentStateAdapter(fm) {
 
-    var start: Long = Date().getToday().startOfMonth.time
+    var start: Long = date.startOfMonth.time
     var initFlag = true
 
     override fun getItemCount(): Int = Int.MAX_VALUE

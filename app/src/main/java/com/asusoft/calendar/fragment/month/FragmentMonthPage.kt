@@ -81,16 +81,19 @@ class FragmentMonthPage: Fragment() {
 
         date = Date(time)
         eventViewDate = date
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         GlobalBus.getBus().register(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
 
         GlobalBus.getBus().unregister(this)
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
@@ -111,71 +114,7 @@ class FragmentMonthPage: Fragment() {
         setActionBarTitle()
         setAsyncPageUI(context)
 
-        if (monthItem == null) return
-        val monthItem = monthItem!!
-
-        if (prevClickDayView != null) {
-            for (weekItem in monthItem.weekItemList) {
-                for (idx in weekItem.dayViewList.indices) {
-                    if (prevClickDayView == weekItem.dayViewList[idx]) {
-                        selectedDayDate(weekItem.weekDate.getNextDay(idx))
-                    }
-                }
-            }
-        }
-
         setTodayView(context)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
-        if (addEventActivity != null) {
-            removeDayEventView()
-            refreshPage()
-        }
-
-        val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
-        if (monthViewPager != null) {
-            setAsyncPageUI(context!!)
-        }
-        
-        val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
-        if (oneDayEventHolder != null) {
-
-            val date = event.map.getOrDefault("date", null) as? Date ?: return
-            if (date != this.date.startOfMonth) return
-
-            val key = event.map.getOrDefault("key", null) as? Long
-            if (key != null) {
-                
-                val oneDayItem = RealmEventOneDay.select(key)
-                if (oneDayItem != null) {
-                    val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("startDate", Date(oneDayItem.time))
-                    intent.putExtra("endDate", Date(oneDayItem.time))
-                    intent.putExtra("title", oneDayItem.name)
-                    intent.putExtra("isComplete", oneDayItem.isComplete)
-                    intent.putExtra("isEdit", true)
-                    intent.putExtra("key", key)
-                    startActivity(intent)
-                    return
-                }
-
-                val multiDayItem = RealmEventMultiDay.select(key)
-                if (multiDayItem != null) {
-                    val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("startDate", Date(multiDayItem.startTime))
-                    intent.putExtra("endDate", Date(multiDayItem.endTime))
-                    intent.putExtra("title", multiDayItem.name)
-                    intent.putExtra("isComplete", multiDayItem.isComplete)
-                    intent.putExtra("isEdit", true)
-                    intent.putExtra("key", key)
-                    startActivity(intent)
-                    return
-                }
-            }
-        }
     }
 
     private fun setTodayView(context: Context) {
@@ -289,7 +228,7 @@ class FragmentMonthPage: Fragment() {
         title.text = "${eventList.size}개 이벤트"
 
         val addEventListener = View.OnClickListener {
-            selectedDayDate(date, true)
+            selectedDayDate(date)
         }
 
         addButton.setOnClickListener(addEventListener)
@@ -432,7 +371,6 @@ class FragmentMonthPage: Fragment() {
         prevClickDayView = dayView
 
         val selectedDate = weekItem.weekDate.getNextDay(idx)
-        selectedDayDate(selectedDate)
         eventViewDate = selectedDate
 
         val xPoint = dayView.getBoundsLocation()
@@ -444,17 +382,11 @@ class FragmentMonthPage: Fragment() {
         )
     }
 
-    private fun selectedDayDate(date: Date, isAdd: Boolean = false) {
-        if (isAdd) {
-            val intent = Intent(context, ActivityAddEvent::class.java)
-            intent.putExtra("startDate", date)
-            intent.putExtra("endDate", date)
-            startActivity(intent)
-        }
-
-        if (activity is ActivityStart) {
-            (activity as ActivityStart).setDate(date)
-        }
+    private fun selectedDayDate(date: Date) {
+        val intent = Intent(context, ActivityAddEvent::class.java)
+        intent.putExtra("startDate", date)
+        intent.putExtra("endDate", date)
+        startActivity(intent)
     }
 
     private fun refreshPage() {
@@ -496,5 +428,56 @@ class FragmentMonthPage: Fragment() {
 
     private fun setActionBarTitle() {
         (activity as ActivityStart).setTitle(date.toStringMonth())
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        if (addEventActivity != null) {
+            removeDayEventView()
+            refreshPage()
+        }
+
+        val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
+        if (monthViewPager != null) {
+            setAsyncPageUI(context!!)
+        }
+
+        val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
+        if (oneDayEventHolder != null) {
+
+            val date = event.map.getOrDefault("date", null) as? Date ?: return
+            if (date != this.date.startOfMonth) return
+
+            val key = event.map.getOrDefault("key", null) as? Long
+            if (key != null) {
+
+                val oneDayItem = RealmEventOneDay.select(key)
+                if (oneDayItem != null) {
+                    val intent = Intent(context, ActivityAddEvent::class.java)
+                    intent.putExtra("startDate", Date(oneDayItem.time))
+                    intent.putExtra("endDate", Date(oneDayItem.time))
+                    intent.putExtra("title", oneDayItem.name)
+                    intent.putExtra("isComplete", oneDayItem.isComplete)
+                    intent.putExtra("isEdit", true)
+                    intent.putExtra("key", key)
+                    startActivity(intent)
+                    return
+                }
+
+                val multiDayItem = RealmEventMultiDay.select(key)
+                if (multiDayItem != null) {
+                    val intent = Intent(context, ActivityAddEvent::class.java)
+                    intent.putExtra("startDate", Date(multiDayItem.startTime))
+                    intent.putExtra("endDate", Date(multiDayItem.endTime))
+                    intent.putExtra("title", multiDayItem.name)
+                    intent.putExtra("isComplete", multiDayItem.isComplete)
+                    intent.putExtra("isEdit", true)
+                    intent.putExtra("key", key)
+                    startActivity(intent)
+                    return
+                }
+            }
+        }
     }
 }

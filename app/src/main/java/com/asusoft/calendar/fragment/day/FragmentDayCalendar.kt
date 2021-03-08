@@ -8,27 +8,68 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
+import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.getToday
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderItem
 import com.asusoft.calendar.util.recyclerview.helper.StartSnapHelper
+import com.asusoft.calendar.util.toStringMonth
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import kotlin.collections.ArrayList
 
 class FragmentDayCalendar: Fragment() {
 
     companion object {
-        const val DEFAULT_DAY_COUNT = 30
+        const val DEFAULT_DAY_COUNT = 10
+        const val INIT_DEFAULT_DAY_COUNT = 30
 
-        fun newInstance(): FragmentDayCalendar {
-            return FragmentDayCalendar()
+        fun newInstance(
+                date: Date? = null
+        ): FragmentDayCalendar {
+            val f = FragmentDayCalendar()
+
+            val args = Bundle()
+            if (date != null) {
+                args.putLong("date", date.time)
+            }
+
+            f.arguments = args
+            return f
         }
     }
 
-    private val today = Date().getToday()
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var recyclerView: RecyclerView
+    private var date = Date().getToday()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val args = arguments!!
+        val dateTime = args.getLong("date") as Long
+        if (dateTime != 0L) {
+            date = Date(dateTime)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        GlobalBus.getBus().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        GlobalBus.getBus().unregister(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
@@ -36,15 +77,7 @@ class FragmentDayCalendar: Fragment() {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_recycleview, container, false)
 
-        val list = ArrayList<DayCalendarHeaderItem>()
-
-        for (index in 0 until DEFAULT_DAY_COUNT) {
-            val date = today.getNextDay(index)
-            val item = DayCalendarHeaderItem(date, ArrayList())
-            list.add(item)
-        }
-
-        adapter = RecyclerViewAdapter(this, list as ArrayList<Any>)
+        adapter = RecyclerViewAdapter(this, getInitList(date) as ArrayList<Any>)
 
         recyclerView = view.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -61,7 +94,7 @@ class FragmentDayCalendar: Fragment() {
 //                Logger.d("onScrolled position: $firstPosition, size: ${adapter.list.size}")
 
                 if (-1 < firstPosition && firstPosition < 2) {
-                    val list = getList(adapter.list.first() as DayCalendarHeaderItem, true)
+                    val list = getAddList(adapter.list.first() as DayCalendarHeaderItem, true)
                     for (item in list) {
                         adapter.list.add(0, item)
                     }
@@ -72,7 +105,7 @@ class FragmentDayCalendar: Fragment() {
 
                 val lastPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
                 if (lastPosition >= adapter.list.size - 2) {
-                    val list = getList(adapter.list.last() as DayCalendarHeaderItem, false)
+                    val list = getAddList(adapter.list.last() as DayCalendarHeaderItem, false)
                     adapter.list.addAll(list)
                     adapter.notifyDataSetChanged()
                 }
@@ -83,7 +116,7 @@ class FragmentDayCalendar: Fragment() {
     }
 
 
-    fun getList(dayItem: DayCalendarHeaderItem, isUp: Boolean): ArrayList<DayCalendarHeaderItem> {
+    fun getAddList(dayItem: DayCalendarHeaderItem, isUp: Boolean): ArrayList<DayCalendarHeaderItem> {
         val list = ArrayList<DayCalendarHeaderItem>()
 
         for (index in 0 until DEFAULT_DAY_COUNT) {
@@ -97,5 +130,33 @@ class FragmentDayCalendar: Fragment() {
         }
 
         return list
+    }
+
+    private fun getInitList(date: Date = Date().getToday()): ArrayList<DayCalendarHeaderItem> {
+        val list = ArrayList<DayCalendarHeaderItem>()
+
+        for (index in 0 until INIT_DEFAULT_DAY_COUNT) {
+            val date = date.getNextDay(index)
+            val item = DayCalendarHeaderItem(date, ArrayList())
+            list.add(item)
+        }
+
+        if (activity is ActivityStart) {
+            (activity as ActivityStart).setTitle(date.toStringMonth())
+        }
+
+        return list
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public fun onEvent(event: HashMapEvent) {
+        val dialogFragmentSelectYearMonth = event.map.getOrDefault(DialogFragmentSelectYearMonth.toString(), null)
+        if (dialogFragmentSelectYearMonth != null) {
+            val date = event.map["date"] as Date
+
+            adapter.list = getInitList(date) as ArrayList<Any>
+            adapter.notifyDataSetChanged()
+            recyclerView.scrollToPosition(0)
+        }
     }
 }
