@@ -427,7 +427,9 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun setActionBarTitle() {
-        (activity as ActivityStart).setTitle(date.toStringMonth())
+        if (activity is ActivityStart) {
+            (activity as ActivityStart).setTitle(date.toStringMonth())
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
