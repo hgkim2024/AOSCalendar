@@ -13,10 +13,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
+import com.asusoft.calendar.util.endOfWeek
+import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.weekOfDay
 import java.util.*
 
 
@@ -25,7 +27,7 @@ class WeekItem(
         val rootLayout: ConstraintLayout,
         val weekLayout: ConstraintLayout,
         val dayViewList: ArrayList<TextView>
-        ): View.OnLongClickListener {
+): View.OnLongClickListener {
 
     companion object {
         public const val EVENT_HEIGHT = 15.0F
@@ -67,12 +69,16 @@ class WeekItem(
         eventView.setSingleLine()
         eventView.text = name
         eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
-        eventView.setOnLongClickListener(this)
+
+        // TODO: - 터치 이벤트 중첩되는 방법 알아보기
+        eventView.setOnTouchListener { v, event -> false }
+
 
         if (isHoliday) {
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
+            eventView.setOnLongClickListener(this)
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
