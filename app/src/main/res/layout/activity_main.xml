@@ -39,7 +39,7 @@
 
                 <ImageButton
                     android:id="@+id/change_fragment_button"
-                    android:padding="8dp"
+                    android:padding="12dp"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"

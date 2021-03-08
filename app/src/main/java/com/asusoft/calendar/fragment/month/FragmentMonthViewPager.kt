@@ -99,6 +99,8 @@ class FragmentMonthViewPager: Fragment() {
             todayLayout.visibility = View.INVISIBLE
         }
 
+        isVisibleTodayView(date)
+
         return view
     }
 
