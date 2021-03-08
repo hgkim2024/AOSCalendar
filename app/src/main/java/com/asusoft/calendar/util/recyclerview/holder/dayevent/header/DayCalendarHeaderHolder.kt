@@ -56,6 +56,10 @@ class DayCalendarHeaderHolder(
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        touchHelper.attachToRecyclerView(recyclerView)
+
 //        Logger.d("list: ${list.size}")
 
         if (item.isExpand) {
@@ -67,17 +71,17 @@ class DayCalendarHeaderHolder(
 
         headerLayout.setOnClickListener {
             if (item.isExpand) {
-//                logItemList(adapter.list)
+                logItemList(adapter.list)
+                adapter.list.clear()
+                adapter.notifyDataSetChanged()
                 collapseAnimation(recyclerView)
-//                adapter.list.clear()
-//                adapter.notifyDataSetChanged()
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             } else {
                 item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
-//                val list = getDayCalendarItemList(item.itemList, item.date)
-//                logItemList(list)
-//                adapter.list = list
-//                adapter.notifyDataSetChanged()
+                val list = getDayCalendarItemList(item.itemList, item.date)
+                logItemList(list)
+                adapter.list = list
+                adapter.notifyDataSetChanged()
                 expandAnimation(recyclerView)
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
@@ -131,7 +135,6 @@ class DayCalendarHeaderHolder(
 
         val targetHeight = view.measuredHeight
 
-        // Set initial height to 0 and show the view
         view.layoutParams.height = 0
         view.visibility = View.VISIBLE
         val anim = ValueAnimator.ofInt(view.measuredHeight, targetHeight)
@@ -141,14 +144,12 @@ class DayCalendarHeaderHolder(
         anim.addUpdateListener { animation ->
             val layoutParams = view.layoutParams
             layoutParams.height = (targetHeight * animation.animatedFraction).toInt()
-            Logger.d("expandAnimation update height: ${layoutParams.height}")
+//            Logger.d("expandAnimation update height: ${layoutParams.height}")
             view.layoutParams = layoutParams
         }
 
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                // At the end of animation, set the height to wrap content
-                // This fix is for long views that are not shown on screen
                 val layoutParams = view.layoutParams
                 layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
@@ -168,19 +169,17 @@ class DayCalendarHeaderHolder(
 
         anim.addUpdateListener { animation ->
             val layoutParams = view.layoutParams
-            layoutParams.height = (curHeight * (1 - animation.animatedFraction)).toInt()
-            Logger.d("collapseAnimation update height: ${layoutParams.height}")
+            layoutParams.height = (curHeight * (1F - animation.animatedFraction)).toInt()
+//            Logger.d("collapseAnimation update height: ${layoutParams.height}")
             view.layoutParams = layoutParams
         }
 
-//        anim.addListener(object : AnimatorListenerAdapter() {
-//            override fun onAnimationEnd(animation: Animator) {
-//                // At the end of animation, set the height to wrap content
-//                // This fix is for long views that are not shown on screen
-//                val layoutParams = view.layoutParams
-//                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-//            }
-//        })
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                val layoutParams = view.layoutParams
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+        })
 
         anim.start()
     }
