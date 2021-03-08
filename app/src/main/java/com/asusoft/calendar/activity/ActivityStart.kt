@@ -107,14 +107,14 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 
         when(curFragmentIdx) {
             MONTH -> {
-                Logger.d("change fragment date: ${date.toStringDay()}")
+//                Logger.d("change fragment date: ${date.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                         .add(R.id.fragment, FragmentMonthViewPager.newInstance(date), FragmentMonthViewPager.toString()).commit()
                 changeFragmentButton.setImageResource(R.drawable.ic_baseline_format_list_bulleted_24)
             }
 
             Day -> {
-                Logger.d("change fragment date: ${date.toStringDay()}")
+//                Logger.d("change fragment date: ${date.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                         .add(R.id.fragment, FragmentDayCalendar.newInstance(date), FragmentDayCalendar.toString()).commit()
                 changeFragmentButton.setImageResource(R.drawable.ic_baseline_calendar_today_24)

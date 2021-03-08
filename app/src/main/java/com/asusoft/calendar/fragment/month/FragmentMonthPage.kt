@@ -37,6 +37,7 @@ import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -56,6 +57,7 @@ class FragmentMonthPage: Fragment() {
             return f
         }
         const val ANIMATION_DURATION: Long = 150
+        var dragInitFlag = true
     }
 
     private lateinit var date: Date
@@ -71,6 +73,7 @@ class FragmentMonthPage: Fragment() {
     private var dialogHeight = 0
 
     private var todayView: View? = null
+    private var dragStartDay = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,16 +84,12 @@ class FragmentMonthPage: Fragment() {
 
         date = Date(time)
         eventViewDate = date
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         GlobalBus.getBus().register(this)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
 
         GlobalBus.getBus().unregister(this)
     }
@@ -390,8 +389,25 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun refreshPage() {
-        removePage()
-        setAsyncPageUI(context!!)
+        if (monthItem == null) return
+
+        val context = context!!
+        for (weekItem in monthItem!!.weekItemList) {
+
+            MonthCalendarUIUtil.refreshWeek(
+                    context,
+                    weekItem,
+                    date
+            )
+
+            val startDate = weekItem.weekDate.startOfWeek
+            val endDate = weekItem.weekDate.endOfWeek
+            val today = Date().getToday()
+
+            if (today in startDate..endDate) {
+                setTodayView(context)
+            }
+        }
     }
 
     fun refreshWeek() {
@@ -422,8 +438,10 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
-    private fun removePage() {
-        monthCalendar?.removeAllViews()
+    private fun calendarRefresh() {
+        val event = HashMapEvent(HashMap())
+        event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
+        GlobalBus.getBus().post(event)
     }
 
     private fun setActionBarTitle() {
@@ -481,5 +499,89 @@ class FragmentMonthPage: Fragment() {
                 }
             }
         }
+
+        val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUIUtil.toString(), null)
+        if (monthCalendarUIUtil != null) {
+            if (dragInitFlag) return
+
+            val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+            if (startTime != null) {
+
+                val startDate = Date(startTime)
+                val startMonth = date.startOfMonth.startOfWeek
+                val endMonth = date.endOfMonth.endOfWeek
+
+                if (startDate in startMonth..endMonth) {
+                    dragStartDay = startTime
+                }
+            }
+
+            val endTime = event.map.getOrDefault("endDragDate", null) as? Long
+            val key = event.map.getOrDefault("key", null) as? Long
+
+            if (endTime != null
+                    && key != null
+                    && dragStartDay > 0) {
+
+                var startDate = Date(dragStartDay)
+                var endDate = Date(endTime)
+                val startMonth = date.startOfMonth.startOfWeek
+                val endMonth = date.endOfMonth.endOfWeek
+
+                var inverseFlag = false
+
+                if (startDate > endDate) {
+                    startDate = Date(endTime)
+                    endDate = Date(dragStartDay)
+                    inverseFlag = true
+                }
+
+                if (startDate in startMonth..endMonth
+                        && endDate in startMonth..endMonth) {
+                    Logger.d("Drag start Date: ${Date(dragStartDay).toStringDay()}")
+                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
+                    Logger.d("key: ${Date(key).toStringDay()}")
+
+                    val oneDayItem = RealmEventOneDay.select(key)
+                    if (oneDayItem != null) {
+                        dragInitFlag = true
+
+                        oneDayItem.update(
+                                oneDayItem.name,
+                                endDate.startOfDay.time,
+                                oneDayItem.isComplete
+                        )
+
+                        dragStartDay = 0
+                        dragInitFlag = true
+                        calendarRefresh()
+                    }
+
+                    val multiDayItem = RealmEventMultiDay.select(key)
+                    if (multiDayItem != null) {
+                        dragInitFlag = true
+
+                        var diff = 0
+                        var date = startDate
+
+                        while(date.startOfDay < endDate.startOfDay) {
+                            date = date.getNextDay(1)
+                            if (inverseFlag) diff-- else diff++
+                        }
+
+                        multiDayItem.update(
+                                multiDayItem.name,
+                                Date(multiDayItem.startTime).getNextDay(diff).time,
+                                Date(multiDayItem.endTime).getNextDay(diff).time,
+                                multiDayItem.isComplete
+                        )
+
+                        dragStartDay = 0
+                        calendarRefresh()
+                    }
+                }
+            }
+        }
+
     }
 }
