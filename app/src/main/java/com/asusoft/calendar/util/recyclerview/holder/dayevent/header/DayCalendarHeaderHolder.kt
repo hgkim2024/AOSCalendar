@@ -55,9 +55,6 @@ class DayCalendarHeaderHolder(
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
-        val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        touchHelper.attachToRecyclerView(recyclerView)
 
 //        Logger.d("list: ${list.size}")
 
