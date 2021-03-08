@@ -7,6 +7,9 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.Transformation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -69,15 +72,15 @@ class DayCalendarHeaderHolder(
             if (item.isExpand) {
 //                logItemList(adapter.list)
                 collapseAnimation(recyclerView)
-                adapter.list.clear()
-                adapter.notifyDataSetChanged()
+//                adapter.list.clear()
+//                adapter.notifyDataSetChanged()
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             } else {
                 item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
-                val list = getDayCalendarItemList(item.itemList, item.date)
+//                val list = getDayCalendarItemList(item.itemList, item.date)
 //                logItemList(list)
-                adapter.list = list
-                adapter.notifyDataSetChanged()
+//                adapter.list = list
+//                adapter.notifyDataSetChanged()
                 expandAnimation(recyclerView)
                 upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
             }
@@ -136,11 +139,12 @@ class DayCalendarHeaderHolder(
         view.visibility = View.VISIBLE
         val anim = ValueAnimator.ofInt(view.measuredHeight, targetHeight)
         anim.interpolator = AccelerateInterpolator()
-        anim.duration = ANIMATION_DURATION
+        anim.duration = 300L
 
         anim.addUpdateListener { animation ->
             val layoutParams = view.layoutParams
             layoutParams.height = (targetHeight * animation.animatedFraction).toInt()
+            Logger.d("expandAnimation update height: ${layoutParams.height}")
             view.layoutParams = layoutParams
         }
 
@@ -157,29 +161,29 @@ class DayCalendarHeaderHolder(
     }
 
     private fun collapseAnimation(view: View) {
-
         val targetHeight = 0
         val curHeight = view.height
 
-        view.visibility = View.VISIBLE
+        view.visibility = View.INVISIBLE
         val anim = ValueAnimator.ofInt(curHeight, targetHeight)
-        anim.interpolator = AccelerateInterpolator()
-        anim.duration = ANIMATION_DURATION
+        anim.interpolator = DecelerateInterpolator()
+        anim.duration = 300L
 
         anim.addUpdateListener { animation ->
             val layoutParams = view.layoutParams
             layoutParams.height = (curHeight * (1 - animation.animatedFraction)).toInt()
+            Logger.d("collapseAnimation update height: ${layoutParams.height}")
             view.layoutParams = layoutParams
         }
 
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                // At the end of animation, set the height to wrap content
-                // This fix is for long views that are not shown on screen
-                val layoutParams = view.layoutParams
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-        })
+//        anim.addListener(object : AnimatorListenerAdapter() {
+//            override fun onAnimationEnd(animation: Animator) {
+//                // At the end of animation, set the height to wrap content
+//                // This fix is for long views that are not shown on screen
+//                val layoutParams = view.layoutParams
+//                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+//            }
+//        })
 
         anim.start()
     }
