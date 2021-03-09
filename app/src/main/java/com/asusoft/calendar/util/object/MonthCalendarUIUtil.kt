@@ -1,6 +1,5 @@
 package com.asusoft.calendar.util.`object`
 
-import android.R.color
 import android.content.ClipDescription
 import android.content.Context
 import android.graphics.*
@@ -11,7 +10,6 @@ import android.util.Log
 import android.view.DragEvent
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,8 +29,6 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
-import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -843,28 +839,22 @@ object MonthCalendarUIUtil {
         // Defines a variable to store the action type for the incoming event
         when (event.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
-                // Determines if this View can accept the dragged data
                 return if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    // if you want to apply color when drag started to your view you can uncomment below lines
-                    // to give any color tint to the View to indicate that it can accept data.
-                    // v.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
-                    // Invalidate the view to force a redraw in the new tint
-                    //  v.invalidate();
-                    // returns true to indicate that the View can accept the dragged data.
                     val vw = event.localState as View
                     vw.visibility = View.GONE
                     true
-                } else false
-                // Returns false. During the current drag and drop operation, this View will
-                // not receive events again until ACTION_DRAG_ENDED is sent.
-            }
-            DragEvent.ACTION_DRAG_ENTERED -> {
-                // Applies a GRAY or any color tint to the View. Return true; the return value is ignored.
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    v.background.colorFilter = BlendModeColorFilter(Color.GRAY, BlendMode.SRC_IN)
                 } else {
-                    v.background.setColorFilter(CalendarApplication.getColor(R.color.separator), PorterDuff.Mode.SRC_IN)
+                    false
+                }
+            }
+
+            DragEvent.ACTION_DRAG_ENTERED -> {
+
+                val backgroundColor = CalendarApplication.getColor(R.color.separator)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    v.background.colorFilter = BlendModeColorFilter(backgroundColor, BlendMode.SRC_IN)
+                } else {
+                    v.background.setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
                 }
 
                 if (FragmentMonthPage.dragInitFlag) {
@@ -876,63 +866,53 @@ object MonthCalendarUIUtil {
                     GlobalBus.getBus().post(event)
                 }
 
-                // Invalidate the view to force a redraw in the new tint
                 v.invalidate()
                 return true
             }
-            DragEvent.ACTION_DRAG_LOCATION ->                 // Ignore the event
+
+            DragEvent.ACTION_DRAG_LOCATION -> {
                 return true
+            }
+
             DragEvent.ACTION_DRAG_EXITED -> {
-                // Re-sets the color tint to blue. Returns true; the return value is ignored.
-                // view.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
-                //It will clear a color filter .
                 v.background.clearColorFilter()
-                // Invalidate the view to force a redraw in the new tint
                 v.invalidate()
+
+                val event = HashMapEvent(java.util.HashMap())
+                event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                event.map["removeDayEventView"] = "removeDayEventView"
+                GlobalBus.getBus().post(event)
+
                 return true
             }
+
             DragEvent.ACTION_DROP -> {
-                // Gets the item containing the dragged data
-                val item = event.clipData.getItemAt(0)
-                // Gets the text data from the item.
-                val dragData = item.text.toString()
-                // Displays a message containing the dragged data.
-//                Toast.makeText(this, "Dragged data is $dragData", Toast.LENGTH_SHORT).show()
-                // Turns off any color tints
                 v.background.clearColorFilter()
-                // Invalidates the view to force a redraw
                 v.invalidate()
 
                 val vw = event.localState as View
 
-//                val owner = vw.parent as ViewGroup
-//                owner.removeView(vw) //remove the dragged view
-                //caste the view into LinearLayout as our drag acceptable layout is LinearLayout
-//                val container = v.parent as ConstraintLayout
-//                container.addView(vw) //Add the dragged view
-//                vw.visibility = View.VISIBLE //finally set Visibility to VISIBLE
-                // Returns true. DragEvent.getResult() will return true.
-
                 if (!FragmentMonthPage.dragInitFlag) {
-                    val event = HashMapEvent(java.util.HashMap())
-                    event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
-                    event.map["endDragDate"] = v.tag as Long
-                    event.map["key"] = (vw.tag as String).toLong()
-                    GlobalBus.getBus().post(event)
+                    val eventMap = HashMapEvent(java.util.HashMap())
+                    eventMap.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                    eventMap.map["endDragDate"] = v.tag as Long
+                    eventMap.map["key"] = (vw.tag as String).toLong()
+                    GlobalBus.getBus().post(eventMap)
                 }
 
                 return true
             }
+
             DragEvent.ACTION_DRAG_ENDED -> {
-                // Turns off any color tinting
                 v.background.clearColorFilter()
-                // Invalidates the view to force a redraw
                 v.invalidate()
-                // Does a getResult(), and displays what happened.
-//                if (event.result) Toast.makeText(this, "The drop was handled.", Toast.LENGTH_SHORT).show() else Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show()
-                // returns true; the value is ignored.
+
+                val vw = event.localState as View
+                vw.visibility = View.VISIBLE
+
                 return true
             }
+
             else -> Log.e("DragDrop Example", "Unknown action type received by OnDragListener.")
         }
         return false

@@ -539,7 +539,10 @@ class FragmentMonthPage: Fragment() {
                 if (startDate in startMonth..endMonth) {
                     dragStartDay = startTime
                 }
+            }
 
+            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            if (removeDayEventView != null) {
                 removeDayEventView()
             }
 
@@ -565,6 +568,11 @@ class FragmentMonthPage: Fragment() {
                     if (oneDayItem != null) {
                         dragInitFlag = true
 
+                        if (startDate == endDate) {
+                            dragStartDay = 0
+                            return
+                        }
+
                         oneDayItem.update(
                                 oneDayItem.name,
                                 endDate.startOfDay.time,
@@ -572,7 +580,6 @@ class FragmentMonthPage: Fragment() {
                         )
 
                         dragStartDay = 0
-                        dragInitFlag = true
                         calendarRefresh()
                     }
 
@@ -594,6 +601,11 @@ class FragmentMonthPage: Fragment() {
                         while(date.startOfDay < endDate.startOfDay) {
                             date = date.getNextDay(1)
                             if (inverseFlag) diff-- else diff++
+                        }
+
+                        if (diff == 0) {
+                            dragStartDay = 0
+                            return
                         }
 
                         multiDayItem.update(

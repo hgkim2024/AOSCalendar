@@ -64,7 +64,7 @@ class ActivityAddEvent : AppCompatActivity() {
         val title = intent.getStringExtra("title")
         val isComplete = intent.getBooleanExtra("isComplete", false)
         isEdit = intent.getBooleanExtra("isEdit", false)
-        key = intent.getLongExtra("key", -1)
+        key = intent.getLongExtra("key", -1L)
 
         val list = ArrayList<Any>()
         list.add(
@@ -140,15 +140,15 @@ class ActivityAddEvent : AppCompatActivity() {
 
         val confirmBtn = findViewById<Button>(R.id.confirm_btn)
         confirmBtn.setOnClickListener {
-            if ((adapter.list[0] as EditTextItem).context != "") {
-                if (!confirmFlag) {
-                    confirmFlag = true
-                    addEventRealm()
-                }
+            if (!confirmFlag) {
+                confirmFlag = true
+                addEventRealm()
+                calendarRefresh()
             }
-            else
-                Toast.makeText(applicationContext,"제목을 입력해주세요.",
-                        Toast.LENGTH_SHORT).show()
+        }
+
+        if (key != -1L) {
+            confirmBtn.text = "수정"
         }
 
 
@@ -248,11 +248,6 @@ class ActivityAddEvent : AppCompatActivity() {
         }
 
         finish()
-    }
-
-    override fun finish() {
-        calendarRefresh()
-        super.finish()
     }
 
     private fun calendarRefresh() {

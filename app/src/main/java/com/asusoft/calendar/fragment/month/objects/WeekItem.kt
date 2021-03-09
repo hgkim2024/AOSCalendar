@@ -83,23 +83,14 @@ class WeekItem(
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
-//            eventView.setOnLongClickListener(this)
-
-//            val longClick = LongPressChecker(context)
-//            longClick.setOnLongPressListener(object : LongPressChecker.OnLongPressListener {
-//                override fun onLongPressed(x: Float, y: Float) {
-//                    onLongClick(eventView, x, y)
+//            val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onLongPress(e: MotionEvent) {
+//                    onClick(eventView, e)
 //                }
 //            })
 
-            val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onLongPress(e: MotionEvent) {
-                    onLongClick(eventView, e.x, e.y)
-                }
-            })
-
             eventView.setOnTouchListener { v, event ->
-                gestureDetector.onTouchEvent(event)
+                onClick(v, event)
                 false
             }
 
@@ -161,7 +152,10 @@ class WeekItem(
         set.applyTo(weekLayout)
     }
 
-    fun onLongClick(v: View, x: Float, y: Float): Boolean {
+    private fun onClick(v: View, event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
+
         val item = ClipData.Item(v.tag as CharSequence)
         val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
         val data = ClipData(v.tag.toString(), mimeTypes, item)
