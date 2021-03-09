@@ -1,10 +1,12 @@
 package com.asusoft.calendar.fragment.month
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -37,7 +39,6 @@ import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
-import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -163,6 +164,7 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setPageUI(context: Context) {
         monthCalendar = page.findViewById(R.id.month_calendar)
         if (monthCalendar?.childCount == 0) {
@@ -177,30 +179,48 @@ class FragmentMonthPage: Fragment() {
             for (idx in weekItem.dayViewList.indices) {
                 val dayView = weekItem.dayViewList[idx]
 
+                dayView.setOnTouchListener { v, event ->
+                    when (event.action) {
 
-                dayView.setOnClickListener {
-                    if (prevClickDayView != null) {
-                        prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
-                    }
-
-                    if (prevDayEventView != null) {
-                        removeDayEventView(
+                        MotionEvent.ACTION_DOWN -> {
+                            dayViewClick(
                                 weekItem,
                                 dayView,
                                 idx
-                        )
-                    } else {
-                        showOneDayEventView(
-                                weekItem,
-                                dayView,
-                                idx
-                        )
+                            )
+                        }
+
+                        MotionEvent.ACTION_MOVE -> {}
+                        MotionEvent.ACTION_UP -> { }
                     }
 
+                    false
                 }
-
-
             }
+        }
+    }
+
+    private fun dayViewClick(
+        weekItem: WeekItem,
+        dayView: View,
+        idx: Int
+    ) {
+        if (prevClickDayView != null) {
+            prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+        }
+
+        if (prevDayEventView != null) {
+            removeDayEventView(
+                weekItem,
+                dayView,
+                idx
+            )
+        } else {
+            showOneDayEventView(
+                weekItem,
+                dayView,
+                idx
+            )
         }
     }
 

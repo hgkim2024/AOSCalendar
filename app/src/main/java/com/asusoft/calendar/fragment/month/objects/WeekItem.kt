@@ -18,7 +18,6 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
-import com.asusoft.calendar.util.`object`.LongPressChecker
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
 import com.asusoft.calendar.util.endOfWeek
