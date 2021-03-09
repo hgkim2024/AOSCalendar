@@ -355,6 +355,11 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun removeDayEventView() {
+        if (prevClickDayView != null) {
+            prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+            prevClickDayView = null
+        }
+
         if (prevDayEventView != null) {
             prevDayEventView!!.removeFromSuperView()
             prevDayEventView = null
@@ -514,6 +519,8 @@ class FragmentMonthPage: Fragment() {
                 if (startDate in startMonth..endMonth) {
                     dragStartDay = startTime
                 }
+
+                removeDayEventView()
             }
 
             val endTime = event.map.getOrDefault("endDragDate", null) as? Long
@@ -527,14 +534,6 @@ class FragmentMonthPage: Fragment() {
                 var endDate = Date(endTime)
                 val startMonth = date.startOfMonth.startOfWeek
                 val endMonth = date.endOfMonth.endOfWeek
-
-                var inverseFlag = false
-
-                if (startDate > endDate) {
-                    startDate = Date(endTime)
-                    endDate = Date(dragStartDay)
-                    inverseFlag = true
-                }
 
                 if (startDate in startMonth..endMonth
                         && endDate in startMonth..endMonth) {
@@ -560,6 +559,14 @@ class FragmentMonthPage: Fragment() {
                     val multiDayItem = RealmEventMultiDay.select(key)
                     if (multiDayItem != null) {
                         dragInitFlag = true
+
+                        var inverseFlag = false
+
+                        if (startDate > endDate) {
+                            startDate = Date(endTime)
+                            endDate = Date(dragStartDay)
+                            inverseFlag = true
+                        }
 
                         var diff = 0
                         var date = startDate
