@@ -839,14 +839,12 @@ object MonthCalendarUIUtil {
     fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
         val event = HashMapEvent(java.util.HashMap())
         event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
-        GlobalBus.getBus().post(event)
-
+        
         if (isRemoveDayEventView) {
-            val event = HashMapEvent(java.util.HashMap())
-            event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
             event.map["removeDayEventView"] = "removeDayEventView"
-            GlobalBus.getBus().post(event)
         }
+
+        GlobalBus.getBus().post(event)
     }
 
     private fun onDrag(v: View, event: DragEvent): Boolean {

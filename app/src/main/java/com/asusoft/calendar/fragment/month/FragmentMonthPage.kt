@@ -475,6 +475,11 @@ class FragmentMonthPage: Fragment() {
         val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
         if (addEventActivity != null) {
             refreshPage()
+
+            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            if (removeDayEventView != null) {
+                removeDayEventView()
+            }
         }
 
         val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
