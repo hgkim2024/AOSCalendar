@@ -51,7 +51,7 @@ class OneDayEventHolder(
             }
         }
 
-        Logger.d("bind isComplete: $isComplete")
+//        Logger.d("bind isComplete: $isComplete")
 
         var isHoliday = false
         val name =

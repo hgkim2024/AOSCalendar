@@ -1,10 +1,14 @@
 package com.asusoft.calendar.fragment.month.objects
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
+import android.graphics.Point
 import android.text.TextUtils
+import android.view.GestureDetector
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +18,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
+import com.asusoft.calendar.util.`object`.LongPressChecker
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
 import com.asusoft.calendar.util.endOfWeek
@@ -27,7 +32,7 @@ class WeekItem(
         val rootLayout: ConstraintLayout,
         val weekLayout: ConstraintLayout,
         val dayViewList: ArrayList<TextView>
-): View.OnLongClickListener {
+) {
 
     companion object {
         public const val EVENT_HEIGHT = 15.0F
@@ -35,6 +40,7 @@ class WeekItem(
         private const val LEFT_MARGIN = 1.5F
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun addEventUI(
             context: Context,
             key: Long,
@@ -78,7 +84,26 @@ class WeekItem(
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
-            eventView.setOnLongClickListener(this)
+//            eventView.setOnLongClickListener(this)
+
+//            val longClick = LongPressChecker(context)
+//            longClick.setOnLongPressListener(object : LongPressChecker.OnLongPressListener {
+//                override fun onLongPressed(x: Float, y: Float) {
+//                    onLongClick(eventView, x, y)
+//                }
+//            })
+
+            val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    onLongClick(eventView, e.x, e.y)
+                }
+            })
+
+            eventView.setOnTouchListener { v, event ->
+                gestureDetector.onTouchEvent(event)
+                false
+            }
+
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
@@ -137,23 +162,25 @@ class WeekItem(
         set.applyTo(weekLayout)
     }
 
-    override fun onLongClick(v: View): Boolean {
-        // Create a new ClipData.Item from the ImageView object's tag
+    fun onLongClick(v: View, x: Float, y: Float): Boolean {
         val item = ClipData.Item(v.tag as CharSequence)
-        // Create a new ClipData using the tag as a label, the plain text MIME type, and
-        // the already-created item. This will create a new ClipDescription object within the
-        // ClipData, and set its MIME type entry to "text/plain"
         val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
         val data = ClipData(v.tag.toString(), mimeTypes, item)
-        // Instantiates the drag shadow builder.
-        val dragShadow = View.DragShadowBuilder(v)
-        // Starts the drag
-        v.startDragAndDrop(data // data to be dragged
-                , dragShadow // drag shadow builder
-                , v // local data about the drag and drop operation
-                , 0 // flags (not currently used, set to 0)
+        val dragShadow: View.DragShadowBuilder = object : View.DragShadowBuilder(v) {
+
+            override fun onProvideShadowMetrics(shadowSize: Point, shadowTouchPoint: Point) {
+                shadowSize.set(v.width, v.height)
+                shadowTouchPoint.set(x.toInt(), y.toInt())
+            }
+        }
+
+        v.startDragAndDrop(
+                data,
+                dragShadow,
+                v,
+                0
         )
-        v.visibility = View.GONE
+
         return true
     }
 }

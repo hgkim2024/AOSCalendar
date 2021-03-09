@@ -537,9 +537,9 @@ class FragmentMonthPage: Fragment() {
 
                 if (startDate in startMonth..endMonth
                         && endDate in startMonth..endMonth) {
-                    Logger.d("Drag start Date: ${Date(dragStartDay).toStringDay()}")
-                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
-                    Logger.d("key: ${Date(key).toStringDay()}")
+//                    Logger.d("Drag start Date: ${Date(dragStartDay).toStringDay()}")
+//                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
+//                    Logger.d("key: ${Date(key).toStringDay()}")
 
                     val oneDayItem = RealmEventOneDay.select(key)
                     if (oneDayItem != null) {

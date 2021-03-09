@@ -851,6 +851,8 @@ object MonthCalendarUIUtil {
                     // Invalidate the view to force a redraw in the new tint
                     //  v.invalidate();
                     // returns true to indicate that the View can accept the dragged data.
+                    val vw = event.localState as View
+                    vw.visibility = View.GONE
                     true
                 } else false
                 // Returns false. During the current drag and drop operation, this View will
