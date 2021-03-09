@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
@@ -833,6 +834,19 @@ object MonthCalendarUIUtil {
         shape.setColor(backgroundColor)
 //        shape.setStroke(3, borderColor)
         v.background = shape
+    }
+
+    fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
+        val event = HashMapEvent(java.util.HashMap())
+        event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
+        GlobalBus.getBus().post(event)
+
+        if (isRemoveDayEventView) {
+            val event = HashMapEvent(java.util.HashMap())
+            event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+            event.map["removeDayEventView"] = "removeDayEventView"
+            GlobalBus.getBus().post(event)
+        }
     }
 
     private fun onDrag(v: View, event: DragEvent): Boolean {

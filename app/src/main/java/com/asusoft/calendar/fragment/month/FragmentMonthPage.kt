@@ -32,6 +32,7 @@ import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -463,12 +464,6 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
-    private fun calendarRefresh() {
-        val event = HashMapEvent(HashMap())
-        event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
-        GlobalBus.getBus().post(event)
-    }
-
     private fun setActionBarTitle() {
         if (activity is ActivityStart) {
             (activity as ActivityStart).setTitle(date.toStringMonth())
@@ -479,7 +474,6 @@ class FragmentMonthPage: Fragment() {
     public fun onEvent(event: HashMapEvent) {
         val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
         if (addEventActivity != null) {
-            removeDayEventView()
             refreshPage()
         }
 

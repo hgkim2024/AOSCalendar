@@ -18,6 +18,7 @@ import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.AlertUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
 import com.asusoft.calendar.util.endOfDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -143,7 +144,7 @@ class ActivityAddEvent : AppCompatActivity() {
             if (!confirmFlag) {
                 confirmFlag = true
                 addEventRealm()
-                calendarRefresh()
+                calendarRefresh(true)
             }
         }
 
@@ -248,12 +249,6 @@ class ActivityAddEvent : AppCompatActivity() {
         }
 
         finish()
-    }
-
-    private fun calendarRefresh() {
-        val event = HashMapEvent(HashMap())
-        event.map[toStringActivity()] = toStringActivity()
-        GlobalBus.getBus().post(event)
     }
 
     private fun removeEvent(key: Long) {

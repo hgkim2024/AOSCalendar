@@ -115,7 +115,18 @@ class OneDayEventHolder(
 
             adapter.list = getDayEventList(typeObject.eventViewDate)
             adapter.notifyDataSetChanged()
-            typeObject.refreshWeek()
+
+            when(item) {
+                is CopyEventOneDay -> {
+                    typeObject.refreshWeek()
+                }
+
+                is CopyEventMultiDay -> {
+                    MonthCalendarUIUtil.calendarRefresh()
+                }
+
+                else -> return@setOnClickListener
+            }
         }
     }
 
