@@ -107,9 +107,12 @@ object MonthCalendarUIUtil {
             }
         }
 
+        val size = oneDayCopyList.size + multiDayCopyList.size + 5
+
         while (
-                !(oneDayCopyList.isEmpty()
-                        && multiDayCopyList.isEmpty())
+                (oneDayCopyList.isNotEmpty()
+                        || multiDayCopyList.isNotEmpty())
+                || order < size
         ) {
             for (item in orderMap) {
                 if (order == item.value) {
@@ -244,7 +247,7 @@ object MonthCalendarUIUtil {
 
             var index = 0
             loop@ while(true) {
-                if (startOfWeek >= endOfWeek) break@loop
+                if (startOfWeek > endOfWeek) break@loop
 
                 if (dayCheckList.size <= index) {
                     dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
