@@ -7,9 +7,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.Transformation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,9 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.fragment.day.FragmentDayCalendar
-import com.asusoft.calendar.fragment.month.FragmentMonthPage.Companion.ANIMATION_DURATION
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.*

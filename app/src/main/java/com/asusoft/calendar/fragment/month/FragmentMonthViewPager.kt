@@ -10,13 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.ActivityStart
+import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*

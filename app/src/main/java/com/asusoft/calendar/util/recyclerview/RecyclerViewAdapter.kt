@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.start.SideMenuType
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
@@ -29,6 +30,8 @@ import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendar
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType.*
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
+import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
+import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,6 +63,18 @@ class RecyclerViewAdapter(
                     is Date -> DayCalendarType.ADD_EVENT.value
                     else -> CHECK_BOX.value
                 }
+            }
+
+            SIDE_MENU -> {
+                if (list[position] is SideMenuType) {
+                    return if ((list[position] as SideMenuType) == SideMenuType.TOP) {
+                        0
+                    } else {
+                        1
+                    }
+                }
+
+                return 0
             }
 
             else -> 0
@@ -129,6 +144,20 @@ class RecyclerViewAdapter(
                     }
                 }
             }
+
+            SIDE_MENU -> {
+                when(viewType) {
+                    SideMenuType.TOP.value -> {
+                        val view = inflater.inflate(R.layout.holder_side_top, parent, false)
+                        SideMenuTopHolder(context, view, this)
+                    }
+
+                    else -> {
+                        val view = inflater.inflate(R.layout.holder_side_item, parent, false)
+                        SideMenuItemHolder(context, view, this)
+                    }
+                }
+            }
         }
     }
 
@@ -150,6 +179,12 @@ class RecyclerViewAdapter(
                 when(holder) {
                     is DayCalendarAddEventHolder -> holder.bind(position)
                     is DayCalendarBodyHolder -> holder.bind(position)
+                }
+            }
+            SIDE_MENU -> {
+                when(holder) {
+                    is SideMenuTopHolder -> holder.bind(position)
+                    is SideMenuItemHolder -> holder.bind(position)
                 }
             }
         }
