@@ -497,7 +497,7 @@ object MonthCalendarUIUtil {
 //        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
-        val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
 
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
 
@@ -554,6 +554,12 @@ object MonthCalendarUIUtil {
             weekItem: WeekItem,
             eventMaxCount: Int,
     ) {
+        weekItem.eventViewList.clear()
+
+        for (idx in 0 until WEEK) {
+            weekItem.eventViewList[idx] = HashMap()
+        }
+
         val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
         val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
         val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
@@ -584,39 +590,40 @@ object MonthCalendarUIUtil {
             }
         }
 
-        for (multiDay in multiDayList) {
-            val order = orderMap.getOrDefault(multiDay.key, -1)
-            if (eventMaxCount <= order) continue
+        for (order in 0 until eventMaxCount) {
+            for (item in orderMap) {
+                if (order == item.value) {
+                    val multiEventList = multiDayList.filter { it.key == item.key }
+                    if (multiEventList.isNotEmpty()) {
+                        val multiDay = multiEventList.first()
+                        weekItem.addEventUI(
+                                context,
+                                multiDay.key,
+                                multiDay.name,
+                                multiDay.startTime,
+                                multiDay.endTime,
+                                order,
+                                isComplete = multiDay.isComplete,
+                                isHoliday = false
+                        )
+                    }
 
-            if (order != -1) {
-                weekItem.addEventUI(
-                        context,
-                        multiDay.key,
-                        multiDay.name,
-                        multiDay.startTime,
-                        multiDay.endTime,
-                        order,
-                        isComplete = multiDay.isComplete,
-                        isHoliday = false
-                )
-            }
-        }
 
-        for (oneDay in oneDayList) {
-            val order = orderMap.getOrDefault(oneDay.key, -1)
-            if (eventMaxCount <= order) continue
-
-            if (order != -1) {
-                weekItem.addEventUI(
-                        context,
-                        oneDay.key,
-                        oneDay.name,
-                        oneDay.time,
-                        oneDay.time,
-                        order,
-                        isComplete = oneDay.isComplete,
-                        isHoliday = false
-                )
+                    val oneEventList = oneDayList.filter { it.key == item.key }
+                    if (oneEventList.isNotEmpty()) {
+                        val oneDay = oneEventList.first()
+                        weekItem.addEventUI(
+                                context,
+                                oneDay.key,
+                                oneDay.name,
+                                oneDay.time,
+                                oneDay.time,
+                                order,
+                                isComplete = oneDay.isComplete,
+                                isHoliday = false
+                        )
+                    }
+                }
             }
         }
 
@@ -680,7 +687,7 @@ object MonthCalendarUIUtil {
 
         val row = getMonthRow(startOfMonthDate)
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
-        val eventMaxCount = weekHeight / CalculatorUtil.dpToPx(WeekItem.EVENT_HEIGHT)
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
 
         addEvent(
                 context,
@@ -856,7 +863,7 @@ object MonthCalendarUIUtil {
             DragEvent.ACTION_DRAG_STARTED -> {
                 return if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
                     val vw = event.localState as View
-                    vw.visibility = View.GONE
+                    vw.visibility = View.INVISIBLE
                     true
                 } else {
                     false

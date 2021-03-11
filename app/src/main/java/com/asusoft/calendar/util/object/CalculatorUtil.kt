@@ -26,6 +26,10 @@ object CalculatorUtil {
         return (dp * (dpi / density)).toInt()
     }
 
+    fun spToPx(sp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
+    }
+
     fun getStatusBarHeight(): Int {
         var statusBarHeight = 0
         val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")

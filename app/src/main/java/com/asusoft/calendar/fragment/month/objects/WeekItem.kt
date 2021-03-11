@@ -20,21 +20,24 @@ import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
+import com.orhanobut.logger.Logger
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class WeekItem(
         val weekDate: Date,
         val rootLayout: ConstraintLayout,
         val weekLayout: ConstraintLayout,
-        val dayViewList: ArrayList<TextView>
+        val dayViewList: ArrayList<TextView>,
+        val eventViewList: HashMap<Int, HashMap<Int, View>> = HashMap<Int, HashMap<Int, View>>()
 ) {
 
     companion object {
-        public const val EVENT_HEIGHT = 15.0F
         public const val TOP_MARGIN = 27.0F
         private const val LEFT_MARGIN = 1.5F
     }
@@ -75,9 +78,9 @@ class WeekItem(
         eventView.text = name
         eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
 
-        // TODO: - 터치 이벤트 중첩되는 방법 알아보기
-        eventView.setOnTouchListener { v, event -> false }
-
+        for (idx in startDay.value..endDay.value) {
+            eventViewList[idx]?.set(order, eventView)
+        }
 
         if (isHoliday) {
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
@@ -103,10 +106,9 @@ class WeekItem(
 
         // UI 배치
         eventView.id = View.generateViewId()
-
         eventView.layoutParams = ConstraintLayout.LayoutParams(
                 0,
-                CalculatorUtil.dpToPx(EVENT_HEIGHT)
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
         weekLayout.addView(eventView)
 
@@ -121,12 +123,13 @@ class WeekItem(
             iv.scaleType = ImageView.ScaleType.FIT_CENTER
             iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
             iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
+            iv.foregroundGravity = Gravity.END
             iv.bringToFront()
             eventView.alpha = COMPLETE_ALPHA
 
             iv.layoutParams = ConstraintLayout.LayoutParams(
-                    CalculatorUtil.dpToPx(EVENT_HEIGHT),
-                    CalculatorUtil.dpToPx(EVENT_HEIGHT)
+                    0,
+                    0
             )
             weekLayout.addView(iv)
             imageView = iv
@@ -135,15 +138,29 @@ class WeekItem(
         val set = ConstraintSet()
         set.clone(weekLayout)
 
-        val topMargin = CalculatorUtil.dpToPx(TOP_MARGIN + (order * (EVENT_HEIGHT + 2)))
+        val topMargin = CalculatorUtil.dpToPx(TOP_MARGIN)
         val leftMargin = CalculatorUtil.dpToPx(LEFT_MARGIN)
+        val intervalMargin = CalculatorUtil.dpToPx(2.0F)
 
-        set.connect(eventView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(eventView.id, ConstraintSet.START, startDayView.id, ConstraintSet.START, leftMargin)
         set.connect(eventView.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
 
+        if (order != 0) {
+            for (idx in 0 until WEEK) {
+                val view = eventViewList[idx]?.get(order - 1)
+
+                if (view != null) {
+                    set.connect(eventView.id, ConstraintSet.TOP, view.id, ConstraintSet.BOTTOM, intervalMargin)
+                    break
+                }
+            }
+        } else {
+            set.connect(eventView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        }
+
         if (isComplete
                 && imageView != null) {
+            set.setDimensionRatio(imageView.id, "1:1")
             set.connect(imageView.id, ConstraintSet.TOP, eventView.id, ConstraintSet.TOP)
             set.connect(imageView.id, ConstraintSet.BOTTOM, eventView.id, ConstraintSet.BOTTOM)
             set.connect(imageView.id, ConstraintSet.END, endDayView.id, ConstraintSet.END, leftMargin)
