@@ -62,6 +62,7 @@ class FragmentMonthPage: Fragment() {
         }
         const val ANIMATION_DURATION: Long = 150
         var dragInitFlag = true
+        var preventDoubleClick = false
     }
 
     private lateinit var date: Date
@@ -78,7 +79,6 @@ class FragmentMonthPage: Fragment() {
 
     private var todayView: View? = null
     private var dragStartDay = 0L
-    private var preventDoubleClick = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -505,13 +505,6 @@ class FragmentMonthPage: Fragment() {
 
         val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
         if (oneDayEventHolder != null) {
-            if (preventDoubleClick) return
-            preventDoubleClick = true
-
-            GlobalScope.async {
-                delay(1000)
-                preventDoubleClick = false
-            }
 
             val date = event.map.getOrDefault("date", null) as? Date ?: return
             if (date != this.date.startOfMonth) return
@@ -521,6 +514,9 @@ class FragmentMonthPage: Fragment() {
 
                 val oneDayItem = RealmEventOneDay.select(key)
                 if (oneDayItem != null) {
+                    if (preventDoubleClick) return
+                    preventDoubleClick = true
+
                     val intent = Intent(context, ActivityAddEvent::class.java)
                     intent.putExtra("startDate", Date(oneDayItem.time))
                     intent.putExtra("endDate", Date(oneDayItem.time))
@@ -534,6 +530,9 @@ class FragmentMonthPage: Fragment() {
 
                 val multiDayItem = RealmEventMultiDay.select(key)
                 if (multiDayItem != null) {
+                    if (preventDoubleClick) return
+                    preventDoubleClick = true
+
                     val intent = Intent(context, ActivityAddEvent::class.java)
                     intent.putExtra("startDate", Date(multiDayItem.startTime))
                     intent.putExtra("endDate", Date(multiDayItem.endTime))

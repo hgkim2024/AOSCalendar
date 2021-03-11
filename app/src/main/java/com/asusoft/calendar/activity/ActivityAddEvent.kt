@@ -176,6 +176,7 @@ class ActivityAddEvent : AppCompatActivity() {
         super.onStop()
 
         GlobalBus.getBus().unregister(this)
+        FragmentMonthPage.preventDoubleClick = false
     }
 
     public override fun onPause() {
