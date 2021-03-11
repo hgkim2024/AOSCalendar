@@ -85,7 +85,7 @@
             android:background="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="@+id/confirm_button"/>
 
         <TextView
             android:id="@+id/confirm_button"
