@@ -31,6 +31,7 @@ import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList
@@ -184,18 +185,29 @@ class FragmentMonthPage: Fragment() {
                     when (event.action) {
 
                         MotionEvent.ACTION_DOWN -> {
-                            dayViewClick(
-                                weekItem,
-                                dayView,
-                                idx
-                            )
+                            if (dayView.alpha == ALPHA) {
+                                dayViewClick(
+                                        weekItem,
+                                        dayView,
+                                        idx
+                                )
+                            }
                         }
 
                         MotionEvent.ACTION_MOVE -> {}
-                        MotionEvent.ACTION_UP -> { }
+
+                        MotionEvent.ACTION_UP -> {
+                            if (dayView.alpha != ALPHA) {
+                                dayViewClick(
+                                        weekItem,
+                                        dayView,
+                                        idx
+                                )
+                            }
+                        }
                     }
 
-                    false
+                    dayView.alpha != ALPHA
                 }
             }
         }

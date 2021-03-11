@@ -38,7 +38,7 @@ class WeekItem(
 ) {
 
     companion object {
-        var TOP_MARGIN = 0
+        val TOP_MARGIN
             get() = CalculatorUtil.spToPx(MonthCalendarUIUtil.FONT_SIZE) + CalculatorUtil.dpToPx(13.0F)
 
         private const val LEFT_MARGIN = 1.5F
@@ -88,14 +88,15 @@ class WeekItem(
             MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
-//            val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onLongPress(e: MotionEvent) {
-//                    onClick(eventView, e)
-//                }
-//            })
+            val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onLongPress(e: MotionEvent) {
+                    onClick(eventView, e)
+                }
+            })
 
             eventView.setOnTouchListener { v, event ->
-                onClick(v, event)
+//                onClick(v, event)
+                gestureDetector.onTouchEvent(event)
                 false
             }
 
