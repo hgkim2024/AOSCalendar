@@ -44,6 +44,7 @@ import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolde
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -77,6 +78,7 @@ class FragmentMonthPage: Fragment() {
 
     private var todayView: View? = null
     private var dragStartDay = 0L
+    private var preventDoubleClick = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -503,6 +505,13 @@ class FragmentMonthPage: Fragment() {
 
         val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
         if (oneDayEventHolder != null) {
+            if (preventDoubleClick) return
+            preventDoubleClick = true
+
+            GlobalScope.async {
+                delay(1000)
+                preventDoubleClick = false
+            }
 
             val date = event.map.getOrDefault("date", null) as? Date ?: return
             if (date != this.date.startOfMonth) return
