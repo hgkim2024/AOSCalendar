@@ -38,7 +38,9 @@ class WeekItem(
 ) {
 
     companion object {
-        var TOP_MARGIN = CalculatorUtil.spToPx(MonthCalendarUIUtil.FONT_SIZE) + CalculatorUtil.dpToPx(14.0F)
+        var TOP_MARGIN = 0
+            get() = CalculatorUtil.spToPx(MonthCalendarUIUtil.FONT_SIZE) + CalculatorUtil.dpToPx(13.0F)
+
         private const val LEFT_MARGIN = 1.5F
     }
 
@@ -73,7 +75,7 @@ class WeekItem(
 
         eventView.tag = key.toString()
         eventView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
-        eventView.gravity = Gravity.CENTER_VERTICAL
+//        eventView.gravity = Gravity.CENTER_VERTICAL
         eventView.setSingleLine()
         eventView.text = name
         eventView.ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -102,7 +104,7 @@ class WeekItem(
         }
 
         val startPadding = CalculatorUtil.dpToPx(2.0F)
-        eventView.setPadding(startPadding, 0, 0, 0)
+        eventView.setPadding(startPadding, CalculatorUtil.dpToPx(1.0F), 0, 0)
 
         // UI 배치
         eventView.id = View.generateViewId()

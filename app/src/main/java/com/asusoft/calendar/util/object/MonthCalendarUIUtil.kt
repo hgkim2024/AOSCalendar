@@ -41,7 +41,9 @@ object MonthCalendarUIUtil {
     private const val WEIGHT_SUM = 100.0F
 
     public const val FONT_SIZE = 12F
-    public var EVENT_HEIGHT = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)
+    public var EVENT_HEIGHT = 0
+        get() = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)
+
     public const val ALPHA = 0.5F
     public const val COMPLETE_ALPHA = 0.5F
     public const val SELECT_DAY_HEIGHT = 40.0F
@@ -59,8 +61,8 @@ object MonthCalendarUIUtil {
         todayView.gravity = Gravity.CENTER_HORIZONTAL
 
         todayView.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.dpToPx(FONT_SIZE + 4.0F),
-                CalculatorUtil.dpToPx(FONT_SIZE + 4.0F)
+                CalculatorUtil.spToPx(FONT_SIZE + 4.0F),
+                CalculatorUtil.spToPx(FONT_SIZE + 4.0F)
         )
 
         val weekLayout = weekItem.weekLayout
@@ -71,7 +73,7 @@ object MonthCalendarUIUtil {
 
         val textInt = todayView.text.toString().toInt()
 
-        val topMargin = CalculatorUtil.dpToPx(8.0F)
+        val topMargin = CalculatorUtil.dpToPx(7.5F)
         val startMargin =
                 if (textInt >= 10)
                     CalculatorUtil.dpToPx(6.0F)
@@ -422,7 +424,7 @@ object MonthCalendarUIUtil {
             if (isPopup) {
                 tv.gravity = Gravity.CENTER
             } else {
-                val padding = CalculatorUtil.dpToPx(8.0F)
+                val padding = CalculatorUtil.dpToPx(7.5F)
                 tv.setPadding(padding, padding, 0, 0)
             }
 
@@ -497,7 +499,7 @@ object MonthCalendarUIUtil {
 //        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
-        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
 
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
 
@@ -536,7 +538,7 @@ object MonthCalendarUIUtil {
                     WEIGHT_SUM / row
             )
 
-            val padding = CalculatorUtil.dpToPx(8.0F)
+            val padding = CalculatorUtil.dpToPx(7.5F)
             weekItem.weekLayout.setPadding(padding, 0, padding, 0)
 
             weekItemList.add(weekItem)
@@ -687,7 +689,7 @@ object MonthCalendarUIUtil {
 
         val row = getMonthRow(startOfMonthDate)
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
-        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
 
         addEvent(
                 context,
@@ -809,7 +811,7 @@ object MonthCalendarUIUtil {
             if (isPopup) {
                 tv.gravity = Gravity.CENTER
             } else {
-                val leftPadding = CalculatorUtil.dpToPx(8.0F)
+                val leftPadding = CalculatorUtil.dpToPx(7.5F)
                 tv.setPadding(leftPadding, 0, 0, 0)
                 tv.gravity = Gravity.CENTER_VERTICAL
             }
