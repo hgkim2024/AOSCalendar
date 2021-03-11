@@ -38,7 +38,7 @@ class WeekItem(
 ) {
 
     companion object {
-        public const val TOP_MARGIN = 27.0F
+        var TOP_MARGIN = CalculatorUtil.spToPx(MonthCalendarUIUtil.FONT_SIZE) + CalculatorUtil.dpToPx(14.0F)
         private const val LEFT_MARGIN = 1.5F
     }
 
@@ -138,7 +138,7 @@ class WeekItem(
         val set = ConstraintSet()
         set.clone(weekLayout)
 
-        val topMargin = CalculatorUtil.dpToPx(TOP_MARGIN)
+        val topMargin = TOP_MARGIN
         val leftMargin = CalculatorUtil.dpToPx(LEFT_MARGIN)
         val intervalMargin = CalculatorUtil.dpToPx(2.0F)
 

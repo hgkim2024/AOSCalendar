@@ -267,11 +267,13 @@ class FragmentMonthPage: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         var dialogWidth: Int = 150
-        dialogHeight = 30 + 14 + (EVENT_HEIGHT.toInt() * eventList.size)
-        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT.toInt()
+        dialogHeight = 30 + 14
 
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
         dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
+
+        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT
+        dialogHeight += (EVENT_HEIGHT * eventList.size)
 
         if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < monthCalendar.height) {
             if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {

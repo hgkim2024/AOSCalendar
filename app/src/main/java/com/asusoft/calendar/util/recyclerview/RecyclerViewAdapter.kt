@@ -117,7 +117,7 @@ class RecyclerViewAdapter(
             }
 
             ONE_DAY_EVENT -> {
-                val view = MonthCalendarUIUtil.getEventView(context)
+                val view = MonthCalendarUIUtil.getEdgeEventView(context)
                 OneDayEventHolder(typeObject, context, view, this)
             }
 

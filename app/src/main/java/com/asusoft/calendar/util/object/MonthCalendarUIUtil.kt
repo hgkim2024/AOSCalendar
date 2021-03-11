@@ -41,7 +41,7 @@ object MonthCalendarUIUtil {
     private const val WEIGHT_SUM = 100.0F
 
     public const val FONT_SIZE = 12F
-    public const val EVENT_HEIGHT = 26.0F
+    public var EVENT_HEIGHT = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)
     public const val ALPHA = 0.5F
     public const val COMPLETE_ALPHA = 0.5F
     public const val SELECT_DAY_HEIGHT = 40.0F
@@ -302,7 +302,7 @@ object MonthCalendarUIUtil {
         }
     }
 
-    fun getEventView(
+    fun getEdgeEventView(
             context: Context
     ): ConstraintLayout {
         val eventLayout = ConstraintLayout(context)
@@ -325,7 +325,7 @@ object MonthCalendarUIUtil {
 
         eventLayout.layoutParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
-                CalculatorUtil.dpToPx(EVENT_HEIGHT)
+                EVENT_HEIGHT
         )
 
         edgeView.layoutParams = ConstraintLayout.LayoutParams(
@@ -335,7 +335,7 @@ object MonthCalendarUIUtil {
 
         val startPadding = CalculatorUtil.dpToPx(3.0F)
         textView.setPadding(startPadding, 0, startPadding, 0)
-        textView.textSize = MonthCalendarUIUtil.FONT_SIZE + 2
+        textView.textSize = FONT_SIZE + 2
         textView.setSingleLine()
         textView.ellipsize = TextUtils.TruncateAt.END
 
@@ -496,7 +496,7 @@ object MonthCalendarUIUtil {
 //        Logger.d("action: ${CalculatorUtil.pxToDp(147.0F)}")
 //        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
-        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
         val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
 
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
@@ -686,7 +686,7 @@ object MonthCalendarUIUtil {
         }
 
         val row = getMonthRow(startOfMonthDate)
-        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - CalculatorUtil.dpToPx(WeekItem.TOP_MARGIN)
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
         val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(6.5F))
 
         addEvent(
