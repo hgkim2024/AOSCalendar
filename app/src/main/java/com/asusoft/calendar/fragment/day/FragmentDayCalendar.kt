@@ -15,8 +15,9 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.getToday
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderItem
 import com.asusoft.calendar.util.recyclerview.helper.StartSnapHelper
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyHolder
+import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderItem
 import com.asusoft.calendar.util.toStringMonth
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -99,7 +100,6 @@ class FragmentDayCalendar: Fragment() {
                     }
                     adapter.notifyItemRangeInserted(0, list.size - 1)
                     recyclerView.scrollToPosition(list.size)
-
                 }
 
                 val lastPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
@@ -157,5 +157,11 @@ class FragmentDayCalendar: Fragment() {
             adapter.notifyDataSetChanged()
             recyclerView.scrollToPosition(0)
         }
+
+        val dayCalendarBodyHolder = event.map.getOrDefault(DayCalendarBodyHolder.toString(), null)
+        if (dayCalendarBodyHolder != null) {
+            adapter.notifyDataSetChanged()
+        }
+
     }
 }

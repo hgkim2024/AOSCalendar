@@ -8,11 +8,14 @@ import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.orhanobut.logger.Logger
@@ -70,10 +73,14 @@ class DayCalendarBodyHolder (
 //            logItemList(list)
             adapter.list = list
 
-            // TODO: - post 날리기 - 좀 더 생각해보고 결정
             when(event) {
                 is CopyEventOneDay -> adapter.notifyDataSetChanged()
-                is CopyEventMultiDay -> adapter.notifyDataSetChanged()
+                is CopyEventMultiDay -> {
+                    val event = HashMapEvent(HashMap())
+                    event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
+                    GlobalBus.getBus().post(event)
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
 
@@ -133,6 +140,12 @@ class DayCalendarBodyHolder (
                 }
             }
 
+        }
+    }
+
+    companion object {
+        override fun toString(): String {
+            return "DayCalendarBodyHolder"
         }
     }
 }
