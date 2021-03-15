@@ -914,14 +914,16 @@ object MonthCalendarUIUtil {
                 v.background.clearColorFilter()
                 v.invalidate()
 
-                val vw = event.localState as View
+                val vw = event.localState as? View
 
-                if (!FragmentMonthPage.dragInitFlag) {
-                    val eventMap = HashMapEvent(java.util.HashMap())
-                    eventMap.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
-                    eventMap.map["endDragDate"] = v.tag as Long
-                    eventMap.map["key"] = (vw.tag as String).toLong()
-                    GlobalBus.getBus().post(eventMap)
+                if (vw != null) {
+                    if (!FragmentMonthPage.dragInitFlag) {
+                        val eventMap = HashMapEvent(java.util.HashMap())
+                        eventMap.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                        eventMap.map["endDragDate"] = v.tag as Long
+                        eventMap.map["key"] = (vw.tag as String).toLong()
+                        GlobalBus.getBus().post(eventMap)
+                    }
                 }
 
                 return true
