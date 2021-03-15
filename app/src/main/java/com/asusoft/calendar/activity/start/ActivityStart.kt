@@ -26,9 +26,12 @@ import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
@@ -48,11 +51,15 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 //        Logger.d("toolbar height: ${toolbar.height}")
-        
-        toolbar.setOnClickListener {
-            DialogFragmentSelectYearMonth.newInstance(date)
-                    .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
-        }
+
+        val tv = findViewById<TextView>(R.id.action_bar_title)
+        tv.clicks()
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    DialogFragmentSelectYearMonth.newInstance(date)
+                            .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
+                }
 
         drawerLayout = findViewById(R.id.drawer_layout)
 
@@ -144,6 +151,7 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
     }
 
     fun setTitle(text: String) {
+//        supportActionBar?.setTitle(text)
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.text = text
     }
