@@ -28,7 +28,7 @@ class FragmentDayCalendar: Fragment() {
 
     companion object {
         const val DEFAULT_DAY_COUNT = 10
-        const val INIT_DEFAULT_DAY_COUNT = 30
+        const val INIT_DEFAULT_DAY_COUNT = 40
 
         fun newInstance(
                 date: Date? = null
@@ -82,6 +82,7 @@ class FragmentDayCalendar: Fragment() {
         recyclerView = view.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+        recyclerView.scrollToPosition(10)
 
         val snapHelper = StartSnapHelper()
         snapHelper.attachToRecyclerView(recyclerView)
@@ -133,9 +134,9 @@ class FragmentDayCalendar: Fragment() {
 
     private fun getInitList(date: Date = Date().getToday()): ArrayList<DayCalendarHeaderItem> {
         val list = ArrayList<DayCalendarHeaderItem>()
-
+        val initDate = date.getNextDay(-10)
         for (index in 0 until INIT_DEFAULT_DAY_COUNT) {
-            val date = date.getNextDay(index)
+            val date = initDate.getNextDay(index)
             val item = DayCalendarHeaderItem(date, ArrayList())
             list.add(item)
         }
@@ -155,7 +156,7 @@ class FragmentDayCalendar: Fragment() {
 
             adapter.list = getInitList(date) as ArrayList<Any>
             adapter.notifyDataSetChanged()
-            recyclerView.scrollToPosition(0)
+            recyclerView.scrollToPosition(10)
         }
 
         val dayCalendarBodyHolder = event.map.getOrDefault(DayCalendarBodyHolder.toString(), null)
