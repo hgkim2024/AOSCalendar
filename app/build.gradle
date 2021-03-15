@@ -62,7 +62,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
 
     // rxjava
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation "io.reactivex.rxjava3:rxjava:3.0.8"
+    implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
 
     // Event Bus
     implementation 'org.greenrobot:eventbus:3.2.0'
