@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
@@ -23,9 +24,12 @@ import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.recyclerview.helper.StartSnapHelper
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class DialogFragmentDaySelectCalendar: DialogFragment() {
@@ -158,25 +162,31 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
         val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
 
-        confirmBtn.setOnClickListener {
-            val event = HashMapEvent(HashMap())
-            event.map[DialogFragmentDaySelectCalendar.toString()] = DialogFragmentDaySelectCalendar.toString()
+        confirmBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val event = HashMapEvent(HashMap())
+                event.map[DialogFragmentDaySelectCalendar.toString()] = DialogFragmentDaySelectCalendar.toString()
 
-            if (selectedStartDate != null) {
-                event.map["selectedStartDate"] = selectedStartDate!!
+                if (selectedStartDate != null) {
+                    event.map["selectedStartDate"] = selectedStartDate!!
+                }
+
+                if (selectedEndDate != null) {
+                    event.map["selectedEndDate"] = selectedEndDate!!
+                }
+
+                GlobalBus.getBus().post(event)
+                dismiss()
             }
 
-            if (selectedEndDate != null) {
-                event.map["selectedEndDate"] = selectedEndDate!!
+        cancelBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                dismiss()
             }
-
-            GlobalBus.getBus().post(event)
-            dismiss()
-        }
-
-        cancelBtn.setOnClickListener {
-            dismiss()
-        }
 
         return view
     }

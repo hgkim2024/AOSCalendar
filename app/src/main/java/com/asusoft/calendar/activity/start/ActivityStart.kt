@@ -54,7 +54,7 @@ class ActivityStart : AppCompatActivity(), FragmentManager.OnBackStackChangedLis
 
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.clicks()
-                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     DialogFragmentSelectYearMonth.newInstance(date)

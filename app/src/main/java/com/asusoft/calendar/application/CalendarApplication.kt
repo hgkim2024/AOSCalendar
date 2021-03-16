@@ -24,6 +24,7 @@ class CalendarApplication: Application() {
 
     companion object {
         lateinit var context: Context
+        const val THROTTLE = 1000L
 
         fun getRealmConfig(): RealmConfiguration {
             return RealmConfiguration.Builder()

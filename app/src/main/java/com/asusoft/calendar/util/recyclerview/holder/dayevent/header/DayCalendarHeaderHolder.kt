@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
@@ -25,8 +26,11 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
+import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
@@ -78,25 +82,28 @@ class DayCalendarHeaderHolder(
             upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
         }
 
-        headerLayout.setOnClickListener {
-            if (item.isExpand) {
-                logItemList(adapter.list)
-                adapter.list.clear()
-                adapter.notifyDataSetChanged()
-                collapseAnimation(recyclerView)
-                upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-            } else {
-                item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
-                val list = getDayCalendarItemList(item.itemList, item.date)
-                logItemList(list)
-                adapter.list = list
-                adapter.notifyDataSetChanged()
-                expandAnimation(recyclerView)
-                upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-            }
+        headerLayout.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (item.isExpand) {
+                    logItemList(adapter.list)
+                    adapter.list.clear()
+                    adapter.notifyDataSetChanged()
+                    collapseAnimation(recyclerView)
+                    upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                } else {
+                    item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
+                    val list = getDayCalendarItemList(item.itemList, item.date)
+                    logItemList(list)
+                    adapter.list = list
+                    adapter.notifyDataSetChanged()
+                    expandAnimation(recyclerView)
+                    upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                }
 
-            item.isExpand = !item.isExpand
-        }
+                item.isExpand = !item.isExpand
+            }
     }
 
     private fun addEventItem(list: ArrayList<Any>, date: Date) {

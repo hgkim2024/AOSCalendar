@@ -1,19 +1,16 @@
 package com.asusoft.calendar.activity
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
-import com.asusoft.calendar.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.realm.RealmEventMultiDay
 import com.asusoft.calendar.realm.RealmEventOneDay
 import com.asusoft.calendar.util.`object`.AdUtil
@@ -29,16 +26,16 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.Delet
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
-import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayItem
 import com.asusoft.calendar.util.startOfDay
-import com.asusoft.calendar.util.toStringDay
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.orhanobut.logger.Logger
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class ActivityAddEvent : AppCompatActivity() {
@@ -47,7 +44,7 @@ class ActivityAddEvent : AppCompatActivity() {
     lateinit var adView: AdView
     var isEdit: Boolean = false
     var key = -1L
-    var confirmFlag = false
+    var refreshFlag = false
 
     companion object {
         fun toStringActivity(): String {
@@ -135,18 +132,22 @@ class ActivityAddEvent : AppCompatActivity() {
         )
 
         val cancelBtn = findViewById<Button>(R.id.cancel_btn)
-        cancelBtn.setOnClickListener {
-            finish()
-        }
+        cancelBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                finish()
+            }
 
         val confirmBtn = findViewById<Button>(R.id.confirm_btn)
-        confirmBtn.setOnClickListener {
-            if (!confirmFlag) {
-                confirmFlag = true
+        confirmBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                refreshFlag = true
                 addEventRealm()
-                calendarRefresh(true)
+                finish()
             }
-        }
 
         if (key != -1L) {
             confirmBtn.text = "수정"
@@ -176,7 +177,6 @@ class ActivityAddEvent : AppCompatActivity() {
         super.onStop()
 
         GlobalBus.getBus().unregister(this)
-        FragmentMonthPage.preventDoubleClick = false
     }
 
     public override fun onPause() {
@@ -192,6 +192,14 @@ class ActivityAddEvent : AppCompatActivity() {
     override fun onDestroy() {
         adView.destroy()
         super.onDestroy()
+    }
+
+    override fun finish() {
+        if (refreshFlag) {
+            calendarRefresh(true)
+        }
+
+        super.finish()
     }
 
     private fun addEventRealm() {
@@ -256,6 +264,7 @@ class ActivityAddEvent : AppCompatActivity() {
         val oneDayItem = RealmEventOneDay.select(key)
         if (oneDayItem != null) {
             oneDayItem.delete()
+            refreshFlag = true
             finish()
             return
         }
@@ -263,6 +272,7 @@ class ActivityAddEvent : AppCompatActivity() {
         val multiDayItem = RealmEventMultiDay.select(key)
         if (multiDayItem != null) {
             multiDayItem.delete()
+            refreshFlag = true
             finish()
             return
         }

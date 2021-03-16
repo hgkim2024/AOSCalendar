@@ -6,11 +6,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.SideMenuType
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.HashMap
+import java.util.concurrent.TimeUnit
 
 class SideMenuItemHolder (
         val context: Context,
@@ -24,12 +28,15 @@ class SideMenuItemHolder (
         val tv = view.findViewById<TextView>(R.id.title)
         tv.text = item.getTitle()
 
-        view.setOnClickListener {
-            val event = HashMapEvent(HashMap())
-            event.map[SideMenuItemHolder.toString()] = SideMenuItemHolder.toString()
-            event.map["type"] = item
-            GlobalBus.getBus().post(event)
-        }
+        view.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val event = HashMapEvent(HashMap())
+                event.map[SideMenuItemHolder.toString()] = SideMenuItemHolder.toString()
+                event.map["type"] = item
+                GlobalBus.getBus().post(event)
+            }
     }
 
     companion object {

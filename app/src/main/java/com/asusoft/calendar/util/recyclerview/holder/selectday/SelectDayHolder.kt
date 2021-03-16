@@ -16,8 +16,11 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.HashMap
+import java.util.concurrent.TimeUnit
 
 class SelectDayHolder(
         private val typeObject: Any,
@@ -84,14 +87,17 @@ class SelectDayHolder(
                     dayView.alpha = MonthCalendarUIUtil.ALPHA
                 }
 
-                dayView.setOnClickListener {
-                    if (dayView.alpha != MonthCalendarUIUtil.ALPHA) {
-                        val event = HashMapEvent(HashMap())
-                        event.map[SelectDayHolder.toString()] = SelectDayHolder.toString()
-                        event.map["date"] = date
-                        GlobalBus.getBus().post(event)
+                dayView.clicks()
+                    .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (dayView.alpha != MonthCalendarUIUtil.ALPHA) {
+                            val event = HashMapEvent(HashMap())
+                            event.map[SelectDayHolder.toString()] = SelectDayHolder.toString()
+                            event.map["date"] = date
+                            GlobalBus.getBus().post(event)
+                        }
                     }
-                }
 
                 if (holidayMap.isNotEmpty()) {
                     val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)

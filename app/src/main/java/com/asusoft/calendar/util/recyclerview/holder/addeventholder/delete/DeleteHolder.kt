@@ -5,10 +5,14 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication.Companion.THROTTLE
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.HashMap
+import java.util.concurrent.TimeUnit
 
 class DeleteHolder (
         val context: Context,
@@ -21,16 +25,28 @@ class DeleteHolder (
 
         if (item is DeleteItem) {
             val deleteBtn = view.findViewById<ImageButton>(R.id.delete_button)
-            val onClickListener = View.OnClickListener {
-                val event = HashMapEvent(HashMap())
-                event.map[DeleteHolder.toString()] = DeleteHolder.toString()
-                event.map["key"] = item.EventKey
-                GlobalBus.getBus().post(event)
-            }
 
-            view.setOnClickListener(onClickListener)
-            deleteBtn.setOnClickListener(onClickListener)
+            view.clicks()
+                .throttleFirst(THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    deleteItem(item)
+                }
+
+            deleteBtn.clicks()
+                .throttleFirst(THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    deleteItem(item)
+                }
         }
+    }
+
+    private fun deleteItem(item: DeleteItem) {
+        val event = HashMapEvent(HashMap())
+        event.map[DeleteHolder.toString()] = DeleteHolder.toString()
+        event.map["key"] = item.EventKey
+        GlobalBus.getBus().post(event)
     }
 
     companion object {

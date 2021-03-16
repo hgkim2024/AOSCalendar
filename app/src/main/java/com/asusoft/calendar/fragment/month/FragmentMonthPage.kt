@@ -41,6 +41,8 @@ import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -48,6 +50,7 @@ import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class FragmentMonthPage: Fragment() {
 
@@ -62,7 +65,6 @@ class FragmentMonthPage: Fragment() {
         }
         const val ANIMATION_DURATION: Long = 150
         var dragInitFlag = true
-        var preventDoubleClick = false
     }
 
     private lateinit var date: Date
@@ -261,17 +263,22 @@ class FragmentMonthPage: Fragment() {
 
         title.text = "${eventList.size}개 이벤트"
 
-        val addEventListener = View.OnClickListener {
-            selectedDayDate(date)
-        }
-
-        addButton.setOnClickListener(addEventListener)
+        addButton.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                selectedDayDate(date)
+            }
 
         if (eventList.isEmpty()) {
             emptyTitle.visibility = View.VISIBLE
             emptyTitle.isClickable = true
-
-            emptyTitle.setOnClickListener(addEventListener)
+            emptyTitle.clicks()
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    selectedDayDate(date)
+                }
         }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
@@ -514,9 +521,6 @@ class FragmentMonthPage: Fragment() {
 
                 val oneDayItem = RealmEventOneDay.select(key)
                 if (oneDayItem != null) {
-                    if (preventDoubleClick) return
-                    preventDoubleClick = true
-
                     val intent = Intent(context, ActivityAddEvent::class.java)
                     intent.putExtra("startDate", Date(oneDayItem.time))
                     intent.putExtra("endDate", Date(oneDayItem.time))
@@ -530,9 +534,6 @@ class FragmentMonthPage: Fragment() {
 
                 val multiDayItem = RealmEventMultiDay.select(key)
                 if (multiDayItem != null) {
-                    if (preventDoubleClick) return
-                    preventDoubleClick = true
-
                     val intent = Intent(context, ActivityAddEvent::class.java)
                     intent.putExtra("startDate", Date(multiDayItem.startTime))
                     intent.putExtra("endDate", Date(multiDayItem.endTime))

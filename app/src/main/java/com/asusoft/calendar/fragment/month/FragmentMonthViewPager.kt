@@ -11,14 +11,18 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 class FragmentMonthViewPager: Fragment() {
@@ -90,13 +94,16 @@ class FragmentMonthViewPager: Fragment() {
         todayLayout.background.alpha = 200
         todayLayout.visibility = View.INVISIBLE
 
-        todayLayout.setOnClickListener {
-            isScroll = false
-            val moveDate = Date().getToday()
-            movePage(moveDate)
-            (activity as? ActivityStart)?.setDate(moveDate)
-            todayLayout.visibility = View.INVISIBLE
-        }
+        todayLayout.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                isScroll = false
+                val moveDate = Date().getToday()
+                movePage(moveDate)
+                (activity as? ActivityStart)?.setDate(moveDate)
+                todayLayout.visibility = View.INVISIBLE
+            }
 
         isVisibleTodayView(date)
 

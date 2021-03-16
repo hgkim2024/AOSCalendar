@@ -18,8 +18,11 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class DayCalendarBodyHolder (
@@ -61,28 +64,31 @@ class DayCalendarBodyHolder (
 
         checkBox.isChecked = isComplete
 
-        checkBox.setOnClickListener {
-            when(event) {
-                is CopyEventOneDay -> event.updateIsCompete(!event.isComplete)
-                is CopyEventMultiDay -> event.updateIsCompete(!event.isComplete)
-            }
+        checkBox.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                when(event) {
+                    is CopyEventOneDay -> event.updateIsCompete(!event.isComplete)
+                    is CopyEventMultiDay -> event.updateIsCompete(!event.isComplete)
+                }
 
-            val itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
-            val list = getDayCalendarItemList(itemList, item.date)
+                val itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
+                val list = getDayCalendarItemList(itemList, item.date)
 
 //            logItemList(list)
-            adapter.list = list
+                adapter.list = list
 
-            when(event) {
-                is CopyEventOneDay -> adapter.notifyDataSetChanged()
-                is CopyEventMultiDay -> {
-                    val event = HashMapEvent(HashMap())
-                    event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
-                    GlobalBus.getBus().post(event)
-                    adapter.notifyDataSetChanged()
+                when(event) {
+                    is CopyEventOneDay -> adapter.notifyDataSetChanged()
+                    is CopyEventMultiDay -> {
+                        val event = HashMapEvent(HashMap())
+                        event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
+                        GlobalBus.getBus().post(event)
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             }
-        }
 
         editText.clearTextChangedListeners()
         editText.setText(name)

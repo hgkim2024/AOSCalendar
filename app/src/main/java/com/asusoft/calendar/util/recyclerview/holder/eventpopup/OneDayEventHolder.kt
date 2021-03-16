@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.realm.copy.CopyEventMultiDay
 import com.asusoft.calendar.realm.copy.CopyEventOneDay
@@ -17,8 +18,11 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
+import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class OneDayEventHolder(
         private val typeObject: Any,
@@ -32,7 +36,11 @@ class OneDayEventHolder(
 
         val edgeView = view.findViewWithTag<View?>(0)
         val textView = view.findViewWithTag<TextView?>(1)
-        val checkBox = view.findViewWithTag<CheckBox>(2)
+        val checkBox = view.findViewWithTag<CheckBox?>(2)
+
+        if (edgeView == null) return
+        if (textView == null) return
+        if (checkBox == null) return
 
         var key = 0L
         var date = Date()
@@ -87,47 +95,53 @@ class OneDayEventHolder(
             checkBox.isChecked = false
         }
 
-        val click = View.OnClickListener {
-            val event = HashMapEvent(HashMap())
-            event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
-            event.map["key"] = key
-            event.map["date"] = date
-            GlobalBus.getBus().post(event)
-        }
-
-        edgeView?.setOnClickListener(click)
-        textView?.setOnClickListener(click)
-
-        checkBox?.setOnClickListener {
-            if (typeObject !is FragmentMonthPage) return@setOnClickListener
-
-            when(item) {
-                is CopyEventOneDay -> {
-                    item.updateIsCompete(!item.isComplete)
-                }
-
-                is CopyEventMultiDay -> {
-                    item.updateIsCompete(!item.isComplete)
-                }
-
-                else -> return@setOnClickListener
+        view.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribe {
+                clickEvent(key, date)
             }
 
-            adapter.list = getDayEventList(typeObject.eventViewDate)
-            adapter.notifyDataSetChanged()
+        checkBox.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (typeObject !is FragmentMonthPage) return@subscribe
 
-            when(item) {
-                is CopyEventOneDay -> {
-                    typeObject.refreshWeek()
+                when(item) {
+                    is CopyEventOneDay -> {
+                        item.updateIsCompete(!item.isComplete)
+                    }
+
+                    is CopyEventMultiDay -> {
+                        item.updateIsCompete(!item.isComplete)
+                    }
+
+                    else -> return@subscribe
                 }
 
-                is CopyEventMultiDay -> {
-                    MonthCalendarUIUtil.calendarRefresh()
-                }
+                adapter.list = getDayEventList(typeObject.eventViewDate)
+                adapter.notifyDataSetChanged()
 
-                else -> return@setOnClickListener
+                when(item) {
+                    is CopyEventOneDay -> {
+                        typeObject.refreshWeek()
+                    }
+
+                    is CopyEventMultiDay -> {
+                        MonthCalendarUIUtil.calendarRefresh()
+                    }
+
+                    else -> return@subscribe
+                }
             }
-        }
+    }
+
+    private fun clickEvent(key: Long, date: Date) {
+        val event = HashMapEvent(HashMap())
+        event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
+        event.map["key"] = key
+        event.map["date"] = date
+        GlobalBus.getBus().post(event)
     }
 
     companion object {

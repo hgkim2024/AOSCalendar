@@ -12,14 +12,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.calendarMonth
 import com.asusoft.calendar.util.calendarYear
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.getToday
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class DialogFragmentSelectYearMonth: DialogFragment() {
 
@@ -85,27 +89,33 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
         val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
 
-        confirmBtn.setOnClickListener {
-            val event = HashMapEvent(HashMap())
-            event.map[DialogFragmentSelectYearMonth.toString()] = DialogFragmentSelectYearMonth.toString()
+        confirmBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val event = HashMapEvent(HashMap())
+                event.map[DialogFragmentSelectYearMonth.toString()] = DialogFragmentSelectYearMonth.toString()
 
-            val year = yearPicker.value.toString()
-            val month = String.format("%02d", monthPicker.value)
+                val year = yearPicker.value.toString()
+                val month = String.format("%02d", monthPicker.value)
 
-            val sdf = SimpleDateFormat("yyyyMM")
-            val date = sdf.parse(year + month)
-            event.map["date"] = date
+                val sdf = SimpleDateFormat("yyyyMM")
+                val date = sdf.parse(year + month)
+                event.map["date"] = date
 
-            GlobalBus.getBus().post(event)
+                GlobalBus.getBus().post(event)
 
-            (activity as? ActivityStart)?.setDate(date)
+                (activity as? ActivityStart)?.setDate(date)
 
-            dismiss()
-        }
+                dismiss()
+            }
 
-        cancelBtn.setOnClickListener {
-            dismiss()
-        }
+        cancelBtn.clicks()
+            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                dismiss()
+            }
 
         return view
     }
