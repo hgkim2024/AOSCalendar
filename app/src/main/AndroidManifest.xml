@@ -13,7 +13,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admod_app_id"/>
+            android:value="@string/admod_app_id" />
 
         <activity
             android:name=".activity.ActivityAddEvent"

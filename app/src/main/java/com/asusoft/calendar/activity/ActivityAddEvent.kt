@@ -38,7 +38,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class ActivityAddEvent : AppCompatActivity() {
+class ActivityAddEvent: AppCompatActivity() {
 
     lateinit var adapter: RecyclerViewAdapter
     lateinit var adView: AdView
