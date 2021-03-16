@@ -53,6 +53,7 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private lateinit var drawerLayout: DrawerLayout
     private var searchView: SearchView? = null
 
+    // TODO: - 사이드 메뉴 디자인 작업
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -109,7 +110,7 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.searach_menu, menu)
+        menuInflater.inflate(R.menu.activity_start_menu, menu)
         val myActionMenuItem = menu.findItem(R.id.action_search)
         val searchView = myActionMenuItem.actionView as SearchView
         this.searchView = searchView

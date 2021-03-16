@@ -10,4 +10,6 @@ class FragmentSearchList: Fragment() {
         }
     }
 
+    // TODO: - 최근 검색 리스트
+    // TODO: - 검색 시 리스트 - 디자인 필요
 }
