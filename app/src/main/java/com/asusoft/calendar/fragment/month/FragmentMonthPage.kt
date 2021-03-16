@@ -78,6 +78,7 @@ class FragmentMonthPage: Fragment() {
     private var initFlag = false
     private var bottomFlag = false
     private var dialogHeight = 0
+    private var preventDoubleClick = false
 
     private var todayView: View? = null
     private var dragStartDay = 0L
@@ -222,6 +223,9 @@ class FragmentMonthPage: Fragment() {
         dayView: View,
         idx: Int
     ) {
+        if (preventDoubleClick) return
+        preventDoubleClick = true
+
         if (prevClickDayView != null) {
             prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
         }
@@ -238,6 +242,13 @@ class FragmentMonthPage: Fragment() {
                 dayView,
                 idx
             )
+        }
+
+        if (preventDoubleClick) {
+            GlobalScope.async {
+                delay(ANIMATION_DURATION + 50L)
+                preventDoubleClick = false
+            }
         }
     }
 
