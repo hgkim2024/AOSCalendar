@@ -29,6 +29,8 @@ open class RealmEventDay: RealmObject() {
     
     var visitList: RealmList<RealmVisitPerson> = RealmList()
 
+    var memo: String = ""
+
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventDay> {
             val startTime = date.startOfWeek.time
@@ -118,7 +120,8 @@ open class RealmEventDay: RealmObject() {
                                 item.startTime,
                                 item.endTime,
                                 item.isComplete,
-                                visitList
+                                visitList,
+                                item.memo
                         )
                 )
             }
@@ -150,7 +153,8 @@ open class RealmEventDay: RealmObject() {
                 startTime,
                 endTime,
                 isComplete,
-                visitList
+                visitList,
+                memo
         )
     }
 
@@ -169,7 +173,8 @@ open class RealmEventDay: RealmObject() {
         startTime: Long,
         endTime: Long,
         isComplete: Boolean,
-        visitList: ArrayList<CopyVisitPerson>? = null
+        visitList: ArrayList<CopyVisitPerson>? = null,
+        memo: String? = null
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -199,6 +204,10 @@ open class RealmEventDay: RealmObject() {
                 item.phone = visitPerson.phone
                 this.visitList.add(item)
             }
+        }
+
+        if (memo != null) {
+            this.memo = memo
         }
 
         this.isComplete = isComplete

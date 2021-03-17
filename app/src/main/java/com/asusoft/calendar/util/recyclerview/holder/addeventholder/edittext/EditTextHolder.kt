@@ -27,13 +27,6 @@ class EditTextHolder(
 
             tvEdit.setText(item.context)
             tvEdit.addTextChangedListener(item.textWatcher)
-//
-//            tvEdit.textChanges()
-//                .debounce(500, TimeUnit.MILLISECONDS)
-//                .subscribeOn(Schedulers.io())
-//                .subscribe { charSequence ->
-//                    Logger.d("Text Change!!: ${charSequence.toString()}")
-//                }
         }
     }
 }

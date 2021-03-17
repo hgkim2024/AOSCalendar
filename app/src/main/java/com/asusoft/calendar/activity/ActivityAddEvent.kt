@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,8 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.Com
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
 import com.asusoft.calendar.util.startOfDay
@@ -34,6 +37,10 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -43,6 +50,8 @@ import kotlin.collections.ArrayList
 class ActivityAddEvent: AppCompatActivity() {
 
     lateinit var adapter: RecyclerViewAdapter
+    lateinit var recyclerView: RecyclerView
+
     var adView: AdView? = null
     var isEdit: Boolean = false
     var key = -1L
@@ -62,16 +71,18 @@ class ActivityAddEvent: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
+//        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN + WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         GlobalBus.getBus().register(this)
 
         lateinit var startDate: Date
         lateinit var endDate: Date
         var event: CopyEventDay? = null
-        var visitCount = 0
 
         var title: String? = null
         val isComplete = intent.getBooleanExtra("isComplete", false)
+        var visitCount = 0
+        var memo: String? = null
 //        val visitPerson = intent.getBooleanExtra("isComplete", false)
         key = intent.getLongExtra("key", -1L)
 
@@ -90,6 +101,7 @@ class ActivityAddEvent: AppCompatActivity() {
             startDate = Date(event.startTime)
             endDate = Date(event.endTime)
             visitCount = event.visitList.size
+            memo = event.memo
         } else {
             startDate = intent.getSerializableExtra("startDate") as Date
             endDate = intent.getSerializableExtra("endDate") as Date
@@ -127,6 +139,14 @@ class ActivityAddEvent: AppCompatActivity() {
                 )
         )
 
+        list.add(
+                MemoItem(
+                        "메모",
+                        memo ?: "",
+                        ""
+                )
+        )
+
         if (isEdit) {
             list.add(
                     DeleteItem(key)
@@ -135,7 +155,7 @@ class ActivityAddEvent: AppCompatActivity() {
 
         adapter = RecyclerViewAdapter(this, list)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(baseContext)
@@ -247,6 +267,7 @@ class ActivityAddEvent: AppCompatActivity() {
         lateinit var startDayItem: StartDayItem
         lateinit var endDayItem: StartDayItem
         lateinit var completeItem: CompleteItem
+        lateinit var memoItem: MemoItem
 
         var startDayCount = 0
         for (item in adapter.list) {
@@ -263,6 +284,7 @@ class ActivityAddEvent: AppCompatActivity() {
                 }
 
                 is CompleteItem -> completeItem = item
+                is MemoItem -> memoItem = item
             }
         }
 
@@ -273,7 +295,8 @@ class ActivityAddEvent: AppCompatActivity() {
                     startDayItem.date.startOfDay.time,
                     endDayItem.date.startOfDay.time,
                     completeItem.isComplete,
-                    visitList
+                    visitList,
+                    memoItem.context
             )
         } else {
             val eventMultiDay = RealmEventDay()
@@ -282,7 +305,8 @@ class ActivityAddEvent: AppCompatActivity() {
                     startDayItem.date.startOfDay.time,
                     endDayItem.date.startOfDay.time,
                     completeItem.isComplete,
-                    visitList
+                    visitList,
+                    memoItem.context
             )
             eventMultiDay.insert()
         }
@@ -356,5 +380,21 @@ class ActivityAddEvent: AppCompatActivity() {
             }
 
         }
+
+        val memoHolder = event.map.getOrDefault(MemoHolder.toString(), null)
+        if (memoHolder != null) {
+            for(idx in adapter.list.indices) {
+                val item = adapter.list[idx]
+                if (item is MemoItem) {
+                    GlobalScope.async(Dispatchers.Main) {
+                        delay(200)
+//                        recyclerView.smoothScrollToPosition(idx-2)
+                    }
+                    break
+                }
+            }
+
+        }
+
     }
 }

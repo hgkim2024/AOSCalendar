@@ -6,5 +6,6 @@ enum class AddEventType(val value: Int) {
     START_DAY(1),
     COMPLETE(2),
     DELETE(3),
-    VISIT(4);
+    VISIT(4),
+    MEMO(5);
 }

@@ -9,6 +9,7 @@
     <color name="holidayBackground">#bbdc143c</color>
     <color name="saturday">#4169E1</color>
 
+    <color name="itemBackground">#FFFFFF</color>
     <color name="background">#FAFAFA</color>
     <color name="separator">#E0E0E0</color>
     <color name="lightSeparator">#EAEAEA</color>

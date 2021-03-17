@@ -21,6 +21,8 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.Delet
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoItem
 import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
@@ -59,6 +61,7 @@ class RecyclerViewAdapter(
                     is CompleteItem -> COMPLETE.value
                     is DeleteItem -> DELETE.value
                     is VisitItem -> VISIT.value
+                    is MemoItem -> MEMO.value
                     else -> 0
                 }
             }
@@ -93,7 +96,7 @@ class RecyclerViewAdapter(
             ADD_EVENT -> {
                 when(viewType) {
                     TITLE.value -> {
-                        val view = inflater.inflate(R.layout.holder_edit_text, parent, false)
+                        val view = inflater.inflate(R.layout.holder_edit_title, parent, false)
                         view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         EditTextHolder(context, view,this)
                     }
@@ -117,11 +120,18 @@ class RecyclerViewAdapter(
 
                     VISIT.value -> {
                         val view = inflater.inflate(R.layout.holder_visite, parent, false)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         VisitHolder(context, view,this)
                     }
 
+                    MEMO.value -> {
+                        val view = inflater.inflate(R.layout.holder_edit_memo, parent, false)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                        MemoHolder(context, view,this)
+                    }
+
                     else -> {
-                        val view = inflater.inflate(R.layout.holder_edit_text, parent, false)
+                        val view = inflater.inflate(R.layout.holder_edit_title, parent, false)
                         EditTextHolder(context, view,this)
                     }
                 }
@@ -187,6 +197,7 @@ class RecyclerViewAdapter(
                     is CompleteHolder -> holder.bind(position)
                     is DeleteHolder -> holder.bind(position)
                     is VisitHolder -> holder.bind(position)
+                    is MemoHolder -> holder.bind(position)
                 }
             }
 
