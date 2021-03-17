@@ -2,9 +2,11 @@ package com.asusoft.calendar.realm
 
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.*
 import com.orhanobut.logger.Logger
 import io.realm.Realm
+import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
@@ -24,6 +26,8 @@ open class RealmEventDay: RealmObject() {
     var endTime: Long = 0
 
     var isComplete: Boolean = false
+    
+    var visitList: RealmList<RealmVisitPerson> = RealmList()
 
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventDay> {
@@ -92,18 +96,29 @@ open class RealmEventDay: RealmObject() {
             return item
         }
 
-        fun getOneDayCopyList(date: Date): ArrayList<CopyEventDay> {
+        fun getOneDayCopyList(
+                date: Date,
+                isVisitList: Boolean = false
+        ): ArrayList<CopyEventDay> {
+
             val realmList = selectOneDay(date)
             val copyList = ArrayList<CopyEventDay>()
 
             for (item in realmList) {
+
+                val visitList = ArrayList<CopyVisitPerson>()
+                if (isVisitList) {
+                    visitList.addAll(item.getCopyVisitList())
+                }
+
                 copyList.add(
                         CopyEventDay(
                                 item.key,
                                 item.name,
                                 item.startTime,
                                 item.endTime,
-                                item.isComplete
+                                item.isComplete,
+                                visitList
                         )
                 )
             }
@@ -123,21 +138,38 @@ open class RealmEventDay: RealmObject() {
         }
     }
 
-    fun getCopy(): CopyEventDay {
+    fun getCopy(isVisitList: Boolean = false): CopyEventDay {
+        val visitList = ArrayList<CopyVisitPerson>()
+        if (isVisitList) {
+            visitList.addAll(getCopyVisitList())
+        }
+
         return CopyEventDay(
                 key,
                 name,
                 startTime,
                 endTime,
-                isComplete
+                isComplete,
+                visitList
         )
+    }
+
+    fun getCopyVisitList(): ArrayList<CopyVisitPerson> {
+        val copyVisitList = ArrayList<CopyVisitPerson>()
+
+        for (visitPerson in visitList) {
+            copyVisitList.add(visitPerson.getCopy())
+        }
+
+        return copyVisitList
     }
 
     fun update(
         name: String,
         startTime: Long,
         endTime: Long,
-        isComplete: Boolean
+        isComplete: Boolean,
+        visitList: ArrayList<CopyVisitPerson>? = null
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -153,6 +185,20 @@ open class RealmEventDay: RealmObject() {
 
         if (endTime > 0) {
             this.endTime = endTime
+        }
+        
+        if (visitList != null) {
+            while(this.visitList.isNotEmpty()) {
+                val item = this.visitList.removeAt(0)
+                item.delete()
+            }
+
+            for (visitPerson in visitList) {
+                val item = RealmVisitPerson()
+                item.name = visitPerson.name
+                item.phone = visitPerson.phone
+                this.visitList.add(item)
+            }
         }
 
         this.isComplete = isComplete

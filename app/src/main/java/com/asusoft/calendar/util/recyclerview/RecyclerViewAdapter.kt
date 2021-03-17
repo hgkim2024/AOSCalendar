@@ -24,6 +24,9 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.Edi
 import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
+import com.asusoft.calendar.util.recyclerview.holder.addperson.PersonHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarAddEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
@@ -55,6 +58,7 @@ class RecyclerViewAdapter(
                     is StartDayItem -> START_DAY.value
                     is CompleteItem -> COMPLETE.value
                     is DeleteItem -> DELETE.value
+                    is VisitItem -> VISIT.value
                     else -> 0
                 }
             }
@@ -102,12 +106,18 @@ class RecyclerViewAdapter(
 
                     COMPLETE.value -> {
                         val view = inflater.inflate(R.layout.holder_switch_button, parent, false)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         CompleteHolder(context, view, this)
                     }
 
                     DELETE.value -> {
                         val view = inflater.inflate(R.layout.holder_delete, parent, false)
                         DeleteHolder(context, view,this)
+                    }
+
+                    VISIT.value -> {
+                        val view = inflater.inflate(R.layout.holder_visite, parent, false)
+                        VisitHolder(context, view,this)
                     }
 
                     else -> {
@@ -159,6 +169,12 @@ class RecyclerViewAdapter(
                     }
                 }
             }
+
+            VISIT_PERSON -> {
+                val view = inflater.inflate(R.layout.holder_visit_person, parent, false)
+                view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                PersonHolder(context, view, this)
+            }
         }
     }
 
@@ -170,6 +186,7 @@ class RecyclerViewAdapter(
                     is StartDayHolder -> holder.bind(position)
                     is CompleteHolder -> holder.bind(position)
                     is DeleteHolder -> holder.bind(position)
+                    is VisitHolder -> holder.bind(position)
                 }
             }
 
@@ -188,6 +205,7 @@ class RecyclerViewAdapter(
                     is SideMenuItemHolder -> holder.bind(position)
                 }
             }
+            VISIT_PERSON -> (holder as PersonHolder).bind(position)
         }
     }
 

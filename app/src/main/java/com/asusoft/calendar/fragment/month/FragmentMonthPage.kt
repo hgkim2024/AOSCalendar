@@ -532,11 +532,6 @@ class FragmentMonthPage: Fragment() {
                 val event = RealmEventDay.select(key)
                 if (event != null) {
                     val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("startDate", Date(event.startTime))
-                    intent.putExtra("endDate", Date(event.endTime))
-                    intent.putExtra("title", event.name)
-                    intent.putExtra("isComplete", event.isComplete)
-                    intent.putExtra("isEdit", true)
                     intent.putExtra("key", key)
                     startActivity(intent)
                     return

@@ -1,5 +1,6 @@
 package com.asusoft.calendar.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,12 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.application.CalendarApplication.Companion.context
 import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.realm.RealmEventDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.AlertUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
-import com.asusoft.calendar.util.endOfDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
@@ -24,6 +27,7 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.Delet
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
 import com.asusoft.calendar.util.startOfDay
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -39,10 +43,12 @@ import kotlin.collections.ArrayList
 class ActivityAddEvent: AppCompatActivity() {
 
     lateinit var adapter: RecyclerViewAdapter
-    lateinit var adView: AdView
+    var adView: AdView? = null
     var isEdit: Boolean = false
     var key = -1L
     var refreshFlag = false
+
+    var visitList: ArrayList<CopyVisitPerson>? = null
 
     companion object {
         fun toStringActivity(): String {
@@ -57,13 +63,38 @@ class ActivityAddEvent: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
-        val startDate = intent.getSerializableExtra("startDate") as Date
-        val endDate = intent.getSerializableExtra("endDate") as Date
+        GlobalBus.getBus().register(this)
 
-        val title = intent.getStringExtra("title")
+        lateinit var startDate: Date
+        lateinit var endDate: Date
+        var event: CopyEventDay? = null
+        var visitCount = 0
+
+        var title: String? = null
         val isComplete = intent.getBooleanExtra("isComplete", false)
-        isEdit = intent.getBooleanExtra("isEdit", false)
+//        val visitPerson = intent.getBooleanExtra("isComplete", false)
         key = intent.getLongExtra("key", -1L)
+
+        if (key != -1L) {
+            isEdit = true
+
+            val copyItem = RealmEventDay.select(key)?.getCopy(isVisitList = true)
+            if (copyItem == null) {
+                finish()
+                return
+            }
+
+            event = copyItem
+
+            title = event.name
+            startDate = Date(event.startTime)
+            endDate = Date(event.endTime)
+            visitCount = event.visitList.size
+        } else {
+            startDate = intent.getSerializableExtra("startDate") as Date
+            endDate = intent.getSerializableExtra("endDate") as Date
+        }
+
 
         val list = ArrayList<Any>()
         list.add(
@@ -89,6 +120,13 @@ class ActivityAddEvent: AppCompatActivity() {
 
         list.add(CompleteItem(isComplete))
 
+        list.add(
+                VisitItem(
+                        visitCount,
+                        "초대할 사람"
+                )
+        )
+
         if (isEdit) {
             list.add(
                     DeleteItem(key)
@@ -109,22 +147,34 @@ class ActivityAddEvent: AppCompatActivity() {
                         object : RecyclerItemClickListener.OnItemClickListener {
                             override fun onItemClick(view: View?, position: Int) {
                                 val item = adapter.list[position]
-                                if (item is StartDayItem) {
-                                    val selectDayList = ArrayList<StartDayItem>()
 
-                                    for (item in adapter.list) {
-                                        if (item is StartDayItem) {
-                                            selectDayList.add(item)
+                                when(item) {
+                                    is StartDayItem -> {
+                                        val selectDayList = ArrayList<StartDayItem>()
+
+                                        for (item in adapter.list) {
+                                            if (item is StartDayItem) {
+                                                selectDayList.add(item)
+                                            }
                                         }
+
+                                        DialogFragmentDaySelectCalendar
+                                                .newInstance(
+                                                        selectDayList[0].date,
+                                                        selectDayList[1].date.startOfDay
+                                                )
+                                                .show(supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
                                     }
 
-                                    DialogFragmentDaySelectCalendar
-                                            .newInstance(
-                                                    selectDayList[0].date,
-                                                    selectDayList[1].date.startOfDay
-                                            )
-                                            .show(supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
+                                    is VisitItem -> {
+                                        val intent = Intent(context, ActivityAddPerson::class.java)
+                                        if (event != null) {
+                                            intent.putExtra("key", event.key)
+                                        }
+                                        startActivity(intent)
+                                    }
                                 }
+
                             }
 
                             override fun onItemLongClick(view: View?, position: Int) {}
@@ -158,40 +208,29 @@ class ActivityAddEvent: AppCompatActivity() {
         // 광고 추가
         adView = AdView(baseContext)
 
-        adView.adSize = AdSize.BANNER
-        adView.adUnitId = AdUtil.adMobAddEventTopBannerId
+        adView?.adSize = AdSize.BANNER
+        adView?.adUnitId = AdUtil.adMobAddEventTopBannerId
 
         val layout = findViewById<ConstraintLayout>(R.id.ad_layout)
         layout.addView(adView)
 
         val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        
-        GlobalBus.getBus().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        GlobalBus.getBus().unregister(this)
+        adView?.loadAd(adRequest)
     }
 
     public override fun onPause() {
-        adView.pause()
+        adView?.pause()
         super.onPause()
     }
 
     public override fun onResume() {
         super.onResume()
-        adView.resume()
+        adView?.resume()
     }
 
     override fun onDestroy() {
-        adView.destroy()
+        adView?.destroy()
+        GlobalBus.getBus().unregister(this)
         super.onDestroy()
     }
 
@@ -233,7 +272,8 @@ class ActivityAddEvent: AppCompatActivity() {
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
                     endDayItem.date.startOfDay.time,
-                    completeItem.isComplete
+                    completeItem.isComplete,
+                    visitList
             )
         } else {
             val eventMultiDay = RealmEventDay()
@@ -241,7 +281,8 @@ class ActivityAddEvent: AppCompatActivity() {
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
                     endDayItem.date.startOfDay.time,
-                    completeItem.isComplete
+                    completeItem.isComplete,
+                    visitList
             )
             eventMultiDay.insert()
         }
@@ -298,6 +339,22 @@ class ActivityAddEvent: AppCompatActivity() {
             }
 
             adapter.notifyDataSetChanged()
+        }
+
+        val activityAddPerson = event.map.getOrDefault(ActivityAddPerson.toString(), null)
+        if (activityAddPerson != null) {
+            val list = event.map["list"] as ArrayList<CopyVisitPerson>
+            visitList = list
+
+            for (idx in adapter.list.indices) {
+                val item = adapter.list[idx]
+                if (item is VisitItem) {
+                    item.count = list.size
+                    adapter.notifyItemChanged(idx)
+                    break
+                }
+            }
+
         }
     }
 }

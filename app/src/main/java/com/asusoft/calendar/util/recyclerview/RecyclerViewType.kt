@@ -1,6 +1,7 @@
 package com.asusoft.calendar.util.recyclerview
 
 import com.asusoft.calendar.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.ActivityAddPerson
 import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.fragment.day.FragmentDayCalendar
@@ -13,7 +14,8 @@ enum class RecyclerViewType(val value: Int) {
     SELECT_DAY(2),
     DAY_CALENDAR_HEADER(3),
     DAY_CALENDAR_BODY(4),
-    SIDE_MENU(5);
+    SIDE_MENU(5),
+    VISIT_PERSON(6);
 
     companion object {
         fun getType(typeObject: Any): RecyclerViewType {
@@ -24,6 +26,7 @@ enum class RecyclerViewType(val value: Int) {
                 is FragmentDayCalendar -> DAY_CALENDAR_HEADER
                 is DayCalendarHeaderHolder -> DAY_CALENDAR_BODY
                 is ActivityStart -> SIDE_MENU
+                is ActivityAddPerson -> VISIT_PERSON
                 else -> ADD_EVENT
             }
         }

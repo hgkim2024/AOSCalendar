@@ -58,7 +58,6 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 //        Logger.d("toolbar height: ${toolbar.height}")
 
         val tv = findViewById<TextView>(R.id.action_bar_title)
@@ -72,6 +71,7 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
         drawerLayout = findViewById(R.id.drawer_layout)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
