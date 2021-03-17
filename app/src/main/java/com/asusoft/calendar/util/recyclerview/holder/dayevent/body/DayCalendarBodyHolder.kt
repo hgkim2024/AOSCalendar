@@ -4,15 +4,10 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
-import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
-import com.asusoft.calendar.realm.RealmEventMultiDay
-import com.asusoft.calendar.realm.RealmEventOneDay
-import com.asusoft.calendar.realm.copy.CopyEventMultiDay
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -38,15 +33,10 @@ class DayCalendarBodyHolder (
         var isComplete = false
 
         val event = item.event
-        when(event) {
-            is CopyEventOneDay -> {
-                name = event.name
-                isComplete = event.isComplete
-            }
-            is CopyEventMultiDay -> {
-                name = event.name
-                isComplete = event.isComplete
-            }
+
+        if (event is CopyEventDay) {
+            name = event.name
+            isComplete = event.isComplete
         }
 
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
@@ -68,10 +58,8 @@ class DayCalendarBodyHolder (
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                when(event) {
-                    is CopyEventOneDay -> event.updateIsCompete(!event.isComplete)
-                    is CopyEventMultiDay -> event.updateIsCompete(!event.isComplete)
-                }
+                if (event is CopyEventDay)
+                    event.updateIsCompete(!event.isComplete)
 
                 val itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
                 val list = getDayCalendarItemList(itemList, item.date)
@@ -79,12 +67,12 @@ class DayCalendarBodyHolder (
 //            logItemList(list)
                 adapter.list = list
 
-                when(event) {
-                    is CopyEventOneDay -> adapter.notifyDataSetChanged()
-                    is CopyEventMultiDay -> {
+                if (event is CopyEventDay) {
+                    if (event.startTime != event.endTime) {
                         val event = HashMapEvent(HashMap())
                         event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
                         GlobalBus.getBus().post(event)
+                    } else {
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -104,8 +92,7 @@ class DayCalendarBodyHolder (
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventOneDay -> if (event.isComplete) break
-                        is CopyEventMultiDay -> if (event.isComplete) break
+                        is CopyEventDay -> if (event.isComplete) break
                     }
                 }
             }
@@ -140,8 +127,7 @@ class DayCalendarBodyHolder (
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventOneDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
-                        is CopyEventMultiDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
                     }
                 }
             }

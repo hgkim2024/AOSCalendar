@@ -26,8 +26,7 @@ import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
-import com.asusoft.calendar.realm.RealmEventMultiDay
-import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
@@ -530,26 +529,13 @@ class FragmentMonthPage: Fragment() {
             val key = event.map.getOrDefault("key", null) as? Long
             if (key != null) {
 
-                val oneDayItem = RealmEventOneDay.select(key)
-                if (oneDayItem != null) {
+                val event = RealmEventDay.select(key)
+                if (event != null) {
                     val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("startDate", Date(oneDayItem.time))
-                    intent.putExtra("endDate", Date(oneDayItem.time))
-                    intent.putExtra("title", oneDayItem.name)
-                    intent.putExtra("isComplete", oneDayItem.isComplete)
-                    intent.putExtra("isEdit", true)
-                    intent.putExtra("key", key)
-                    startActivity(intent)
-                    return
-                }
-
-                val multiDayItem = RealmEventMultiDay.select(key)
-                if (multiDayItem != null) {
-                    val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("startDate", Date(multiDayItem.startTime))
-                    intent.putExtra("endDate", Date(multiDayItem.endTime))
-                    intent.putExtra("title", multiDayItem.name)
-                    intent.putExtra("isComplete", multiDayItem.isComplete)
+                    intent.putExtra("startDate", Date(event.startTime))
+                    intent.putExtra("endDate", Date(event.endTime))
+                    intent.putExtra("title", event.name)
+                    intent.putExtra("isComplete", event.isComplete)
                     intent.putExtra("isEdit", true)
                     intent.putExtra("key", key)
                     startActivity(intent)
@@ -597,27 +583,8 @@ class FragmentMonthPage: Fragment() {
 //                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
 //                    Logger.d("key: ${Date(key).toStringDay()}")
 
-                    val oneDayItem = RealmEventOneDay.select(key)
-                    if (oneDayItem != null) {
-                        dragInitFlag = true
-
-                        if (startDate == endDate) {
-                            dragStartDay = 0
-                            return
-                        }
-
-                        oneDayItem.update(
-                                oneDayItem.name,
-                                endDate.startOfDay.time,
-                                oneDayItem.isComplete
-                        )
-
-                        dragStartDay = 0
-                        calendarRefresh()
-                    }
-
-                    val multiDayItem = RealmEventMultiDay.select(key)
-                    if (multiDayItem != null) {
+                    val event = RealmEventDay.select(key)
+                    if (event != null) {
                         dragInitFlag = true
 
                         var inverseFlag = false
@@ -641,11 +608,11 @@ class FragmentMonthPage: Fragment() {
                             return
                         }
 
-                        multiDayItem.update(
-                                multiDayItem.name,
-                                Date(multiDayItem.startTime).getNextDay(diff).time,
-                                Date(multiDayItem.endTime).getNextDay(diff).time,
-                                multiDayItem.isComplete
+                        event.update(
+                                event.name,
+                                Date(event.startTime).getNextDay(diff).time,
+                                Date(event.endTime).getNextDay(diff).time,
+                                event.isComplete
                         )
 
                         dragStartDay = 0

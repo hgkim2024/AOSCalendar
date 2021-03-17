@@ -22,8 +22,7 @@ import com.asusoft.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.fragment.month.objects.WeekItem
-import com.asusoft.calendar.realm.RealmEventMultiDay
-import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -90,8 +89,9 @@ object MonthCalendarUIUtil {
 
     fun getDayEventList(date: Date, isHoliday: Boolean = true): ArrayList<Any> {
         val eventList: ArrayList<Any> = ArrayList()
-        val oneDayCopyList = RealmEventOneDay.getOneDayCopyList(date)
-        val multiDayCopyList = RealmEventMultiDay.getOneDayCopyList(date)
+        val eventDayList = RealmEventDay.getOneDayCopyList(date)
+        val oneDayCopyList = ArrayList(eventDayList.filter { it.startTime == it.endTime })
+        val multiDayCopyList = ArrayList(eventDayList.filter { it.startTime != it.endTime })
         val orderMap = getEventOrderList(date)
 
         var order = 0
@@ -144,8 +144,9 @@ object MonthCalendarUIUtil {
     fun getEventOrderList(
             weekDate: Date
     ): HashMap<Long, Int> {
-        val multiDayList = RealmEventMultiDay.selectOneWeek(weekDate.startOfWeek)
-        val oneDayList = RealmEventOneDay.selectOneWeek(weekDate.endOfWeek)
+        val eventDayList = RealmEventDay.selectOneWeek(weekDate.startOfWeek)
+        val multiDayList = eventDayList.filter { it.startTime != it.endTime }
+        val oneDayList = eventDayList.filter { it.startTime == it.endTime }
 
         return getEventOrderList(
                 weekDate,
@@ -157,8 +158,8 @@ object MonthCalendarUIUtil {
 
     private fun getEventOrderList(
             weekDate: Date,
-            realmEventMultiDayList: List<RealmEventMultiDay>,
-            realmEventOneDayList: List<RealmEventOneDay>,
+            realmEventDayList: List<RealmEventDay>,
+            realmEventOneDayList: List<RealmEventDay>,
             eventMaxCount: Int = 5
     ): HashMap<Long, Int> {
 
@@ -191,7 +192,7 @@ object MonthCalendarUIUtil {
 
         orderMultiDay(
                 weekDate,
-                realmEventMultiDayList.filter { !it.isComplete },
+                realmEventDayList.filter { !it.isComplete },
                 dayCheckList,
                 orderMap
         )
@@ -204,7 +205,7 @@ object MonthCalendarUIUtil {
 
         orderMultiDay(
                 weekDate,
-                realmEventMultiDayList.filter { it.isComplete },
+                realmEventDayList.filter { it.isComplete },
                 dayCheckList,
                 orderMap
         )
@@ -230,11 +231,11 @@ object MonthCalendarUIUtil {
 
     private fun orderMultiDay(
             weekDate: Date,
-            realmEventMultiDayList: List<RealmEventMultiDay>,
+            realmEventDayList: List<RealmEventDay>,
             dayCheckList: ArrayList<Array<Boolean>>,
             orderMap: HashMap<Long, Int>
     ) {
-        for (eventMultiDay in realmEventMultiDayList) {
+        for (eventMultiDay in realmEventDayList) {
             val startOfWeek = if (eventMultiDay.startTime < weekDate.startOfWeek.time) {
                 weekDate.startOfWeek.weekOfDay
             } else {
@@ -279,12 +280,12 @@ object MonthCalendarUIUtil {
     }
 
     private fun orderOneDay(
-            realmEventOneDayList: List<RealmEventOneDay>,
+            realmEventOneDayList: List<RealmEventDay>,
             dayCheckList: ArrayList<Array<Boolean>>,
             orderMap: HashMap<Long, Int>
     ) {
         for (eventOneDay in realmEventOneDayList) {
-            val weekOfDay = Date(eventOneDay.time).weekOfDay
+            val weekOfDay = Date(eventOneDay.startTime).weekOfDay
 
             var index = 0
             loop@ while(true) {
@@ -562,8 +563,9 @@ object MonthCalendarUIUtil {
             weekItem.eventViewList[idx] = HashMap()
         }
 
-        val multiDayList = RealmEventMultiDay.selectOneWeek(weekItem.weekDate)
-        val oneDayList = RealmEventOneDay.selectOneWeek(weekItem.weekDate)
+        val eventDayList = RealmEventDay.selectOneWeek(weekItem.weekDate)
+        val multiDayList = eventDayList.filter { it.startTime != it.endTime }
+        val oneDayList = eventDayList.filter { it.startTime == it.endTime }
         val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
 
         val holidayMap = orderMap.filter { it.key <= 1231 }
@@ -595,33 +597,17 @@ object MonthCalendarUIUtil {
         for (order in 0 until eventMaxCount) {
             for (item in orderMap) {
                 if (order == item.value) {
-                    val multiEventList = multiDayList.filter { it.key == item.key }
-                    if (multiEventList.isNotEmpty()) {
-                        val multiDay = multiEventList.first()
+                    val eventList = eventDayList.filter { it.key == item.key }
+                    if (eventList.isNotEmpty()) {
+                        val event = eventList.first()
                         weekItem.addEventUI(
                                 context,
-                                multiDay.key,
-                                multiDay.name,
-                                multiDay.startTime,
-                                multiDay.endTime,
+                                event.key,
+                                event.name,
+                                event.startTime,
+                                event.endTime,
                                 order,
-                                isComplete = multiDay.isComplete,
-                                isHoliday = false
-                        )
-                    }
-
-
-                    val oneEventList = oneDayList.filter { it.key == item.key }
-                    if (oneEventList.isNotEmpty()) {
-                        val oneDay = oneEventList.first()
-                        weekItem.addEventUI(
-                                context,
-                                oneDay.key,
-                                oneDay.name,
-                                oneDay.time,
-                                oneDay.time,
-                                order,
-                                isComplete = oneDay.isComplete,
+                                isComplete = event.isComplete,
                                 isHoliday = false
                         )
                     }

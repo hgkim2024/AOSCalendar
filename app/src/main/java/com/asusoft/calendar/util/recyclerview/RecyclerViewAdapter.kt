@@ -6,10 +6,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.SideMenuType
-import com.asusoft.calendar.realm.copy.CopyEventMultiDay
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.ADD_EVENT
@@ -207,10 +208,17 @@ class RecyclerViewAdapter(
                         val item = list.removeAt(position)
                         val dayItem = (item as DayCalendarBodyItem)
                         when(val event = dayItem.event) {
-                            is CopyEventOneDay -> event.delete()
-                            is CopyEventMultiDay -> event.delete()
+                            is CopyEventDay -> {
+                                event.delete()
+                                if (event.startTime != event.endTime) {
+                                    val event = HashMapEvent(HashMap())
+                                    event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
+                                    GlobalBus.getBus().post(event)
+                                } else {
+                                    notifyItemRemoved(position)
+                                }
+                            }
                         }
-                        notifyItemRemoved(position)
                     }
                 }
             }

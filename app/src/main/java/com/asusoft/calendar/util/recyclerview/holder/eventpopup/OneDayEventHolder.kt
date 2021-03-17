@@ -8,10 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.fragment.month.FragmentMonthPage
-import com.asusoft.calendar.realm.copy.CopyEventMultiDay
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -19,7 +17,6 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -46,17 +43,10 @@ class OneDayEventHolder(
         var date = Date()
         var isComplete = false
 
-        when(item) {
-            is CopyEventOneDay -> {
-                key = item.key
-                date = Date(item.time).startOfMonth
-                isComplete = item.isComplete
-            }
-            is CopyEventMultiDay -> {
-                key = item.key
-                date = Date(item.startTime).startOfMonth
-                isComplete = item.isComplete
-            }
+        if (item is CopyEventDay) {
+            key = item.key
+            date = Date(item.startTime).startOfMonth
+            isComplete = item.isComplete
         }
 
 //        Logger.d("bind isComplete: $isComplete")
@@ -64,8 +54,7 @@ class OneDayEventHolder(
         var isHoliday = false
         val name =
                 when (item) {
-                    is CopyEventOneDay -> item.name
-                    is CopyEventMultiDay -> item.name
+                    is CopyEventDay -> item.name
                     is String -> {
                         isHoliday = true
                         item
@@ -108,11 +97,7 @@ class OneDayEventHolder(
                 if (typeObject !is FragmentMonthPage) return@subscribe
 
                 when(item) {
-                    is CopyEventOneDay -> {
-                        item.updateIsCompete(!item.isComplete)
-                    }
-
-                    is CopyEventMultiDay -> {
+                    is CopyEventDay -> {
                         item.updateIsCompete(!item.isComplete)
                     }
 
@@ -122,16 +107,12 @@ class OneDayEventHolder(
                 adapter.list = getDayEventList(typeObject.eventViewDate)
                 adapter.notifyDataSetChanged()
 
-                when(item) {
-                    is CopyEventOneDay -> {
+                if (item is CopyEventDay) {
+                    if (item.startTime != item.endTime) {
+                        MonthCalendarUIUtil.calendarRefresh()
+                    } else {
                         typeObject.refreshWeek()
                     }
-
-                    is CopyEventMultiDay -> {
-                        MonthCalendarUIUtil.calendarRefresh()
-                    }
-
-                    else -> return@subscribe
                 }
             }
     }

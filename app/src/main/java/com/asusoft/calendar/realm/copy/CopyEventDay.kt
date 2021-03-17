@@ -1,36 +1,39 @@
 package com.asusoft.calendar.realm.copy
 
-import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.realm.RealmEventDay
 
-class CopyEventOneDay(
+class CopyEventDay(
         val key: Long,
         var name: String,
-        var time: Long = 0,
+        var startTime: Long,
+        var endTime: Long,
         var isComplete: Boolean = false
 ) {
 
     fun updateIsCompete(isComplete: Boolean) {
         this.isComplete = isComplete
-        val item = RealmEventOneDay.select(key)
+        val item = RealmEventDay.select(key)
         item?.update(
                 name,
-                time,
+                startTime,
+                endTime,
                 isComplete
         )
     }
 
     fun updateName(name: String) {
         this.name = name
-        val item = RealmEventOneDay.select(key)
+        val item = RealmEventDay.select(key)
         item?.update(
                 name,
-                time,
+                startTime,
+                endTime,
                 isComplete
         )
     }
 
     fun delete() {
-        val item = RealmEventOneDay.select(key)
+        val item = RealmEventDay.select(key)
         item?.delete()
     }
 }

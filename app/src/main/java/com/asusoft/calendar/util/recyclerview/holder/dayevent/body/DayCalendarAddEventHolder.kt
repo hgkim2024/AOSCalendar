@@ -4,11 +4,10 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfDay
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -26,11 +25,12 @@ class DayCalendarAddEventHolder (
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                val item = RealmEventOneDay()
+                val item = RealmEventDay()
                 item.update(
-                    "",
-                    date.startOfDay.time,
-                    false
+                        "",
+                        date.startOfDay.time,
+                        date.startOfDay.time,
+                        false
                 )
                 item.insert()
 

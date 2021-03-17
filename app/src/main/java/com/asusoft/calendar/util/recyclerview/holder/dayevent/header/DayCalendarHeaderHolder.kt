@@ -19,8 +19,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.fragment.day.FragmentDayCalendar
-import com.asusoft.calendar.realm.copy.CopyEventMultiDay
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
@@ -114,8 +113,7 @@ class DayCalendarHeaderHolder(
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventOneDay -> if (event.isComplete) break
-                        is CopyEventMultiDay -> if (event.isComplete) break
+                        is CopyEventDay -> if (event.isComplete) break
                     }
                 }
             }
@@ -206,8 +204,7 @@ class DayCalendarHeaderHolder(
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventOneDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
-                        is CopyEventMultiDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
                     }
                 }
             }

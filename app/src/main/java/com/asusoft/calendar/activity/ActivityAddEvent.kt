@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
-import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
-import com.asusoft.calendar.realm.RealmEventMultiDay
-import com.asusoft.calendar.realm.RealmEventOneDay
+import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.AlertUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
@@ -229,32 +227,20 @@ class ActivityAddEvent: AppCompatActivity() {
             }
         }
 
-        when(isEdit) {
-            true -> {
-                val oneDayItem = RealmEventOneDay.select(key)
-                oneDayItem?.delete()
-
-                val multiDayItem = RealmEventMultiDay.select(key)
-                multiDayItem?.delete()
-            }
-        }
-
-        if (startDayItem.date.startOfDay == endDayItem.date.startOfDay) {
-            // 하루 이벤트
-            val eventOneDay = RealmEventOneDay()
-            eventOneDay.update(
+        if(isEdit) {
+            val event = RealmEventDay.select(key)
+            event?.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
+                    endDayItem.date.startOfDay.time,
                     completeItem.isComplete
             )
-            eventOneDay.insert()
         } else {
-            // 이틀 이상 이벤트
-            val eventMultiDay = RealmEventMultiDay()
+            val eventMultiDay = RealmEventDay()
             eventMultiDay.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
-                    endDayItem.date.endOfDay.time,
+                    endDayItem.date.startOfDay.time,
                     completeItem.isComplete
             )
             eventMultiDay.insert()
@@ -264,17 +250,9 @@ class ActivityAddEvent: AppCompatActivity() {
     }
 
     private fun removeEvent(key: Long) {
-        val oneDayItem = RealmEventOneDay.select(key)
-        if (oneDayItem != null) {
-            oneDayItem.delete()
-            refreshFlag = true
-            finish()
-            return
-        }
-
-        val multiDayItem = RealmEventMultiDay.select(key)
-        if (multiDayItem != null) {
-            multiDayItem.delete()
+        val event = RealmEventDay.select(key)
+        if (event != null) {
+            event.delete()
             refreshFlag = true
             finish()
             return

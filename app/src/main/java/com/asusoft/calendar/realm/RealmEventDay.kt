@@ -1,8 +1,7 @@
 package com.asusoft.calendar.realm
 
-import android.util.Log
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.realm.copy.CopyEventOneDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
 import com.orhanobut.logger.Logger
 import io.realm.Realm
@@ -10,9 +9,8 @@ import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
-import kotlin.collections.ArrayList
 
-open class RealmEventOneDay: RealmObject() {
+open class RealmEventDay: RealmObject() {
 
     @PrimaryKey
     var key: Long = System.currentTimeMillis()
@@ -20,59 +18,91 @@ open class RealmEventOneDay: RealmObject() {
     var name: String = ""
 
     @Index
-    var time: Long = 0
+    var startTime: Long = 0
+
+    @Index
+    var endTime: Long = 0
 
     var isComplete: Boolean = false
 
     companion object {
-        fun selectOneWeek(date: Date): List<RealmEventOneDay> {
+        fun selectOneWeek(date: Date): List<RealmEventDay> {
             val startTime = date.startOfWeek.time
             val endTime = date.endOfWeek.time
 
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            val item = realm.where(RealmEventOneDay::class.java)
-                    .greaterThanOrEqualTo("time", startTime)
-                    .and()
-                    .lessThanOrEqualTo("time", endTime)
-                    .findAll()
+            val item = realm.where(RealmEventDay::class.java)
 
+                    .greaterThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .lessThanOrEqualTo("startTime", endTime)
+
+                    .or()
+
+                    .greaterThanOrEqualTo("endTime", startTime)
+                    .and()
+                    .lessThanOrEqualTo("endTime", endTime)
+
+                    .or()
+
+                    .lessThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .greaterThanOrEqualTo("endTime", endTime)
+                    
+                    .findAll()
+            
             realm.commitTransaction()
 
-//            Logger.d("RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
+//            Logger.d("RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
 
-        private fun selectOneDay(date: Date): List<RealmEventOneDay> {
+        private fun selectOneDay(date: Date): List<RealmEventDay> {
             val startTime = date.startOfDay.time
             val endTime = date.endOfDay.time
 
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            val item = realm.where(RealmEventOneDay::class.java)
-                    .greaterThanOrEqualTo("time", startTime)
+            val item = realm.where(RealmEventDay::class.java)
+
+                    .greaterThanOrEqualTo("startTime", startTime)
                     .and()
-                    .lessThanOrEqualTo("time", endTime)
+                    .lessThanOrEqualTo("startTime", endTime)
+
+                    .or()
+
+                    .greaterThanOrEqualTo("endTime", startTime)
+                    .and()
+                    .lessThanOrEqualTo("endTime", endTime)
+
+                    .or()
+
+                    .lessThanOrEqualTo("startTime", startTime)
+                    .and()
+                    .greaterThanOrEqualTo("endTime", endTime)
+
                     .findAll()
 
             realm.commitTransaction()
 
-//            Logger.d("RealmEventOneDay date: ${Date(startTime).toStringDay()}, List: $item")
+//            Logger.d("RealmEventMultiDay date: ${date.startOfWeek.toStringDay()}, List: $item")
             return item
         }
 
-        fun getOneDayCopyList(date: Date): ArrayList<CopyEventOneDay> {
+        fun getOneDayCopyList(date: Date): ArrayList<CopyEventDay> {
             val realmList = selectOneDay(date)
-            val copyList = ArrayList<CopyEventOneDay>()
+            val copyList = ArrayList<CopyEventDay>()
 
             for (item in realmList) {
                 copyList.add(
-                        CopyEventOneDay(
+                        CopyEventDay(
                                 item.key,
                                 item.name,
-                                item.time,
+                                item.startTime,
+                                item.endTime,
                                 item.isComplete
                         )
                 )
@@ -81,11 +111,11 @@ open class RealmEventOneDay: RealmObject() {
             return copyList
         }
 
-        fun select(key: Long): RealmEventOneDay? {
+        fun select(key: Long): RealmEventDay? {
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            val item = realm.where(RealmEventOneDay::class.java).equalTo("key", key).findFirst()
+            val item = realm.where(RealmEventDay::class.java).equalTo("key", key).findFirst()
 
             realm.commitTransaction()
 
@@ -93,18 +123,20 @@ open class RealmEventOneDay: RealmObject() {
         }
     }
 
-    fun getCopy(): CopyEventOneDay {
-        return CopyEventOneDay(
+    fun getCopy(): CopyEventDay {
+        return CopyEventDay(
                 key,
                 name,
-                time,
+                startTime,
+                endTime,
                 isComplete
         )
     }
 
     fun update(
         name: String,
-        time: Long,
+        startTime: Long,
+        endTime: Long,
         isComplete: Boolean
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
@@ -115,14 +147,18 @@ open class RealmEventOneDay: RealmObject() {
             this.name = name
         }
 
-        if (time > 0) {
-            this.time = time
+        if (startTime > 0) {
+            this.startTime = startTime
+        }
+
+        if (endTime > 0) {
+            this.endTime = endTime
         }
 
         this.isComplete = isComplete
-//        Logger.d("update isComplete: ${this.isComplete}")
+        Logger.d("update isComplete: ${this.isComplete}")
 
-//        Logger.d("RealmEventOneDay update, name: ${name}, time: ${Date(time).toStringDay()}")
+//        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
         realm.commitTransaction()
         realm.refresh()
     }
