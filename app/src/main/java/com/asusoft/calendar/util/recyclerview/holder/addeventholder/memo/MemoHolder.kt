@@ -31,12 +31,6 @@ class MemoHolder(
 
             tvEdit.setText(item.context)
             tvEdit.addTextChangedListener(item.textWatcher)
-
-            tvEdit.setOnFocusChangeListener { v, hasFocus ->
-                val event = HashMapEvent(HashMap())
-                event.map[MemoHolder.toString()] = MemoHolder.toString()
-                GlobalBus.getBus().post(event)
-            }
         }
     }
 

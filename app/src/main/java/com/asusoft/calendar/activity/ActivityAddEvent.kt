@@ -66,8 +66,7 @@ class ActivityAddEvent: AppCompatActivity() {
     }
 
     // TODO: - 주소 입력 추가
-    // TODO: - 메모 기능 추가
-    // TODO: - 전화번호부 가져와 사람 입력하는 기능 추가
+    // TODO: - 전화번호부 가져오는 기능 개편
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
@@ -135,7 +134,7 @@ class ActivityAddEvent: AppCompatActivity() {
         list.add(
                 VisitItem(
                         visitCount,
-                        "초대할 사람"
+                        "초대받을 사람"
                 )
         )
 
