@@ -207,6 +207,9 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
         val drawable = if (supportFragmentManager.backStackEntryCount > 0) {
             CalendarApplication.getDrawable(R.drawable.ic_baseline_arrow_back_24)
         } else {
+            searchView?.clearFocus()
+            val tv = searchView?.findViewById<EditText?>(R.id.search_src_text)
+            tv?.setText("")
             searchView?.isIconified = true
             CalendarApplication.getDrawable(R.drawable.ic_baseline_menu_24)
         }
