@@ -1,15 +1,14 @@
 package com.asusoft.calendar.util.recyclerview.holder.selectday
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
-import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
@@ -17,7 +16,6 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.HashMap
 import java.util.concurrent.TimeUnit

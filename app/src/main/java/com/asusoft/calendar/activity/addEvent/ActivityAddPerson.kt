@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity
+package com.asusoft.calendar.activity.addEvent
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
@@ -8,10 +8,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.view.Gravity
 import android.view.MenuItem
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +19,6 @@ import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding4.view.clicks
@@ -84,7 +80,9 @@ class ActivityAddPerson : AppCompatActivity() {
             .subscribe {
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.data = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-                startActivityForResult(intent, REQUEST_CONTACTS)
+                startActivityForResult(intent,
+                    REQUEST_CONTACTS
+                )
             }
 
         adapter = RecyclerViewAdapter(this, visitList as ArrayList<Any>)
@@ -116,7 +114,8 @@ class ActivityAddPerson : AppCompatActivity() {
 
     private fun postEventBus() {
         val event = HashMapEvent(HashMap())
-        event.map[ActivityAddPerson.toString()] = ActivityAddPerson.toString()
+        event.map[Companion.toString()] =
+            Companion.toString()
         event.map["list"] = adapter.list
         GlobalBus.getBus().post(event)
     }

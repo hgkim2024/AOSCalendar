@@ -1,4 +1,4 @@
-package com.asusoft.calendar.fragment.month
+package com.asusoft.calendar.activity.start.fragment.month
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
+import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus

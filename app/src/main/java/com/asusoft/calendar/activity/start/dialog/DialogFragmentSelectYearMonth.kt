@@ -1,4 +1,4 @@
-package com.asusoft.calendar.dialog
+package com.asusoft.calendar.activity.start.dialog
 
 import android.content.Context
 import android.graphics.Color

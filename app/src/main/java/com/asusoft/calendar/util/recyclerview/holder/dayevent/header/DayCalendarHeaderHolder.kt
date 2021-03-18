@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.day.FragmentDayCalendar
+import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList

@@ -1,11 +1,11 @@
 package com.asusoft.calendar.util.recyclerview
 
-import com.asusoft.calendar.activity.ActivityAddEvent
-import com.asusoft.calendar.activity.ActivityAddPerson
+import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.ActivityAddPerson
 import com.asusoft.calendar.activity.start.ActivityStart
-import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
-import com.asusoft.calendar.fragment.day.FragmentDayCalendar
-import com.asusoft.calendar.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
+import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderHolder
 
 enum class RecyclerViewType(val value: Int) {

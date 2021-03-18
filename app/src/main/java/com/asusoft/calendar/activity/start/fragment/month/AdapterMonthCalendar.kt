@@ -1,9 +1,8 @@
-package com.asusoft.calendar.fragment.month
+package com.asusoft.calendar.activity.start.fragment.month
 
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.asusoft.calendar.util.*
-import com.orhanobut.logger.Logger
 import java.util.*
 
 class AdapterMonthCalendar(fm: FragmentActivity, date: Date) : FragmentStateAdapter(fm) {

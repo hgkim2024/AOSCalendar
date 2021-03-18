@@ -11,14 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ActivityAddPerson"></activity>
+        <activity android:name=".activity.addEvent.ActivityAddPerson"></activity>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admod_app_id" />
 
         <activity
-            android:name=".activity.ActivityAddEvent"
+            android:name=".activity.addEvent.ActivityAddEvent"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.start.ActivityStart"

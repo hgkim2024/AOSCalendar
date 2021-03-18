@@ -1,4 +1,4 @@
-package com.asusoft.calendar.fragment.month
+package com.asusoft.calendar.activity.start.fragment.month
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,11 +21,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
 import com.asusoft.calendar.activity.start.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.month.objects.MonthItem
-import com.asusoft.calendar.fragment.month.objects.WeekItem
+import com.asusoft.calendar.activity.start.fragment.month.objects.MonthItem
+import com.asusoft.calendar.activity.start.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil

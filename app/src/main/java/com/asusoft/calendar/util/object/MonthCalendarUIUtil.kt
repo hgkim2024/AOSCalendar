@@ -16,12 +16,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.month.FragmentMonthPage
-import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.fragment.month.objects.MonthItem
-import com.asusoft.calendar.fragment.month.objects.WeekItem
+import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.activity.start.fragment.month.objects.MonthItem
+import com.asusoft.calendar.activity.start.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus

@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.dialog.DialogFragmentSelectYearMonth
-import com.asusoft.calendar.fragment.day.FragmentDayCalendar
-import com.asusoft.calendar.fragment.month.FragmentMonthViewPager
-import com.asusoft.calendar.fragment.search.FragmentSearchList
+import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
+import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
+import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthViewPager
+import com.asusoft.calendar.activity.start.fragment.search.FragmentSearchList
 import com.asusoft.calendar.util.`object`.PreferenceKey
 import com.asusoft.calendar.util.`object`.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus

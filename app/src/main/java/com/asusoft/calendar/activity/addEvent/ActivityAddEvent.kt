@@ -1,10 +1,9 @@
-package com.asusoft.calendar.activity
+package com.asusoft.calendar.activity.addEvent
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.application.CalendarApplication.Companion.context
-import com.asusoft.calendar.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson

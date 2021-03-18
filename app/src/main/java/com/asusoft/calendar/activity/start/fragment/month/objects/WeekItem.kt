@@ -1,4 +1,4 @@
-package com.asusoft.calendar.fragment.month.objects
+package com.asusoft.calendar.activity.start.fragment.month.objects
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -16,7 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
@@ -24,7 +24,6 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
-import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.HashMap
 
