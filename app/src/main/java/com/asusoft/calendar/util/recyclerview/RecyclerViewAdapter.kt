@@ -252,6 +252,11 @@ class RecyclerViewAdapter(
                 }
             }
 
+            VISIT_PERSON -> {
+                list.removeAt(position)
+                notifyItemRemoved(position)
+            }
+
             else -> return
         }
     }
