@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:textSize="22sp"
+        android:textColor="@color/font"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"

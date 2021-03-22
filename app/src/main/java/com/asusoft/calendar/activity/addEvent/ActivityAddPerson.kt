@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +41,7 @@ class ActivityAddPerson : AppCompatActivity() {
     }
 
     lateinit var adapter: RecyclerViewAdapter
+    lateinit var tvEmpty: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +99,21 @@ class ActivityAddPerson : AppCompatActivity() {
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
+
+        tvEmpty = findViewById<TextView>(R.id.tv_empty)
+        isEmpty()
+
     }
+
+    private fun isEmpty() {
+        if (adapter.list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+            tvEmpty.text = "우측 하단 버튼 클릭으로 추가할 수 있습니다."
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
+    }
+
 
     override fun finish() {
         postEventBus()
@@ -157,6 +174,7 @@ class ActivityAddPerson : AppCompatActivity() {
             val item = CopyVisitPerson(receiveName, receivePhone)
             adapter.list.add(item)
             adapter.notifyDataSetChanged()
+            isEmpty()
         }
 
     }

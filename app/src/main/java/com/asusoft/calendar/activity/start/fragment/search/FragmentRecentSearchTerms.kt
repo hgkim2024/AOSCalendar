@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,7 @@ class FragmentRecentSearchTerms: Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
+    lateinit var tvEmpty: TextView
 
     override fun onStart() {
         super.onStart()
@@ -56,6 +58,9 @@ class FragmentRecentSearchTerms: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        tvEmpty = view.findViewById<TextView>(R.id.tv_empty)
+        isEmpty()
+
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
@@ -75,6 +80,16 @@ class FragmentRecentSearchTerms: Fragment() {
 
         adapter.list = list as ArrayList<Any>
         adapter.notifyDataSetChanged()
+        isEmpty()
+    }
+
+    private fun isEmpty() {
+        if (adapter.list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+            tvEmpty.text = "최근 검색어 내역이 없습니다."
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ class FragmentEventSearchResult: Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
+    lateinit var tvEmpty: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,9 @@ class FragmentEventSearchResult: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        tvEmpty = view.findViewById<TextView>(R.id.tv_empty)
+        isEmpty()
+
         return view
     }
 
@@ -61,6 +66,16 @@ class FragmentEventSearchResult: Fragment() {
         val list = RealmEventDay.selectCopyList(searchText)
         adapter.list = list as ArrayList<Any>
         adapter.notifyDataSetChanged()
+        isEmpty()
+    }
+
+    private fun isEmpty() {
+        if (adapter.list.isEmpty()) {
+            tvEmpty.visibility = View.VISIBLE
+            tvEmpty.text = "검색 결과가 없습니다."
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {
