@@ -834,6 +834,15 @@ object MonthCalendarUIUtil {
         v.background = shape
     }
 
+    fun setLeftCornerRadiusDrawable(v: View, backgroundColor: Int) {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        val r = CalculatorUtil.dpToPx(2.0F).toFloat()
+        shape.cornerRadii = floatArrayOf(r, r, 0F, 0F, 0F, 0F, r, r)
+        shape.setColor(backgroundColor)
+        v.background = shape
+    }
+
     fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
         val event = HashMapEvent(java.util.HashMap())
         event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()

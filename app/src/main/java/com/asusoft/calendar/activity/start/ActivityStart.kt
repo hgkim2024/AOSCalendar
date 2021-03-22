@@ -23,13 +23,17 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthViewPager
-import com.asusoft.calendar.activity.start.fragment.search.FragmentSearchList
+import com.asusoft.calendar.activity.start.fragment.search.FragmentRecentSearchTerms
+import com.asusoft.calendar.activity.start.fragment.search.FragmentEventSearchResult
+import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.util.`object`.PreferenceKey
 import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.getToday
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.holder.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
@@ -52,6 +56,8 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private var curFragmentIdx = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE)
     private lateinit var drawerLayout: DrawerLayout
     private var searchView: SearchView? = null
+    var fragmentRecentSearchTerms: FragmentRecentSearchTerms? = null
+    var fragmentEventSearchResult: FragmentEventSearchResult? = null
 
     // TODO: - 사이드 메뉴 디자인 작업
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,19 +135,27 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
         closeButton.setOnClickListener {
             Logger.d("closeButton setOnClickListener")
             searchView.isIconified = true
+            if (fragmentEventSearchResult != null) {
+                supportFragmentManager.popBackStackImmediate()
+            }
             supportFragmentManager.popBackStack()
         }
 
         searchView.setOnSearchClickListener {
             Logger.d("setOnSearchClickListener")
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment,
-                    FragmentSearchList.newInstance(),
-                    FragmentSearchList.toString()
-                )
-                .addToBackStack(null)
-                .commit()
+            if (fragmentRecentSearchTerms == null) {
+                fragmentRecentSearchTerms = FragmentRecentSearchTerms.newInstance()
+                supportFragmentManager.beginTransaction()
+                        .replace(
+                                R.id.fragment,
+                                fragmentRecentSearchTerms!!,
+                                FragmentRecentSearchTerms.toString()
+                        )
+                        .addToBackStack(null)
+                        .commit()
+            }  else {
+                supportFragmentManager.popBackStack()
+            }
         }
 
         searchView.setOnCloseListener {
@@ -152,16 +166,24 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String?): Boolean {
                 Logger.d("onQueryTextSubmit")
+                // TODO: - 검색 리스트로 이동
+
+                if (s == null) return false
+
+                val recentSearchTerms = RealmRecentSearchTerms()
+
+                recentSearchTerms.update(
+                        s,
+                        RecentSearchTermsType.EVENT.value
+                )
+                recentSearchTerms.insert()
+
+                showEventSearchResult(s)
                 return false
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-//                if (TextUtils.isEmpty(s)) {
-//                    adapter!!.filter("")
-//                    listView.clearTextFilter()
-//                } else {
-//                    adapter!!.filter(s)
-//                }
+                fragmentRecentSearchTerms?.refresh(s)
                 Logger.d("onQueryTextChange")
                 return true
             }
@@ -201,6 +223,22 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
             }
         }
         return super.onOptionsItemSelected(menuItem)
+    }
+
+    private fun showEventSearchResult(s: String) {
+        if (fragmentEventSearchResult == null) {
+            fragmentEventSearchResult = FragmentEventSearchResult.newInstance(s)
+            supportFragmentManager.beginTransaction()
+                    .replace(
+                            R.id.fragment,
+                            fragmentEventSearchResult!!,
+                            FragmentRecentSearchTerms.toString()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+        } else {
+            fragmentEventSearchResult?.refresh()
+        }
     }
 
     private fun homeButtonIconChange() {
@@ -271,6 +309,14 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
                 changeRootFragment()
                 drawerLayout.closeDrawers()
+            }
+        }
+
+        val recentSearchTermsHolder = event.map.getOrDefault(RecentSearchTermsHolder.toString(), null)
+        if (recentSearchTermsHolder != null) {
+            val s = event.map.getOrDefault("name", null) as? String
+            if (s != null) {
+                showEventSearchResult(s)
             }
         }
     }

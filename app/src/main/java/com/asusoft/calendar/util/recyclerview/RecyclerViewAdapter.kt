@@ -1,12 +1,16 @@
 package com.asusoft.calendar.util.recyclerview
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.start.SideMenuType
+import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -35,6 +39,8 @@ import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBo
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderHolder
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType
 import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType.*
+import com.asusoft.calendar.util.recyclerview.holder.eventsearch.EventSearchHolder
+import com.asusoft.calendar.util.recyclerview.holder.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
@@ -185,6 +191,21 @@ class RecyclerViewAdapter(
                 view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                 PersonHolder(context, view, this)
             }
+
+            RECENT_SEARCH -> {
+                val view = inflater.inflate(R.layout.holder_recent_search_terms, parent, false)
+                view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                RecentSearchTermsHolder(context, view, this)
+            }
+
+            EVENT_SEARCH_RESULT -> {
+                val view = inflater.inflate(R.layout.holder_event_search_result, parent, false)
+                val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
+                val edge = view.findViewById<View>(R.id.edge)
+                MonthCalendarUIUtil.setCornerRadiusDrawable(rootLayout, CalendarApplication.getColor(R.color.background))
+                MonthCalendarUIUtil.setLeftCornerRadiusDrawable(edge, CalendarApplication.getColor(R.color.colorAccent))
+                EventSearchHolder(context, view, this)
+            }
         }
     }
 
@@ -210,13 +231,17 @@ class RecyclerViewAdapter(
                     is DayCalendarBodyHolder -> holder.bind(position)
                 }
             }
+
             SIDE_MENU -> {
                 when(holder) {
                     is SideMenuTopHolder -> holder.bind(position)
                     is SideMenuItemHolder -> holder.bind(position)
                 }
             }
+
             VISIT_PERSON -> (holder as PersonHolder).bind(position)
+            RECENT_SEARCH -> (holder as RecentSearchTermsHolder).bind(position)
+            EVENT_SEARCH_RESULT -> (holder as EventSearchHolder).bind(position)
         }
     }
 
@@ -255,6 +280,15 @@ class RecyclerViewAdapter(
             VISIT_PERSON -> {
                 list.removeAt(position)
                 notifyItemRemoved(position)
+            }
+
+            RECENT_SEARCH -> {
+                val item = list.removeAt(position)
+                notifyItemRemoved(position)
+
+                if (item is CopyRecentSearchTerms) {
+                    RealmRecentSearchTerms.select(item.key)?.delete()
+                }
             }
 
             else -> return

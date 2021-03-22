@@ -11,6 +11,7 @@ import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
+import kotlin.collections.ArrayList
 
 open class RealmEventDay: RealmObject() {
 
@@ -107,22 +108,8 @@ open class RealmEventDay: RealmObject() {
             val copyList = ArrayList<CopyEventDay>()
 
             for (item in realmList) {
-
-                val visitList = ArrayList<CopyVisitPerson>()
-                if (isVisitList) {
-                    visitList.addAll(item.getCopyVisitList())
-                }
-
                 copyList.add(
-                        CopyEventDay(
-                                item.key,
-                                item.name,
-                                item.startTime,
-                                item.endTime,
-                                item.isComplete,
-                                visitList,
-                                item.memo
-                        )
+                        item.getCopy(isVisitList)
                 )
             }
 
@@ -133,11 +120,32 @@ open class RealmEventDay: RealmObject() {
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            val item = realm.where(RealmEventDay::class.java).equalTo("key", key).findFirst()
+            val item = realm.where(RealmEventDay::class.java)
+                    .equalTo("key", key)
+                    .findFirst()
 
             realm.commitTransaction()
 
             return item
+        }
+
+        fun selectCopyList(name: String): ArrayList<CopyEventDay> {
+            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+            realm.beginTransaction()
+
+            val items = realm.where(RealmEventDay::class.java)
+                    .like("name", "${name}*")
+                    .findAll()
+
+            realm.commitTransaction()
+
+            val list = ArrayList<CopyEventDay>()
+
+            for (item in items) {
+                list.add(item.getCopy(true))
+            }
+
+            return list
         }
     }
 

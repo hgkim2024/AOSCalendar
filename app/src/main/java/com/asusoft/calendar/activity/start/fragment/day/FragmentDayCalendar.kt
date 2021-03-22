@@ -73,9 +73,7 @@ class FragmentDayCalendar: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
-
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.fragment_recycleview, container, false)
+        val view = inflater.inflate(R.layout.fragment_slow_down_recycleview, container, false)
 
         adapter = RecyclerViewAdapter(this, getInitList(date) as ArrayList<Any>)
 
