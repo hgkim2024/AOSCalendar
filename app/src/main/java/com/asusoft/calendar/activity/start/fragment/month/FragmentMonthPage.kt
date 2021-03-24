@@ -21,8 +21,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.fragment.month.objects.MonthItem
 import com.asusoft.calendar.activity.start.fragment.month.objects.WeekItem
@@ -442,8 +442,8 @@ class FragmentMonthPage: Fragment() {
 
     private fun selectedDayDate(date: Date) {
         val intent = Intent(context, ActivityAddEvent::class.java)
-        intent.putExtra("startDate", date)
-        intent.putExtra("endDate", date)
+        intent.putExtra("startDate", date.time)
+        intent.putExtra("endDate", date.time)
         startActivity(intent)
     }
 

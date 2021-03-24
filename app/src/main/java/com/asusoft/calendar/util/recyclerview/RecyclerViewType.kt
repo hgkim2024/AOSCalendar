@@ -1,8 +1,8 @@
 package com.asusoft.calendar.util.recyclerview
 
-import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
-import com.asusoft.calendar.activity.addEvent.ActivityAddPerson
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddPerson
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus

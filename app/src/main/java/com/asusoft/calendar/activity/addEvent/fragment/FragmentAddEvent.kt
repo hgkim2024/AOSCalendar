@@ -1,23 +1,26 @@
-package com.asusoft.calendar.activity.addEvent
+package com.asusoft.calendar.activity.addEvent.fragment
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.application.CalendarApplication.Companion.context
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddPerson
 import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.`object`.AdUtil
 import com.asusoft.calendar.util.`object`.AlertUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
@@ -46,7 +49,27 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class ActivityAddEvent: AppCompatActivity() {
+
+// TODO: - 주소 입력 추가
+// TODO: - 전화번호부 가져오는 기능 개편
+class FragmentAddEvent: Fragment() {
+
+    companion object {
+        fun newInstance(
+                key: Long,
+                startDate: Long,
+                endDate: Long
+        ): FragmentAddEvent {
+            val f = FragmentAddEvent()
+
+            val args = Bundle()
+            args.putLong("key", key)
+            args.putLong("startDate", startDate)
+            args.putLong("endDate", endDate)
+            f.arguments = args
+            return f
+        }
+    }
 
     lateinit var adapter: RecyclerViewAdapter
     lateinit var recyclerView: RecyclerView
@@ -54,42 +77,40 @@ class ActivityAddEvent: AppCompatActivity() {
     var adView: AdView? = null
     var isEdit: Boolean = false
     var key = -1L
-    var refreshFlag = false
+    lateinit var startDate: Date
+    lateinit var endDate: Date
 
     var visitList: ArrayList<CopyVisitPerson>? = null
 
-    companion object {
-        fun toStringActivity(): String {
-            return "ActivityAddEvent"
-        }
-    }
 
-    // TODO: - 주소 입력 추가
-    // TODO: - 전화번호부 가져오는 기능 개편
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_event)
-//        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN + WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        GlobalBus.getBus()
-        lateinit var startDate: Date
-        lateinit var endDate: Date
+        val args = arguments!!
+        key = args.getLong("key")
+        startDate = Date(args.getLong("startDate", 0L))
+        endDate = Date(args.getLong("endDate", 0L))
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val context = this.context!!
+        val view = inflater.inflate(R.layout.fragment_add_event, container, false)
+
+        GlobalBus.register(this)
         var event: CopyEventDay? = null
 
         var title: String? = null
-        val isComplete = intent.getBooleanExtra("isComplete", false)
+        var isComplete = false
         var visitCount = 0
         var memo: String? = null
-//        val visitPerson = intent.getBooleanExtra("isComplete", false)
-        key = intent.getLongExtra("key", -1L)
 
         if (key != -1L) {
             isEdit = true
 
             val copyItem = RealmEventDay.select(key)?.getCopy(isVisitList = true)
             if (copyItem == null) {
-                finish()
-                return
+                activity?.finish()
+                return null
             }
 
             event = copyItem
@@ -97,34 +118,32 @@ class ActivityAddEvent: AppCompatActivity() {
             title = event.name
             startDate = Date(event.startTime)
             endDate = Date(event.endTime)
+            isComplete = event.isComplete
             visitCount = event.visitList.size
             memo = event.memo
-        } else {
-            startDate = intent.getSerializableExtra("startDate") as Date
-            endDate = intent.getSerializableExtra("endDate") as Date
         }
 
 
         val list = ArrayList<Any>()
         list.add(
-            EditTextItem(
-                    title ?: "",
-                "제목"
-            )
+                EditTextItem(
+                        title ?: "",
+                        "제목"
+                )
         )
 
         list.add(
-            StartDayItem(
-                    startDate,
-                "시작 날짜"
-            )
+                StartDayItem(
+                        startDate,
+                        "시작 날짜"
+                )
         )
 
         list.add(
-            StartDayItem(
-                    endDate,
-                "종료 날짜"
-            )
+                StartDayItem(
+                        endDate,
+                        "종료 날짜"
+                )
         )
 
         list.add(CompleteItem(isComplete))
@@ -152,20 +171,18 @@ class ActivityAddEvent: AppCompatActivity() {
 
         adapter = RecyclerViewAdapter(this, list)
 
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(baseContext)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         recyclerView.addOnItemTouchListener(
                 RecyclerItemClickListener(
-                        this,
+                        context,
                         recyclerView,
                         object : RecyclerItemClickListener.OnItemClickListener {
                             override fun onItemClick(view: View?, position: Int) {
-                                val item = adapter.list[position]
-
-                                when(item) {
+                                when(adapter.list[position]) {
                                     is StartDayItem -> {
                                         val selectDayList = ArrayList<StartDayItem>()
 
@@ -180,11 +197,11 @@ class ActivityAddEvent: AppCompatActivity() {
                                                         selectDayList[0].date,
                                                         selectDayList[1].date.startOfDay
                                                 )
-                                                .show(supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
+                                                .show(fragmentManager!!, DialogFragmentDaySelectCalendar.toString())
                                     }
 
                                     is VisitItem -> {
-                                        val intent = Intent(context, ActivityAddPerson::class.java)
+                                        val intent = Intent(CalendarApplication.context, ActivityAddPerson::class.java)
                                         if (event != null) {
                                             intent.putExtra("key", event.key)
                                         }
@@ -199,23 +216,23 @@ class ActivityAddEvent: AppCompatActivity() {
                 )
         )
 
-        val cancelBtn = findViewById<Button>(R.id.cancel_btn)
+        val cancelBtn = view.findViewById<Button>(R.id.cancel_btn)
         cancelBtn.clicks()
-            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                finish()
-            }
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    activity?.finish()
+                }
 
-        val confirmBtn = findViewById<Button>(R.id.confirm_btn)
+        val confirmBtn = view.findViewById<Button>(R.id.confirm_btn)
         confirmBtn.clicks()
-            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                refreshFlag = true
-                addEventRealm()
-                finish()
-            }
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    (activity as? ActivityAddEvent)?.refreshFlag = true
+                    addEventRealm()
+                    activity?.finish()
+                }
 
         if (key != -1L) {
             confirmBtn.text = "수정"
@@ -223,24 +240,31 @@ class ActivityAddEvent: AppCompatActivity() {
 
 
         // 광고 추가
-        adView = AdView(baseContext)
+        adView = AdView(context)
 
         adView?.adSize = AdSize.BANNER
         adView?.adUnitId = AdUtil.adMobAddEventTopBannerId
 
-        val layout = findViewById<ConstraintLayout>(R.id.ad_layout)
+        val layout = view.findViewById<ConstraintLayout>(R.id.ad_layout)
         layout.addView(adView)
 
         val adRequest = AdRequest.Builder().build()
         adView?.loadAd(adRequest)
+
+        return view
     }
 
-    public override fun onPause() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as ActivityAddEvent?)!!.setTitle("새로운 이벤트")
+    }
+
+    override fun onPause() {
         adView?.pause()
         super.onPause()
     }
 
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         adView?.resume()
     }
@@ -249,14 +273,6 @@ class ActivityAddEvent: AppCompatActivity() {
         adView?.destroy()
         GlobalBus.unregister(this)
         super.onDestroy()
-    }
-
-    override fun finish() {
-        if (refreshFlag) {
-            calendarRefresh(true)
-        }
-
-        super.finish()
     }
 
     private fun addEventRealm() {
@@ -308,26 +324,27 @@ class ActivityAddEvent: AppCompatActivity() {
             eventMultiDay.insert()
         }
 
-        finish()
+        activity?.finish()
     }
 
     private fun removeEvent(key: Long) {
         val event = RealmEventDay.select(key)
         if (event != null) {
             event.delete()
-            refreshFlag = true
-            finish()
+            (activity as? ActivityAddEvent)?.refreshFlag = true
+            activity?.finish()
             return
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
+        val context = context!!
         val deleteHolder = event.map.getOrDefault(DeleteHolder.toString(), null)
         if (deleteHolder != null) {
             val key = event.map["key"] as Long
             AlertUtil.alertOkAndCancel(
-                    this,
+                    context,
                     "삭제하시겠습니까?",
                     getString(R.string.ok)
             ) { _, _ ->
@@ -378,20 +395,6 @@ class ActivityAddEvent: AppCompatActivity() {
 
         }
 
-        val memoHolder = event.map.getOrDefault(MemoHolder.toString(), null)
-        if (memoHolder != null) {
-            for(idx in adapter.list.indices) {
-                val item = adapter.list[idx]
-                if (item is MemoItem) {
-                    GlobalScope.async(Dispatchers.Main) {
-                        delay(200)
-//                        recyclerView.smoothScrollToPosition(idx-2)
-                    }
-                    break
-                }
-            }
-
-        }
-
     }
+
 }

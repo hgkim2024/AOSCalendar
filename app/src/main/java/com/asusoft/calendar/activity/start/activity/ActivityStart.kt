@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.start
+package com.asusoft.calendar.activity.start.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.start.SideMenuType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
@@ -262,7 +263,6 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     fun setTitle(text: String) {
-//        supportActionBar?.setTitle(text)
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.text = text
     }

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*

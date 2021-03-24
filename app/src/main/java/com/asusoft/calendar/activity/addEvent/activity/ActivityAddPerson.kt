@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.addEvent
+package com.asusoft.calendar.activity.addEvent.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
@@ -86,7 +86,7 @@ class ActivityAddPerson : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.data = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
                 startActivityForResult(intent,
-                    REQUEST_CONTACTS
+                        REQUEST_CONTACTS
                 )
             }
 
@@ -137,8 +137,7 @@ class ActivityAddPerson : AppCompatActivity() {
 
     private fun postEventBus() {
         val event = HashMapEvent(HashMap())
-        event.map[Companion.toString()] =
-            Companion.toString()
+        event.map[ActivityAddPerson.toString()] = ActivityAddPerson.toString()
         event.map["list"] = adapter.list
         GlobalBus.post(event)
     }

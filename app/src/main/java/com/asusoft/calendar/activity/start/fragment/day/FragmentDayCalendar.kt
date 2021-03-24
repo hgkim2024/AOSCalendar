@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.activity.start.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -53,7 +53,7 @@ class FragmentDayCalendar: Fragment() {
         super.onCreate(savedInstanceState)
 
         val args = arguments!!
-        val dateTime = args.getLong("date") as Long
+        val dateTime = args.getLong("date")
         if (dateTime != 0L) {
             date = Date(dateTime)
         }

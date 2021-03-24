@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.addEvent.ActivityAddEvent
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType

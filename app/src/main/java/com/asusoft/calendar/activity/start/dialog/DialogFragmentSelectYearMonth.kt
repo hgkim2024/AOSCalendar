@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.start.ActivityStart
+import com.asusoft.calendar.activity.start.activity.ActivityStart
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.`object`.CalculatorUtil
 import com.asusoft.calendar.util.calendarMonth
