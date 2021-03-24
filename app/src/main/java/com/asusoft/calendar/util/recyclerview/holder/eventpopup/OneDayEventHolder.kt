@@ -120,7 +120,7 @@ class OneDayEventHolder(
         event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
         event.map["key"] = key
         event.map["date"] = date
-        GlobalBus.getBus().post(event)
+        GlobalBus.post(event)
     }
 
     companion object {

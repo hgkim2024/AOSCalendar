@@ -39,7 +39,7 @@ class RecentSearchTermsHolder(
                         val event = HashMapEvent(HashMap())
                         event.map[RecentSearchTermsHolder.toString()] = RecentSearchTermsHolder.toString()
                         event.map["name"] = item.name
-                        GlobalBus.getBus().post(event)
+                        GlobalBus.post(event)
                     }
                 }
     }

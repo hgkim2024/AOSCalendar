@@ -67,13 +67,13 @@ class FragmentMonthViewPager: Fragment() {
     override fun onStart() {
         super.onStart()
 
-        GlobalBus.getBus().register(this)
+        GlobalBus.register(this)
     }
 
     override fun onStop() {
         super.onStop()
 
-        GlobalBus.getBus().unregister(this)
+        GlobalBus.unregister(this)
     }
 
     override fun onCreateView(
@@ -170,7 +170,7 @@ class FragmentMonthViewPager: Fragment() {
     private fun loadPage() {
         val event = HashMapEvent(HashMap())
         event.map[FragmentMonthViewPager.toString()] = FragmentMonthViewPager.toString()
-        GlobalBus.getBus().post(event)
+        GlobalBus.post(event)
 //        Logger.d("page refresh")
     }
 

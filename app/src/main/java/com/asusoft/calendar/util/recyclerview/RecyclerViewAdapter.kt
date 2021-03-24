@@ -267,7 +267,7 @@ class RecyclerViewAdapter(
                                 if (event.startTime != event.endTime) {
                                     val event = HashMapEvent(HashMap())
                                     event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
-                                    GlobalBus.getBus().post(event)
+                                    GlobalBus.post(event)
                                 } else {
                                     notifyItemRemoved(position)
                                 }

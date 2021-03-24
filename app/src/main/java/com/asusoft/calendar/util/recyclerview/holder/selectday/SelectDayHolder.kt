@@ -93,7 +93,7 @@ class SelectDayHolder(
                             val event = HashMapEvent(HashMap())
                             event.map[SelectDayHolder.toString()] = SelectDayHolder.toString()
                             event.map["date"] = date
-                            GlobalBus.getBus().post(event)
+                            GlobalBus.post(event)
                         }
                     }
 

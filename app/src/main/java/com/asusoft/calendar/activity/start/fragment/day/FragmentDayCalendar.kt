@@ -62,13 +62,13 @@ class FragmentDayCalendar: Fragment() {
     override fun onStart() {
         super.onStart()
 
-        GlobalBus.getBus().register(this)
+        GlobalBus.register(this)
     }
 
     override fun onStop() {
         super.onStop()
 
-        GlobalBus.getBus().unregister(this)
+        GlobalBus.unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

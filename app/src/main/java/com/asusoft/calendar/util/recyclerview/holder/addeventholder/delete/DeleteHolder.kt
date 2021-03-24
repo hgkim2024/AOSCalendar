@@ -46,7 +46,7 @@ class DeleteHolder (
         val event = HashMapEvent(HashMap())
         event.map[DeleteHolder.toString()] = DeleteHolder.toString()
         event.map["key"] = item.EventKey
-        GlobalBus.getBus().post(event)
+        GlobalBus.post(event)
     }
 
     companion object {

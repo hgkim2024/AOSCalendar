@@ -194,13 +194,13 @@ class ActivityStart: AppCompatActivity(), FragmentManager.OnBackStackChangedList
     override fun onStart() {
         super.onStart()
 
-        GlobalBus.getBus().register(this)
+        GlobalBus.register(this)
     }
 
     override fun onStop() {
         super.onStop()
 
-        GlobalBus.getBus().unregister(this)
+        GlobalBus.unregister(this)
     }
 
     override fun onBackStackChanged() {

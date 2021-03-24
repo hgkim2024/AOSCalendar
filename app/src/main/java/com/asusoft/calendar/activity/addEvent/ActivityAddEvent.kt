@@ -71,8 +71,7 @@ class ActivityAddEvent: AppCompatActivity() {
         setContentView(R.layout.activity_add_event)
 //        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN + WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        GlobalBus.getBus().register(this)
-
+        GlobalBus.getBus()
         lateinit var startDate: Date
         lateinit var endDate: Date
         var event: CopyEventDay? = null
@@ -248,7 +247,7 @@ class ActivityAddEvent: AppCompatActivity() {
 
     override fun onDestroy() {
         adView?.destroy()
-        GlobalBus.getBus().unregister(this)
+        GlobalBus.unregister(this)
         super.onDestroy()
     }
 

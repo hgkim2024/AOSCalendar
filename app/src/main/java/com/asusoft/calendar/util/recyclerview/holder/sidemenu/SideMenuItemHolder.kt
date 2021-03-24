@@ -35,7 +35,7 @@ class SideMenuItemHolder (
                 val event = HashMapEvent(HashMap())
                 event.map[SideMenuItemHolder.toString()] = SideMenuItemHolder.toString()
                 event.map["type"] = item
-                GlobalBus.getBus().post(event)
+                GlobalBus.post(event)
             }
     }
 

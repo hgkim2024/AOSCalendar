@@ -140,7 +140,7 @@ class ActivityAddPerson : AppCompatActivity() {
         event.map[Companion.toString()] =
             Companion.toString()
         event.map["list"] = adapter.list
-        GlobalBus.getBus().post(event)
+        GlobalBus.post(event)
     }
 
     @SuppressLint("ShowToast")

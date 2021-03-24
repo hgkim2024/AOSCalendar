@@ -851,7 +851,7 @@ object MonthCalendarUIUtil {
             event.map["removeDayEventView"] = "removeDayEventView"
         }
 
-        GlobalBus.getBus().post(event)
+        GlobalBus.post(event)
     }
 
     private fun onDrag(v: View, event: DragEvent): Boolean {
@@ -882,7 +882,7 @@ object MonthCalendarUIUtil {
                     val event = HashMapEvent(java.util.HashMap())
                     event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
                     event.map["startDragDate"] = v.tag as Long
-                    GlobalBus.getBus().post(event)
+                    GlobalBus.post(event)
                 }
 
                 v.invalidate()
@@ -900,7 +900,7 @@ object MonthCalendarUIUtil {
                 val event = HashMapEvent(java.util.HashMap())
                 event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
                 event.map["removeDayEventView"] = "removeDayEventView"
-                GlobalBus.getBus().post(event)
+                GlobalBus.post(event)
 
                 return true
             }
@@ -917,7 +917,7 @@ object MonthCalendarUIUtil {
                         eventMap.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
                         eventMap.map["endDragDate"] = v.tag as Long
                         eventMap.map["key"] = (vw.tag as String).toLong()
-                        GlobalBus.getBus().post(eventMap)
+                        GlobalBus.post(eventMap)
                     }
                 }
 

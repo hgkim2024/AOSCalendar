@@ -103,7 +103,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
                 val date = sdf.parse(year + month)
                 event.map["date"] = date
 
-                GlobalBus.getBus().post(event)
+                GlobalBus.post(event)
 
                 (activity as? ActivityStart)?.setDate(date)
 

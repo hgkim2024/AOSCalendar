@@ -92,13 +92,13 @@ class FragmentMonthPage: Fragment() {
         date = Date(time)
         eventViewDate = date
 
-        GlobalBus.getBus().register(this)
+        GlobalBus.register(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        GlobalBus.getBus().unregister(this)
+        GlobalBus.unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
