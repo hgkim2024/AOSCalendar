@@ -11,6 +11,11 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import java.util.*
 
 class FragmentSetting: Fragment() {
@@ -54,20 +59,23 @@ class FragmentSetting: Fragment() {
                         recyclerView,
                         object : RecyclerItemClickListener.OnItemClickListener {
                             override fun onItemClick(view: View?, position: Int) {
-                                when(adapter.list[position]) {
-                                    SideMenuType.MONTH -> {
-                                        fragmentManager!!
-                                                .beginTransaction()
-                                                .replace(
-                                                        R.id.fragment,
-                                                        FragmentMonthSetting.newInstance(),
-                                                        FragmentMonthSetting.toString()
-                                        ).addToBackStack(null).commit()
+                                GlobalScope.async(Dispatchers.Main) {
+                                    delay(CLICK_DELAY)
+                                    when(adapter.list[position]) {
+                                        SideMenuType.MONTH -> {
+                                            fragmentManager!!
+                                                    .beginTransaction()
+                                                    .replace(
+                                                            R.id.fragment,
+                                                            FragmentMonthSetting.newInstance(),
+                                                            FragmentMonthSetting.toString()
+                                                    ).addToBackStack(null).commit()
+                                        }
+
+                                        SideMenuType.DAY -> {}
+                                        else -> {}
                                     }
-
-                                    SideMenuType.DAY -> {}
                                 }
-
                             }
 
                             override fun onItemLongClick(view: View?, position: Int) {}

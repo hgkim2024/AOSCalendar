@@ -59,6 +59,10 @@ class RecyclerViewAdapter(
         var list: ArrayList<Any>
         ): RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
+    companion object {
+        const val CLICK_DELAY = 200L
+    }
+
     private val type = RecyclerViewType.getType(typeObject)
 
     override fun getItemViewType(position: Int): Int {

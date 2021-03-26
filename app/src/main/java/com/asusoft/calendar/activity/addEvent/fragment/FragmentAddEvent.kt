@@ -25,6 +25,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
@@ -182,33 +183,35 @@ class FragmentAddEvent: Fragment() {
                         recyclerView,
                         object : RecyclerItemClickListener.OnItemClickListener {
                             override fun onItemClick(view: View?, position: Int) {
-                                when(adapter.list[position]) {
-                                    is StartDayItem -> {
-                                        val selectDayList = ArrayList<StartDayItem>()
+                                GlobalScope.async(Dispatchers.Main) {
+                                    delay(CLICK_DELAY)
+                                    when(adapter.list[position]) {
+                                        is StartDayItem -> {
+                                            val selectDayList = ArrayList<StartDayItem>()
 
-                                        for (item in adapter.list) {
-                                            if (item is StartDayItem) {
-                                                selectDayList.add(item)
+                                            for (item in adapter.list) {
+                                                if (item is StartDayItem) {
+                                                    selectDayList.add(item)
+                                                }
                                             }
+
+                                            DialogFragmentDaySelectCalendar
+                                                    .newInstance(
+                                                            selectDayList[0].date,
+                                                            selectDayList[1].date.startOfDay
+                                                    )
+                                                    .show(fragmentManager!!, DialogFragmentDaySelectCalendar.toString())
                                         }
 
-                                        DialogFragmentDaySelectCalendar
-                                                .newInstance(
-                                                        selectDayList[0].date,
-                                                        selectDayList[1].date.startOfDay
-                                                )
-                                                .show(fragmentManager!!, DialogFragmentDaySelectCalendar.toString())
-                                    }
-
-                                    is VisitItem -> {
-                                        val intent = Intent(CalendarApplication.context, ActivityAddPerson::class.java)
-                                        if (event != null) {
-                                            intent.putExtra("key", event.key)
+                                        is VisitItem -> {
+                                            val intent = Intent(CalendarApplication.context, ActivityAddPerson::class.java)
+                                            if (event != null) {
+                                                intent.putExtra("key", event.key)
+                                            }
+                                            startActivity(intent)
                                         }
-                                        startActivity(intent)
                                     }
                                 }
-
                             }
 
                             override fun onItemLongClick(view: View?, position: Int) {}
