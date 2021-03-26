@@ -5,12 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.eventbus.GlobalBus
-import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
-import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
-import java.util.HashMap
 
 class MemoHolder(
         val context: Context,

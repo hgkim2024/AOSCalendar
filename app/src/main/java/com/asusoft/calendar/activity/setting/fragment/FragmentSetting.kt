@@ -8,12 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.calendar.SideMenuType
+import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import java.util.*
 
 class FragmentSetting: Fragment() {
 
     companion object {
+        const val FONT_MIN_SIZE = 8
+        const val FONT_MAX_SIZE = 18
+
         fun newInstance(): FragmentSetting {
             return FragmentSetting()
         }
@@ -30,14 +35,46 @@ class FragmentSetting: Fragment() {
         val context = this.context!!
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
-        // TODO: - 아이템 정의하기
-        adapter = RecyclerViewAdapter(this, ArrayList<Any>())
+        val list = ArrayList<Any>()
+
+        for (type in SideMenuType.values()) {
+            list.add(type)
+        }
+        list.removeAt(0)
+
+        adapter = RecyclerViewAdapter(this, list)
 
         recyclerView = view.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-        
+
+        recyclerView.addOnItemTouchListener(
+                RecyclerItemClickListener(
+                        context,
+                        recyclerView,
+                        object : RecyclerItemClickListener.OnItemClickListener {
+                            override fun onItemClick(view: View?, position: Int) {
+                                when(adapter.list[position]) {
+                                    SideMenuType.MONTH -> {
+                                        fragmentManager!!
+                                                .beginTransaction()
+                                                .replace(
+                                                        R.id.fragment,
+                                                        FragmentMonthSetting.newInstance(),
+                                                        FragmentMonthSetting.toString()
+                                        ).addToBackStack(null).commit()
+                                    }
+
+                                    SideMenuType.DAY -> {}
+                                }
+
+                            }
+
+                            override fun onItemLongClick(view: View?, position: Int) {}
+                        }
+                )
+        )
+
         return view
     }
-    
 }

@@ -1,6 +1,6 @@
 package com.asusoft.calendar.util
 
-import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -23,7 +23,7 @@
             android:name=".activity.addEvent.activity.ActivityAddEvent"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.start.activity.ActivityStart"
+            android:name=".activity.calendar.activity.ActivityCalendar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

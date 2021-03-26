@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.start.SideMenuType
+import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
@@ -29,22 +29,27 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.Edi
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoItem
-import com.asusoft.calendar.util.recyclerview.holder.eventpopup.OneDayEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
-import com.asusoft.calendar.util.recyclerview.holder.addperson.PersonHolder
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarAddEventHolder
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyHolder
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarBodyItem
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.header.DayCalendarHeaderHolder
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType
-import com.asusoft.calendar.util.recyclerview.holder.dayevent.body.DayCalendarType.*
-import com.asusoft.calendar.util.recyclerview.holder.eventsearch.EventSearchHolder
-import com.asusoft.calendar.util.recyclerview.holder.recentsearch.RecentSearchTermsHolder
-import com.asusoft.calendar.util.recyclerview.holder.selectday.SelectDayHolder
-import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuItemHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.addperson.PersonHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarAddEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarBodyHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarBodyItem
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.header.DayCalendarHeaderHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType
+import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType.*
+import com.asusoft.calendar.util.recyclerview.holder.search.eventsearch.EventSearchHolder
+import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayHolder
+import com.asusoft.calendar.util.recyclerview.holder.setting.CalendarSettingType
+import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarHolder
+import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
+import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchHolder
+import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchItem
+import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import java.util.*
 import kotlin.collections.ArrayList
@@ -61,9 +66,11 @@ class RecyclerViewAdapter(
     }
 
     private fun getType(position: Int): Int {
+        val item = list[position]
+
         return when(type) {
             ADD_EVENT -> {
-                return when(list[position]) {
+                return when(item) {
                     is EditTextItem -> TITLE.value
                     is StartDayItem -> START_DAY.value
                     is CompleteItem -> COMPLETE.value
@@ -75,22 +82,30 @@ class RecyclerViewAdapter(
             }
 
             DAY_CALENDAR_BODY -> {
-                return when(list[position]) {
+                return when(item) {
                     is Date -> DayCalendarType.ADD_EVENT.value
                     else -> CHECK_BOX.value
                 }
             }
 
             SIDE_MENU -> {
-                if (list[position] is SideMenuType) {
-                    return if ((list[position] as SideMenuType) == SideMenuType.TOP) {
-                        0
+                if (item is SideMenuType) {
+                    return if (item == SideMenuType.TOP) {
+                        SideMenuType.TOP.value
                     } else {
                         1
                     }
                 }
 
                 return 0
+            }
+
+            MONTH_SETTING -> {
+                return when(item) {
+                    is SwitchItem -> CalendarSettingType.SWITCH.value
+                    is SeekBarItem -> CalendarSettingType.SEEK_BAR.value
+                    else -> CalendarSettingType.SWITCH.value
+                }
             }
 
             else -> 0
@@ -183,7 +198,7 @@ class RecyclerViewAdapter(
 
                     else -> {
                         val view = inflater.inflate(R.layout.holder_side_item, parent, false)
-                        SideMenuItemHolder(context, view, this)
+                        CalendarTypeHolder(typeObject, context, view, this)
                     }
                 }
             }
@@ -207,6 +222,25 @@ class RecyclerViewAdapter(
                 setCornerRadiusDrawable(rootLayout, CalendarApplication.getColor(R.color.background))
                 setLeftCornerRadiusDrawable(edge, CalendarApplication.getColor(R.color.colorAccent))
                 EventSearchHolder(context, view, this)
+            }
+
+            MONTH_SETTING -> {
+                when(viewType) {
+                    CalendarSettingType.SWITCH.value -> {
+                        val view = inflater.inflate(R.layout.holder_switch, parent, false)
+                        SwitchHolder(context, view, this)
+                    }
+
+                    CalendarSettingType.SEEK_BAR.value -> {
+                        val view = inflater.inflate(R.layout.holder_seek_bar, parent, false)
+                        SeekBarHolder(context, view, this)
+                    }
+
+                    else -> {
+                        val view = inflater.inflate(R.layout.holder_switch, parent, false)
+                        SwitchHolder(context, view, this)
+                    }
+                }
             }
         }
     }
@@ -237,13 +271,19 @@ class RecyclerViewAdapter(
             SIDE_MENU -> {
                 when(holder) {
                     is SideMenuTopHolder -> holder.bind(position)
-                    is SideMenuItemHolder -> holder.bind(position)
+                    is CalendarTypeHolder -> holder.bind(position)
                 }
             }
 
             VISIT_PERSON -> (holder as PersonHolder).bind(position)
             RECENT_SEARCH -> (holder as RecentSearchTermsHolder).bind(position)
             EVENT_SEARCH_RESULT -> (holder as EventSearchHolder).bind(position)
+            MONTH_SETTING -> {
+                when(holder) {
+                    is SwitchHolder -> holder.bind(position)
+                    is SeekBarHolder -> holder.bind(position)
+                }
+            }
         }
     }
 

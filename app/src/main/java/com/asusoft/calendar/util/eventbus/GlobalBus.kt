@@ -12,11 +12,15 @@ class GlobalBus {
         }
 
         fun register(any: Any) {
-            getBus().register(any)
+            if (!getBus().isRegistered(any)) {
+                getBus().register(any)
+            }
         }
 
         fun unregister(any: Any) {
-            getBus().unregister(any)
+            if (getBus().isRegistered(any)) {
+                getBus().unregister(any)
+            }
         }
 
         fun post(event: HashMapEvent) {

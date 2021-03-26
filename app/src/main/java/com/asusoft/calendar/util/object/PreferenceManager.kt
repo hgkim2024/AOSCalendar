@@ -121,9 +121,9 @@ object PreferenceManager {
      * @param key
      * @return
      */
-    fun getInt(key: String?): Int {
+    fun getInt(key: String?, defaultValue: Int = DEFAULT_VALUE_INT): Int {
         val prefs = getPreferences()
-        return prefs.getInt(key, DEFAULT_VALUE_INT)
+        return prefs.getInt(key, defaultValue)
     }
 
     /**

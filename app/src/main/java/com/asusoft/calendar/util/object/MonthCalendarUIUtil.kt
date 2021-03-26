@@ -3,7 +3,6 @@ package com.asusoft.calendar.util.`object`
 import android.content.ClipDescription
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
@@ -18,10 +17,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.activity.start.fragment.month.FragmentMonthPage
-import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.activity.start.fragment.month.objects.MonthItem
-import com.asusoft.calendar.activity.start.fragment.month.objects.WeekItem
+import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
+import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalendarUtil.getEventOrderList
@@ -30,7 +29,6 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -40,7 +38,10 @@ object MonthCalendarUIUtil {
     public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
-    public const val FONT_SIZE = 12F
+    public const val DEFAULT_FONT_SIZE = 12F
+    public val FONT_SIZE: Float
+        get() = PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, DEFAULT_FONT_SIZE.toInt()).toFloat()
+
     public val EVENT_HEIGHT
         get() = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)
 

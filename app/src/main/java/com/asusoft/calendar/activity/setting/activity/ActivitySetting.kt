@@ -4,13 +4,24 @@ import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddPerson
 import com.asusoft.calendar.activity.setting.fragment.FragmentSetting
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.google.android.material.appbar.AppBarLayout
+import java.util.HashMap
 
-class ActivitySetting : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
+class ActivitySetting : AppCompatActivity() {
+
+    companion object {
+        override fun toString(): String {
+            return "ActivitySetting"
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +31,6 @@ class ActivitySetting : AppCompatActivity(), FragmentManager.OnBackStackChangedL
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportFragmentManager.addOnBackStackChangedListener(this)
 
         // remove shadow
         val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
@@ -44,11 +54,26 @@ class ActivitySetting : AppCompatActivity(), FragmentManager.OnBackStackChangedL
                             FragmentSetting.toString()
                     )
                     .commit()
-        else
-            onBackStackChanged()
     }
 
-    override fun onBackStackChanged() {
-        supportActionBar!!.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
+    override fun finish() {
+        val event = HashMapEvent(HashMap())
+        event.map[ActivitySetting.toString()] = ActivitySetting.toString()
+        GlobalBus.post(event)
+        super.finish()
     }
+
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        when(menuItem.itemId) {
+            android.R.id.home -> {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    finish()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(menuItem)
+    }
+
 }
