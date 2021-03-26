@@ -23,6 +23,7 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.`object`.PreferenceKey
+import com.asusoft.calendar.util.`object`.PreferenceKey.DRAG_AND_DROP_DEFAULT
 import com.asusoft.calendar.util.`object`.PreferenceManager
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
@@ -90,7 +91,7 @@ class WeekItem(
             setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
-            if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP)) {
+            if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) {
                 val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                     override fun onLongPress(e: MotionEvent) {
                         onClick(eventView, e)
@@ -177,7 +178,7 @@ class WeekItem(
     }
 
     private fun onClick(v: View, event: MotionEvent): Boolean {
-        if (!PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP)) return false
+        if (!PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) return false
 
         val x = event.x
         val y = event.y

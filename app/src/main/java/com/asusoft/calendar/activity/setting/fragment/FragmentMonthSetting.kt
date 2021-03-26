@@ -13,6 +13,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.DEFAULT_FONT_SIZE
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.FONT_SIZE
 import com.asusoft.calendar.util.`object`.PreferenceKey
+import com.asusoft.calendar.util.`object`.PreferenceKey.DRAG_AND_DROP_DEFAULT
 import com.asusoft.calendar.util.`object`.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
@@ -43,7 +44,7 @@ class FragmentMonthSetting: Fragment() {
         list.add(
                 SwitchItem(
                         PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP,
-                        PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP),
+                        PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT),
                         "이벤트 길게 눌러 이동 사용"
                 )
         )

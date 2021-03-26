@@ -110,9 +110,9 @@ object PreferenceManager {
      * @param key
      * @return
      */
-    fun getBoolean(key: String?): Boolean {
+    fun getBoolean(key: String?, defaultValue: Boolean = DEFAULT_VALUE_BOOLEAN): Boolean {
         val prefs = getPreferences()
-        return prefs.getBoolean(key, DEFAULT_VALUE_BOOLEAN)
+        return prefs.getBoolean(key, defaultValue)
     }
 
     /**
