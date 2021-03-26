@@ -96,7 +96,15 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         appBarLayout.stateListAnimator = stateListAnimator
 
         if (savedInstanceState == null)
-            supportFragmentManager.beginTransaction().add(R.id.fragment, FragmentAddEvent.newInstance(key, startDate, endDate), FragmentAddEvent.toString()).commit()
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.fragment,
+                    FragmentAddEvent.
+                    newInstance(key, startDate, endDate),
+                    FragmentAddEvent.toString()
+                )
+                .commit()
         else
             onBackStackChanged()
     }

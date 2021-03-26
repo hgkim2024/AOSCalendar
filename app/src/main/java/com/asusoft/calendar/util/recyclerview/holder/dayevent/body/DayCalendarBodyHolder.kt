@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -61,7 +62,7 @@ class DayCalendarBodyHolder (
                 if (event is CopyEventDay)
                     event.updateIsCompete(!event.isComplete)
 
-                val itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
+                val itemList = getDayEventList(item.date, false)
                 val list = getDayCalendarItemList(itemList, item.date)
 
 //            logItemList(list)

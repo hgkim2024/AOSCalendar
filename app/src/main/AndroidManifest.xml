@@ -3,6 +3,7 @@
     package="com.asusoft.calendar">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.CalendarApplication"
         android:allowBackup="true"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.addEvent.activity.ActivityAddPerson"></activity>
+        <activity android:name=".activity.setting.activity.ActivitySetting"></activity>
+        <activity android:name=".activity.addEvent.activity.ActivityAddPerson" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

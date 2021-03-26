@@ -10,6 +10,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.`object`.CalendarUtil.getEventOrderList
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -66,7 +67,7 @@ class SelectDayHolder(
 
         for (idx in 0 until row) {
             val weekDate = startDate.getNextDay(idx * WEEK)
-            val orderMap = MonthCalendarUIUtil.getEventOrderList(weekDate)
+            val orderMap = getEventOrderList(weekDate)
             val holidayMap = orderMap.filter { it.key <= 1231 }
 
             for (index in 0 until WEEK) {

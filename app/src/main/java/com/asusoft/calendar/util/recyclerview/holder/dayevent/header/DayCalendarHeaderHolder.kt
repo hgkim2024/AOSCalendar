@@ -21,6 +21,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
@@ -60,7 +61,7 @@ class DayCalendarHeaderHolder(
             }
         }
 
-        item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
+        item.itemList = getDayEventList(item.date, false)
         val list = getDayCalendarItemList(item.itemList, item.date)
         adapter = RecyclerViewAdapter(this, list)
 
@@ -92,7 +93,7 @@ class DayCalendarHeaderHolder(
                     collapseAnimation(recyclerView)
                     upDownImageView.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 } else {
-                    item.itemList = MonthCalendarUIUtil.getDayEventList(item.date, false)
+                    item.itemList = getDayEventList(item.date, false)
                     val list = getDayCalendarItemList(item.itemList, item.date)
                     logItemList(list)
                     adapter.list = list

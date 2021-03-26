@@ -11,6 +11,8 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
+import com.asusoft.calendar.util.`object`.CalendarUtil.setCornerRadiusDrawable
+import com.asusoft.calendar.util.`object`.CalendarUtil.setLeftCornerRadiusDrawable
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -202,8 +204,8 @@ class RecyclerViewAdapter(
                 val view = inflater.inflate(R.layout.holder_event_search_result, parent, false)
                 val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
                 val edge = view.findViewById<View>(R.id.edge)
-                MonthCalendarUIUtil.setCornerRadiusDrawable(rootLayout, CalendarApplication.getColor(R.color.background))
-                MonthCalendarUIUtil.setLeftCornerRadiusDrawable(edge, CalendarApplication.getColor(R.color.colorAccent))
+                setCornerRadiusDrawable(rootLayout, CalendarApplication.getColor(R.color.background))
+                setLeftCornerRadiusDrawable(edge, CalendarApplication.getColor(R.color.colorAccent))
                 EventSearchHolder(context, view, this)
             }
         }

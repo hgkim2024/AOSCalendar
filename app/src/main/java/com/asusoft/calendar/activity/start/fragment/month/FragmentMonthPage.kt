@@ -29,11 +29,12 @@ import com.asusoft.calendar.activity.start.fragment.month.objects.WeekItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.`object`.CalculatorUtil
+import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
+import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.FONT_SIZE
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
@@ -272,6 +273,7 @@ class FragmentMonthPage: Fragment() {
         val eventList = getDayEventList(date)
 
         title.text = "${eventList.size}개 이벤트"
+        title.textSize = FONT_SIZE + 3
 
         addButton.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -282,6 +284,7 @@ class FragmentMonthPage: Fragment() {
 
         if (eventList.isEmpty()) {
             emptyTitle.visibility = View.VISIBLE
+            emptyTitle.textSize = FONT_SIZE + 2
             emptyTitle.isClickable = true
             emptyTitle.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)

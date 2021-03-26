@@ -18,6 +18,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.start.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.`object`.CalculatorUtil
+import com.asusoft.calendar.util.`object`.CalendarUtil.setCornerRadiusDrawable
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
@@ -84,7 +85,7 @@ class WeekItem(
         }
 
         if (isHoliday) {
-            MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
+            setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
             // TODO: - 설정화면에서 이 기능 on/off 만들기
@@ -100,7 +101,7 @@ class WeekItem(
                 false
             }
 
-            MonthCalendarUIUtil.setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
+            setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
 
