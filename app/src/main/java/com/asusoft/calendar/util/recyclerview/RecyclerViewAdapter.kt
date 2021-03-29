@@ -61,7 +61,7 @@ class RecyclerViewAdapter(
 
     companion object {
         // 클릭 이펙트 딜레이
-        const val CLICK_DELAY = 200L
+        const val CLICK_DELAY = 150L
     }
 
     private val type = RecyclerViewType.getType(typeObject)
