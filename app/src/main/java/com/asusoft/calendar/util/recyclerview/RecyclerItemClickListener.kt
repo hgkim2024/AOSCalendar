@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View
 import com.asusoft.calendar.application.CalendarApplication
-import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -23,18 +22,18 @@ class RecyclerItemClickListener(
         fun onItemLongClick(view: View?, position: Int)
     }
 
-    private var doubleClickPreventFlag = true
+    private var preventDoubleClickFlag = true
 
     private val mGestureDetector: GestureDetector
     override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
         val childView = view.findChildViewUnder(e.x, e.y)
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-            if (doubleClickPreventFlag) {
-                doubleClickPreventFlag = false
+            if (preventDoubleClickFlag) {
+                preventDoubleClickFlag = false
                 mListener.onItemClick(childView, view.getChildAdapterPosition(childView))
                 GlobalScope.async {
                     delay(CalendarApplication.THROTTLE)
-                    doubleClickPreventFlag = true
+                    preventDoubleClickFlag = true
                 }
             }
         }
