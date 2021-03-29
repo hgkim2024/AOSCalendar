@@ -35,6 +35,8 @@ import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.FONT_SIZE
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
+import com.asusoft.calendar.util.`object`.PreferenceKey
+import com.asusoft.calendar.util.`object`.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
@@ -171,7 +173,6 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setPageUI(context: Context) {
         monthCalendar = page.findViewById(R.id.month_calendar)
         if (monthCalendar?.childCount == 0) {
@@ -185,35 +186,66 @@ class FragmentMonthPage: Fragment() {
         for (weekItem in monthItem.weekItemList) {
             for (idx in weekItem.dayViewList.indices) {
                 val dayView = weekItem.dayViewList[idx]
+                setDayViewTouchEvent(
+                        dayView,
+                        weekItem,
+                        idx
+                )
+            }
+        }
+    }
 
-                dayView.setOnTouchListener { v, event ->
-                    when (event.action) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setDayViewTouchEvent(
+            dayView: View,
+            weekItem: WeekItem,
+            idx: Int
+    ) {
+        val dragFlag = PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, PreferenceKey.DRAG_AND_DROP_DEFAULT)
 
-                        MotionEvent.ACTION_DOWN -> {
-                            if (dayView.alpha == ALPHA) {
-                                dayViewClick(
-                                        weekItem,
-                                        dayView,
-                                        idx
-                                )
-                            }
-                        }
+        if (dragFlag) {
+            dayView.setOnTouchListener { v, event ->
+                when (event.action) {
 
-                        MotionEvent.ACTION_MOVE -> {}
-
-                        MotionEvent.ACTION_UP -> {
-                            if (dayView.alpha != ALPHA) {
-                                dayViewClick(
-                                        weekItem,
-                                        dayView,
-                                        idx
-                                )
-                            }
+                    MotionEvent.ACTION_DOWN -> {
+                        if (dayView.alpha == ALPHA) {
+                            dayViewClick(
+                                    weekItem,
+                                    dayView,
+                                    idx
+                            )
                         }
                     }
 
-                    dayView.alpha != ALPHA
+                    MotionEvent.ACTION_MOVE -> { }
+
+                    MotionEvent.ACTION_UP -> {
+                        if (dayView.alpha != ALPHA) {
+                            dayViewClick(
+                                    weekItem,
+                                    dayView,
+                                    idx
+                            )
+                        }
+                    }
                 }
+
+                dayView.alpha != ALPHA
+            }
+        } else {
+            dayView.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> { }
+                    MotionEvent.ACTION_MOVE -> { }
+                    MotionEvent.ACTION_UP -> {
+                        dayViewClick(
+                                weekItem,
+                                dayView,
+                                idx
+                        )
+                    }
+                }
+                true
             }
         }
     }

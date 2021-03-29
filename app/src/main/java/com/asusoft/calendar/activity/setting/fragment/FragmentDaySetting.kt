@@ -39,7 +39,7 @@ class FragmentDaySetting: Fragment() {
         list.add(
                 SeekBarItem(
                         PreferenceKey.DAY_CALENDAR_FONT_SIZE,
-                        PreferenceManager.getInt(PreferenceKey.DAY_CALENDAR_FONT_SIZE, CalendarUtil.DAY_DEFAULT_FONT_SIZE.toInt()),
+                        PreferenceManager.getInt(PreferenceKey.DAY_CALENDAR_FONT_SIZE, PreferenceKey.DAY_DEFAULT_FONT_SIZE.toInt()),
                         "글자 크기",
                         FragmentSetting.FONT_MIN_SIZE,
                         FragmentSetting.FONT_MAX_SIZE

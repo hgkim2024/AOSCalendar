@@ -4,7 +4,6 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.PreferenceKey.DAY_CALENDAR_FONT_SIZE
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,10 +11,8 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object CalendarUtil {
-
-    public const val DAY_DEFAULT_FONT_SIZE = 14F
-    public val DAY_FONT_SIZE: Float
-        get() = PreferenceManager.getInt(DAY_CALENDAR_FONT_SIZE, DAY_DEFAULT_FONT_SIZE.toInt()).toFloat()
+    val DAY_FONT_SIZE: Float
+        get() = PreferenceManager.getInt(PreferenceKey.DAY_CALENDAR_FONT_SIZE, PreferenceKey.DAY_DEFAULT_FONT_SIZE.toInt()).toFloat()
 
     fun getDayEventList(date: Date, isHoliday: Boolean = true): ArrayList<Any> {
         val eventList: ArrayList<Any> = ArrayList()

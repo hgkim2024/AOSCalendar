@@ -4,14 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.DEFAULT_FONT_SIZE
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.FONT_SIZE
 import com.asusoft.calendar.util.`object`.PreferenceKey
 import com.asusoft.calendar.util.`object`.PreferenceKey.DRAG_AND_DROP_DEFAULT
 import com.asusoft.calendar.util.`object`.PreferenceManager
@@ -52,7 +48,7 @@ class FragmentMonthSetting: Fragment() {
         list.add(
                 SeekBarItem(
                         PreferenceKey.MONTH_CALENDAR_FONT_SIZE,
-                        PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, DEFAULT_FONT_SIZE.toInt()),
+                        PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, PreferenceKey.MONTH_DEFAULT_FONT_SIZE.toInt()),
                         "글자 크기",
                         FragmentSetting.FONT_MIN_SIZE,
                         FragmentSetting.FONT_MAX_SIZE

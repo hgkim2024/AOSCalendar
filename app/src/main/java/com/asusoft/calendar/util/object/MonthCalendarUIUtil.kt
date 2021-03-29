@@ -38,9 +38,8 @@ object MonthCalendarUIUtil {
     public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
-    public const val DEFAULT_FONT_SIZE = 12F
     public val FONT_SIZE: Float
-        get() = PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, DEFAULT_FONT_SIZE.toInt()).toFloat()
+        get() = PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, PreferenceKey.MONTH_DEFAULT_FONT_SIZE.toInt()).toFloat()
 
     public val EVENT_HEIGHT
         get() = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)

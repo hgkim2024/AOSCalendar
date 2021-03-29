@@ -9,5 +9,8 @@ object PreferenceKey {
     const val DRAG_AND_DROP_DEFAULT = true
 
     const val MONTH_CALENDAR_FONT_SIZE = "KEY_MONTH_CALENDAR_FONT_SIZE"
+    const val MONTH_DEFAULT_FONT_SIZE = 12F
+
     const val DAY_CALENDAR_FONT_SIZE = "KEY_DAY_CALENDAR_FONT_SIZE"
+    const val DAY_DEFAULT_FONT_SIZE = 14F
 }
