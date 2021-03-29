@@ -12,6 +12,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.orhanobut.logger.Logger
 
 class FragmentEventSearchResult: Fragment() {
 
@@ -28,24 +29,17 @@ class FragmentEventSearchResult: Fragment() {
         }
     }
 
-    var searchText = ""
-
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
     lateinit var tvEmpty: TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val args = arguments!!
-        searchText = args.getString("searchText", "")
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         // TODO: - 검색 필터 기능 추가
+        val args = arguments!!
+        val searchText = args.getString("searchText", "")
         val list = RealmEventDay.selectCopyList(searchText)
         adapter = RecyclerViewAdapter(this, list as ArrayList<Any>)
 
@@ -59,9 +53,10 @@ class FragmentEventSearchResult: Fragment() {
         return view
     }
 
-    fun refresh() {
+    fun refresh(s: String) {
         // TODO: - 검색 필터 기능 추가
-        val list = RealmEventDay.selectCopyList(searchText)
+        val list = RealmEventDay.selectCopyList(s)
+        Logger.d("refresh(), list: $list")
         adapter.list = list as ArrayList<Any>
         adapter.notifyDataSetChanged()
         isEmpty()
@@ -71,8 +66,10 @@ class FragmentEventSearchResult: Fragment() {
         if (adapter.list.isEmpty()) {
             tvEmpty.visibility = View.VISIBLE
             tvEmpty.text = "검색 결과가 없습니다."
+            recyclerView.visibility = View.GONE
         } else {
             tvEmpty.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 

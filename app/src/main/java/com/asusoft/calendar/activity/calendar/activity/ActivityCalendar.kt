@@ -242,7 +242,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                     .addToBackStack(null)
                     .commit()
         } else {
-            fragmentEventSearchResult?.refresh()
+            fragmentEventSearchResult?.refresh(s)
         }
     }
 

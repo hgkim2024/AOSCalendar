@@ -134,7 +134,7 @@ open class RealmEventDay: RealmObject() {
             realm.beginTransaction()
 
             val items = realm.where(RealmEventDay::class.java)
-                    .like("name", "${name}*")
+                    .like("name", "*${name}*")
                     .findAll()
 
             realm.commitTransaction()
