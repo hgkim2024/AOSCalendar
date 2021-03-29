@@ -60,6 +60,7 @@ class RecyclerViewAdapter(
         ): RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     companion object {
+        // 클릭 이펙트 딜레이
         const val CLICK_DELAY = 200L
     }
 

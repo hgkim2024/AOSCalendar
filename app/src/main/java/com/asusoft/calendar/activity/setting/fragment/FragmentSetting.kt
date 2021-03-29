@@ -62,19 +62,15 @@ class FragmentSetting: Fragment() {
                                 GlobalScope.async(Dispatchers.Main) {
                                     delay(CLICK_DELAY)
                                     when(adapter.list[position]) {
-                                        SideMenuType.MONTH -> {
-                                            replaceFragment(
-                                                    FragmentMonthSetting.newInstance(),
-                                                    FragmentMonthSetting.toString()
-                                            )
-                                        }
+                                        SideMenuType.MONTH -> replaceFragment(
+                                                FragmentMonthSetting.newInstance(),
+                                                FragmentMonthSetting.toString()
+                                        )
 
-                                        SideMenuType.DAY -> {
-                                            replaceFragment(
-                                                    FragmentDaySetting.newInstance(),
-                                                    FragmentDaySetting.toString()
-                                            )
-                                        }
+                                        SideMenuType.DAY -> replaceFragment(
+                                                FragmentDaySetting.newInstance(),
+                                                FragmentDaySetting.toString()
+                                        )
 
                                         else -> {}
                                     }
