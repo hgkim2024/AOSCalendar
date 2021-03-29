@@ -104,7 +104,7 @@ class RecyclerViewAdapter(
                 return 0
             }
 
-            MONTH_SETTING -> {
+            CALENDAR_SETTING -> {
                 return when(item) {
                     is SwitchItem -> CalendarSettingType.SWITCH.value
                     is SeekBarItem -> CalendarSettingType.SEEK_BAR.value
@@ -228,7 +228,7 @@ class RecyclerViewAdapter(
                 EventSearchHolder(context, view, this)
             }
 
-            MONTH_SETTING -> {
+            CALENDAR_SETTING -> {
                 when(viewType) {
                     CalendarSettingType.SWITCH.value -> {
                         val view = inflater.inflate(R.layout.holder_switch, parent, false)
@@ -282,7 +282,7 @@ class RecyclerViewAdapter(
             VISIT_PERSON -> (holder as PersonHolder).bind(position)
             RECENT_SEARCH -> (holder as RecentSearchTermsHolder).bind(position)
             EVENT_SEARCH_RESULT -> (holder as EventSearchHolder).bind(position)
-            MONTH_SETTING -> {
+            CALENDAR_SETTING -> {
                 when(holder) {
                     is SwitchHolder -> holder.bind(position)
                     is SeekBarHolder -> holder.bind(position)

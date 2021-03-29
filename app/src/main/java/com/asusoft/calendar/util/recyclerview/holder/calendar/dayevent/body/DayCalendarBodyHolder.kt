@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.util.`object`.CalendarUtil
 import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -41,6 +42,7 @@ class DayCalendarBodyHolder (
 
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
         val editText = view.findViewById<ExtendedEditText>(R.id.tv_edit)
+        editText.textSize = CalendarUtil.DAY_FONT_SIZE
 
         if (isComplete) {
             editText.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

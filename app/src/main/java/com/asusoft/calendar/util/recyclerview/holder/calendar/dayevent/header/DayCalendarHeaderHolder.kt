@@ -21,6 +21,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.`object`.CalendarUtil
 import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
@@ -50,6 +51,7 @@ class DayCalendarHeaderHolder(
         lateinit var adapter: RecyclerViewAdapter
 
         title.text = item.date.toStringDay()
+        title.textSize = CalendarUtil.DAY_FONT_SIZE + 1.0F
 
         if(item.date == item.date.endOfMonth.startOfDay) {
             if (typeObject is FragmentDayCalendar) {

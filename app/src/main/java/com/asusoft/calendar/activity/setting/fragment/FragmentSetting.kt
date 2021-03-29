@@ -63,16 +63,19 @@ class FragmentSetting: Fragment() {
                                     delay(CLICK_DELAY)
                                     when(adapter.list[position]) {
                                         SideMenuType.MONTH -> {
-                                            fragmentManager!!
-                                                    .beginTransaction()
-                                                    .replace(
-                                                            R.id.fragment,
-                                                            FragmentMonthSetting.newInstance(),
-                                                            FragmentMonthSetting.toString()
-                                                    ).addToBackStack(null).commit()
+                                            replaceFragment(
+                                                    FragmentMonthSetting.newInstance(),
+                                                    FragmentMonthSetting.toString()
+                                            )
                                         }
 
-                                        SideMenuType.DAY -> {}
+                                        SideMenuType.DAY -> {
+                                            replaceFragment(
+                                                    FragmentDaySetting.newInstance(),
+                                                    FragmentDaySetting.toString()
+                                            )
+                                        }
+
                                         else -> {}
                                     }
                                 }
@@ -84,5 +87,15 @@ class FragmentSetting: Fragment() {
         )
 
         return view
+    }
+
+    fun replaceFragment(instance: Fragment, tag: String) {
+        fragmentManager!!
+                .beginTransaction()
+                .replace(
+                        R.id.fragment,
+                        instance,
+                        tag
+                ).addToBackStack(null).commit()
     }
 }

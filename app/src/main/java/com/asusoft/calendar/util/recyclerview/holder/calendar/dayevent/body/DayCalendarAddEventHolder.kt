@@ -2,9 +2,12 @@ package com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body
 
 import android.content.Context
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
+import com.asusoft.calendar.util.`object`.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfDay
 import com.jakewharton.rxbinding4.view.clicks
@@ -20,6 +23,9 @@ class DayCalendarAddEventHolder (
 
     fun bind(position: Int) {
         val date = adapter.list[position] as? Date ?: return
+
+        val title = view.findViewById<TextView>(R.id.title)
+        title.textSize = CalendarUtil.DAY_FONT_SIZE
 
         view.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
