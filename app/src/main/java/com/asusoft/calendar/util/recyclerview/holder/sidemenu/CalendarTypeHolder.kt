@@ -2,6 +2,7 @@ package com.asusoft.calendar.util.recyclerview.holder.sidemenu
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
@@ -25,6 +26,9 @@ class CalendarTypeHolder (
 
     fun bind(position: Int) {
         val item = adapter.list[position] as SideMenuType
+
+        val iv = view.findViewById<ImageView>(R.id.iv_icon)
+        iv.setImageDrawable(item.getIcon())
 
         val tv = view.findViewById<TextView>(R.id.title)
         tv.text = item.getTitle()
