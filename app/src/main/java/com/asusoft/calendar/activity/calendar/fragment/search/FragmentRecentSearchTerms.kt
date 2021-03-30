@@ -2,6 +2,7 @@ package com.asusoft.calendar.activity.calendar.fragment.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -32,21 +33,6 @@ class FragmentRecentSearchTerms: Fragment() {
     lateinit var adapter: RecyclerViewAdapter
     lateinit var tvEmpty: TextView
 
-    override fun onStart() {
-        super.onStart()
-
-        GlobalBus.register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        GlobalBus.unregister(this)
-    }
-
-    // TODO: - 최근 검색 리스트
-    // TODO: - 검색 시 리스트 - 디자인 필요
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
         val view = inflater.inflate(R.layout.recyclerview, container, false)
@@ -74,7 +60,6 @@ class FragmentRecentSearchTerms: Fragment() {
         val list = if (s == "") {
             RealmRecentSearchTerms.selectCopyAllList(RecentSearchTermsType.EVENT.value)
         } else {
-            // TODO: - 자음 모음 인경우 제외 시키는 로직 추가
             RealmRecentSearchTerms.selectCopyList(RecentSearchTermsType.EVENT.value, s)
         }
 
@@ -95,13 +80,5 @@ class FragmentRecentSearchTerms: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         (activity as? ActivityCalendar)?.fragmentRecentSearchTerms = null
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public fun onEvent(event: HashMapEvent) {
-//        val sideMenuItemHolder = event.map.getOrDefault(SideMenuItemHolder.toString(), null)
-//        if (sideMenuItemHolder != null) {
-//
-//        }
     }
 }

@@ -11,13 +11,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +41,6 @@ import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -132,11 +129,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_start_menu, menu)
-        val myActionMenuItem = menu.findItem(R.id.action_search)
-        val searchView = myActionMenuItem.actionView as SearchView
+        menuInflater.inflate(R.menu.menu_side, menu)
+        val searchMenuItem = menu.findItem(R.id.action_search)
+        val searchView = searchMenuItem.actionView as SearchView
         this.searchView = searchView
-        searchView.maxWidth = Int.MAX_VALUE
 
         val tv = searchView.findViewById<EditText?>(R.id.search_src_text)
         tv?.setBackgroundColor(CalendarApplication.getColor(R.color.lightSeparator))
@@ -160,17 +156,17 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         searchView.setOnSearchClickListener {
 //            Logger.d("setOnSearchClickListener")
             if (fragmentRecentSearchTerms == null) {
-                fragmentRecentSearchTerms = FragmentRecentSearchTerms.newInstance()
-                supportFragmentManager.beginTransaction()
-                        .replace(
-                                R.id.fragment,
-                                fragmentRecentSearchTerms!!,
-                                FragmentRecentSearchTerms.toString()
-                        )
-                        .addToBackStack(null)
-                        .commit()
-            }  else {
-                supportFragmentManager.popBackStack()
+                    fragmentRecentSearchTerms = FragmentRecentSearchTerms.newInstance()
+                    supportFragmentManager.beginTransaction()
+                            .replace(
+                                    R.id.fragment,
+                                    fragmentRecentSearchTerms!!,
+                                    FragmentRecentSearchTerms.toString()
+                            )
+                            .addToBackStack(null)
+                            .commit()
+                }  else {
+                    supportFragmentManager.popBackStack()
             }
         }
 
@@ -228,6 +224,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                     drawerLayout.openDrawer(Gravity.LEFT)
                     return true
                 }
+            }
+
+            R.id.filter -> {
+                // TODO: - 필터 다이얼로그 띄우기
             }
         }
         return super.onOptionsItemSelected(menuItem)

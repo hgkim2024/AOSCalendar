@@ -2,19 +2,14 @@ package com.asusoft.calendar.activity.calendar.fragment.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
-import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
-import com.asusoft.calendar.activity.setting.fragment.FragmentDaySetting
-import com.asusoft.calendar.activity.setting.fragment.FragmentMonthSetting
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
@@ -102,7 +97,6 @@ class FragmentEventSearchResult: Fragment() {
     }
 
     fun refresh(s: String) {
-        // TODO: - 검색 필터 기능 추가
         searchText = s
         val list = RealmEventDay.selectCopyList(s)
         Logger.d("refresh(), list: $list")
