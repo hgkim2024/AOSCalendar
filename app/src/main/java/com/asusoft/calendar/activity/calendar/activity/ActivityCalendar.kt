@@ -69,7 +69,6 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     var fragmentRecentSearchTerms: FragmentRecentSearchTerms? = null
     var fragmentEventSearchResult: FragmentEventSearchResult? = null
 
-    // TODO: - 사이드 메뉴 디자인 작업
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -150,7 +149,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
         val closeButton = searchView.findViewById<ImageView>(R.id.search_close_btn)
         closeButton.setOnClickListener {
-            Logger.d("closeButton setOnClickListener")
+//            Logger.d("closeButton setOnClickListener")
             searchView.isIconified = true
             if (fragmentEventSearchResult != null) {
                 supportFragmentManager.popBackStackImmediate()
@@ -159,7 +158,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         searchView.setOnSearchClickListener {
-            Logger.d("setOnSearchClickListener")
+//            Logger.d("setOnSearchClickListener")
             if (fragmentRecentSearchTerms == null) {
                 fragmentRecentSearchTerms = FragmentRecentSearchTerms.newInstance()
                 supportFragmentManager.beginTransaction()
@@ -176,15 +175,13 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         searchView.setOnCloseListener {
-            Logger.d("setOnCloseListener")
+//            Logger.d("setOnCloseListener")
             false
         }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String?): Boolean {
-                Logger.d("onQueryTextSubmit")
-                // TODO: - 검색 리스트로 이동
-
+//                Logger.d("onQueryTextSubmit")
                 if (s == null) return false
 
                 val recentSearchTerms = RealmRecentSearchTerms()
@@ -200,8 +197,14 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
+
+                if (fragmentEventSearchResult != null) {
+                    supportFragmentManager.popBackStackImmediate()
+                    fragmentEventSearchResult = null
+                }
+
                 fragmentRecentSearchTerms?.refresh(s)
-                Logger.d("onQueryTextChange")
+//                Logger.d("onQueryTextChange")
                 return true
             }
         })
