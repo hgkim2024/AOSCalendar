@@ -261,7 +261,6 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         drawable?.setTint(CalendarApplication.getColor(R.color.font))
-        drawable?.alpha = (255) * 9 / 10
         supportActionBar?.setHomeAsUpIndicator(drawable)
     }
 
