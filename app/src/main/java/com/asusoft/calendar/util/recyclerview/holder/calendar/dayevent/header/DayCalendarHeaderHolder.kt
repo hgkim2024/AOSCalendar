@@ -53,12 +53,10 @@ class DayCalendarHeaderHolder(
         title.text = item.date.toStringDay()
         title.textSize = CalendarUtil.DAY_FONT_SIZE + 1.0F
 
-        if(item.date == item.date.endOfMonth.startOfDay) {
-            if (typeObject is FragmentDayCalendar) {
-                if (typeObject.activity is ActivityCalendar) {
-                    (typeObject.activity as ActivityCalendar).setTitle(item.date.toStringMonth())
-                    (typeObject.activity as ActivityCalendar).setDate(item.date.startOfMonth)
-                }
+        if (typeObject is FragmentDayCalendar) {
+            if (typeObject.activity is ActivityCalendar) {
+                (typeObject.activity as ActivityCalendar).setTitle(item.date.toStringMonth())
+                (typeObject.activity as ActivityCalendar).setDate(item.date.startOfMonth)
             }
         }
 
