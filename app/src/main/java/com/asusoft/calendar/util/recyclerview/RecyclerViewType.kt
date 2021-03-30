@@ -4,6 +4,7 @@ import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddPerson
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
+import com.asusoft.calendar.activity.calendar.dialog.filter.DialogFragmentFilter
 import com.asusoft.calendar.activity.setting.fragment.FragmentMonthSetting
 import com.asusoft.calendar.activity.setting.fragment.FragmentSetting
 import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
@@ -23,7 +24,8 @@ enum class RecyclerViewType(val value: Int) {
     VISIT_PERSON(6),
     RECENT_SEARCH(7),
     EVENT_SEARCH_RESULT(8),
-    CALENDAR_SETTING(9);
+    CALENDAR_SETTING(9),
+    SPINNER(10);
 
     companion object {
         fun getType(typeObject: Any): RecyclerViewType {
@@ -40,6 +42,7 @@ enum class RecyclerViewType(val value: Int) {
                 is FragmentSetting -> SIDE_MENU
                 is FragmentMonthSetting -> CALENDAR_SETTING
                 is FragmentDaySetting -> CALENDAR_SETTING
+                is DialogFragmentFilter -> SPINNER
                 else -> ADD_EVENT
             }
         }

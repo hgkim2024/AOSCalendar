@@ -44,6 +44,7 @@ import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayC
 import com.asusoft.calendar.util.recyclerview.holder.search.eventsearch.EventSearchHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayHolder
+import com.asusoft.calendar.util.recyclerview.holder.search.spinner.SpinnerHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.CalendarSettingType
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
@@ -247,6 +248,11 @@ class RecyclerViewAdapter(
                     }
                 }
             }
+
+            SPINNER -> {
+                val view = inflater.inflate(R.layout.holder_spinner, parent, false)
+                SpinnerHolder(context, view, this)
+            }
         }
     }
 
@@ -289,6 +295,7 @@ class RecyclerViewAdapter(
                     is SeekBarHolder -> holder.bind(position)
                 }
             }
+            SPINNER -> (holder as SpinnerHolder).bind(position)
         }
     }
 

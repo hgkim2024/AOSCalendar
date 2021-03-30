@@ -24,6 +24,7 @@ import com.asusoft.calendar.activity.setting.activity.ActivitySetting
 import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
+import com.asusoft.calendar.activity.calendar.dialog.filter.DialogFragmentFilter
 import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
@@ -227,7 +228,12 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             }
 
             R.id.filter -> {
-                // TODO: - 필터 다이얼로그 띄우기
+                DialogFragmentFilter
+                    .newInstance()
+                    .show(
+                        supportFragmentManager,
+                        DialogFragmentFilter.toString()
+                    )
             }
         }
         return super.onOptionsItemSelected(menuItem)
