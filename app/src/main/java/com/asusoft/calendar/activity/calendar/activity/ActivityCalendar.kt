@@ -45,6 +45,7 @@ import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.view.focusChanges
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -153,11 +154,21 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         closeButton.setOnClickListener {
 //            Logger.d("closeButton setOnClickListener")
             searchView.isIconified = true
-            if (fragmentEventSearchResult != null) {
-                supportFragmentManager.popBackStackImmediate()
-            }
+            resultPop()
             supportFragmentManager.popBackStack()
         }
+
+        tv?.setOnClickListener {
+            resultPop()
+        }
+
+        tv?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                resultPop()
+            }
+        }
+
+//        tv?.focusChanges()
 
         searchView.setOnSearchClickListener {
 //            Logger.d("setOnSearchClickListener")
@@ -199,11 +210,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-
-                if (fragmentEventSearchResult != null) {
-                    supportFragmentManager.popBackStackImmediate()
-                    fragmentEventSearchResult = null
-                }
+                resultPop()
 
                 fragmentRecentSearchTerms?.refresh(s)
 //                Logger.d("onQueryTextChange")
@@ -248,6 +255,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     private fun showEventSearchResult(s: String) {
+        val tv = searchView?.findViewById<EditText?>(R.id.search_src_text)
+        tv?.setText(s)
+        tv?.setSelection(tv.text.length)
+
         if (fragmentEventSearchResult == null) {
             fragmentEventSearchResult = FragmentEventSearchResult.newInstance(s)
             supportFragmentManager.beginTransaction()
@@ -285,6 +296,13 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     fun setTitle(text: String) {
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.text = text
+    }
+
+    fun resultPop() {
+        if (fragmentEventSearchResult != null) {
+            fragmentEventSearchResult = null
+            supportFragmentManager.popBackStackImmediate()
+        }
     }
 
     private fun changeRootFragment() {
