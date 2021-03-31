@@ -1,5 +1,7 @@
 package com.asusoft.calendar.realm
 
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.DateFilterType
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
@@ -27,7 +29,7 @@ open class RealmEventDay: RealmObject() {
     var endTime: Long = 0
 
     var isComplete: Boolean = false
-    
+
     var visitList: RealmList<RealmVisitPerson> = RealmList()
 
     var memo: String = ""
@@ -129,23 +131,82 @@ open class RealmEventDay: RealmObject() {
             return item
         }
 
-        fun selectCopyList(name: String): ArrayList<CopyEventDay> {
+//        fun selectCopyList(name: String): ArrayList<CopyEventDay> {
+//            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+//            realm.beginTransaction()
+//
+//            val items = realm.where(RealmEventDay::class.java)
+//                    .like("name", "*${name}*")
+//                    .findAll()
+//
+//            realm.commitTransaction()
+//
+//            val list = ArrayList<CopyEventDay>()
+//
+//            for (item in items) {
+//                list.add(item.getCopy(true))
+//            }
+//
+//            return list
+//        }
+
+        fun selectCopyList(name: String, searchType: StringFilterType, periodType: DateFilterType): ArrayList<CopyEventDay> {
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            val items = realm.where(RealmEventDay::class.java)
-                    .like("name", "*${name}*")
-                    .findAll()
+            if (searchType != StringFilterType.VISIT_NAME) {
+                val today = Date().getToday()
+                val time = when(periodType) {
+                    DateFilterType.ALL -> 0L
+                    DateFilterType.MONTH_1 -> today.prevMonth.time
+                    DateFilterType.MONTH_3 -> today.getNextMonth(-3).time
+                    DateFilterType.MONTH_6 -> today.getNextMonth(-6).time
+                }
 
-            realm.commitTransaction()
+                val q = realm.where(RealmEventDay::class.java).greaterThanOrEqualTo("endTime", time)
+                val query = when (searchType) {
+                    StringFilterType.EVENT_NAME -> q.like("name", "*${name}*")
+                    StringFilterType.VISIT_NAME -> null
+                    StringFilterType.MEMO -> q.like("memo", "*${name}*")
+                }
 
-            val list = ArrayList<CopyEventDay>()
+                val items = query!!.findAll()
+                realm.commitTransaction()
 
-            for (item in items) {
-                list.add(item.getCopy(true))
+                val list = ArrayList<CopyEventDay>()
+
+                for (item in items) {
+                    list.add(item.getCopy(true))
+                }
+
+                return list
+            } else {
+                val today = Date().getToday()
+                val time = when(periodType) {
+                    DateFilterType.ALL -> 0L
+                    DateFilterType.MONTH_1 -> today.prevMonth.time
+                    DateFilterType.MONTH_3 -> today.getNextMonth(-3).time
+                    DateFilterType.MONTH_6 -> today.getNextMonth(-6).time
+                }
+
+                val items = realm.where(RealmEventDay::class.java).greaterThanOrEqualTo("endTime", time).findAll()
+                val visitItems = realm.where(RealmVisitPerson::class.java).like("name", "*${name}*").findAll()
+                realm.commitTransaction()
+
+                val list = ArrayList<CopyEventDay>()
+                val filterList = ArrayList<CopyEventDay>()
+
+                for (item in items) {
+                    list.add(item.getCopy(true))
+                }
+
+                for (item in visitItems) {
+                    filterList.addAll(list.filter {it.key == item.foreignKey})
+                }
+
+                return ArrayList(filterList.distinct())
             }
 
-            return list
         }
     }
 
@@ -203,11 +264,12 @@ open class RealmEventDay: RealmObject() {
         if (visitList != null) {
             while(this.visitList.isNotEmpty()) {
                 val item = this.visitList.removeAt(0)
-                item.delete()
+                item.deleteFromRealm()
             }
 
             for (visitPerson in visitList) {
                 val item = RealmVisitPerson()
+                item.foreignKey = key
                 item.name = visitPerson.name
                 item.phone = visitPerson.phone
                 this.visitList.add(item)

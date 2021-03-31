@@ -38,17 +38,16 @@ class FragmentEventSearchResult: Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
     lateinit var tvEmpty: TextView
-    private var searchText = ""
+    var searchText = ""
     private var position = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
-        // TODO: - 검색 필터 기능 추가
         val args = arguments!!
         searchText = args.getString("searchText", "")
-        val list = RealmEventDay.selectCopyList(searchText)
+        val list = getList(searchText)
         adapter = RecyclerViewAdapter(this, list as ArrayList<Any>)
 
         recyclerView = view.findViewById(R.id.recyclerview)
@@ -98,11 +97,18 @@ class FragmentEventSearchResult: Fragment() {
 
     fun refresh(s: String) {
         searchText = s
-        val list = RealmEventDay.selectCopyList(s)
+        val list = getList(s)
         Logger.d("refresh(), list: $list")
         adapter.list = list as ArrayList<Any>
         adapter.notifyDataSetChanged()
         isEmpty()
+    }
+
+    private fun getList(s: String): ArrayList<CopyEventDay> {
+        val searchType = (activity as ActivityCalendar).searchType
+        val periodType = (activity as ActivityCalendar).periodType
+        val list = RealmEventDay.selectCopyList(s, searchType, periodType)
+        return list
     }
 
     private fun isEmpty() {

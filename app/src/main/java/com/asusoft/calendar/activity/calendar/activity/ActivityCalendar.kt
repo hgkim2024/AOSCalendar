@@ -25,6 +25,9 @@ import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.activity.calendar.dialog.filter.DialogFragmentFilter
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.DateFilterType
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.SearchFilterType
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
 import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
@@ -66,6 +69,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     private var searchView: SearchView? = null
     var fragmentRecentSearchTerms: FragmentRecentSearchTerms? = null
     var fragmentEventSearchResult: FragmentEventSearchResult? = null
+    var searchType: StringFilterType = StringFilterType.EVENT_NAME
+    var periodType: DateFilterType = DateFilterType.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,7 +234,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
             R.id.filter -> {
                 DialogFragmentFilter
-                    .newInstance()
+                    .newInstance(
+                            searchType.value,
+                            periodType.value
+                    )
                     .show(
                         supportFragmentManager,
                         DialogFragmentFilter.toString()
@@ -307,10 +315,11 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val sideMenuItemHolder = event.map.getOrDefault(CalendarTypeHolder.toString(), null)
+        val map = event.map
+        val sideMenuItemHolder = map.getOrDefault(CalendarTypeHolder.toString(), null)
         if (sideMenuItemHolder != null) {
-            event.map.getOrDefault(ActivityCalendar.toString(), null) ?: return
-            val type = event.map.getOrDefault("type", null) as? SideMenuType
+            map.getOrDefault(ActivityCalendar.toString(), null) ?: return
+            val type = map.getOrDefault("type", null) as? SideMenuType
 
             if (type != null) {
                 curFragmentIdx = when(type) {
@@ -325,29 +334,44 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             return
         }
 
-        val recentSearchTermsHolder = event.map.getOrDefault(RecentSearchTermsHolder.toString(), null)
+        val recentSearchTermsHolder = map.getOrDefault(RecentSearchTermsHolder.toString(), null)
         if (recentSearchTermsHolder != null) {
-            val s = event.map.getOrDefault("name", null) as? String
+            val s = map.getOrDefault("name", null) as? String
             if (s != null) {
                 showEventSearchResult(s)
             }
             return
         }
 
-        val sideMenuTopHolder = event.map.getOrDefault(SideMenuTopHolder.toString(), null)
+        val sideMenuTopHolder = map.getOrDefault(SideMenuTopHolder.toString(), null)
         if (sideMenuTopHolder != null) {
             val intent = Intent(baseContext, ActivitySetting::class.java)
             startActivity(intent)
             return
         }
 
-        val activitySetting = event.map.getOrDefault(ActivitySetting.toString(), null)
+        val activitySetting = map.getOrDefault(ActivitySetting.toString(), null)
         if (activitySetting != null) {
             GlobalScope.async(Dispatchers.Main) {
                 delay(300)
                 changeRootFragment()
             }
             return
+        }
+
+        val dialogFragmentFilter = map.getOrDefault(DialogFragmentFilter.toString(), null)
+        if (dialogFragmentFilter != null) {
+            val search = map.getOrDefault(SearchFilterType.SEARCH.getTitle(), null) as? Int
+            val period = map.getOrDefault(SearchFilterType.PERIOD.getTitle(), null) as? Int
+
+            if (search != null
+                    && period != null) {
+                searchType = StringFilterType.fromInt(search)
+                periodType = DateFilterType.fromInt(period)
+                if (fragmentEventSearchResult != null) {
+                    fragmentEventSearchResult!!.refresh(fragmentEventSearchResult!!.searchText)
+                }
+            }
         }
     }
 }

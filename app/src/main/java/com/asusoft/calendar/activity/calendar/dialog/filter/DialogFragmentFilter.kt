@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.SearchFilterType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.`object`.CalculatorUtil
@@ -27,12 +28,31 @@ import java.util.concurrent.TimeUnit
 class DialogFragmentFilter: DialogFragment() {
 
     companion object {
-        fun newInstance(): DialogFragmentFilter {
-            return DialogFragmentFilter()
+        fun newInstance(
+                searchType: Int,
+                periodType: Int
+        ): DialogFragmentFilter {
+            val f = DialogFragmentFilter()
+
+            val args = Bundle()
+            args.putInt("searchType", searchType)
+            args.putInt("periodType", periodType)
+            f.arguments = args
+            return f
         }
     }
 
     private lateinit var adapter: RecyclerViewAdapter
+    private var searchType = 0
+    private var periodType = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val args = arguments!!
+        searchType = args.getInt("searchType", 0)
+        periodType = args.getInt("periodType", 0)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = context!!
@@ -46,7 +66,7 @@ class DialogFragmentFilter: DialogFragment() {
         list.add(
             SpinnerItem(
                 SearchFilterType.SEARCH.getTitle(),
-                0,
+                    searchType,
                 SearchFilterType.SEARCH.getItems()
             )
         )
@@ -54,7 +74,7 @@ class DialogFragmentFilter: DialogFragment() {
         list.add(
             SpinnerItem(
                 SearchFilterType.PERIOD.getTitle(),
-                0,
+                    periodType,
                 SearchFilterType.PERIOD.getItems()
             )
         )
@@ -74,6 +94,8 @@ class DialogFragmentFilter: DialogFragment() {
                 .subscribe {
                     val event = HashMapEvent(HashMap())
                     event.map[DialogFragmentFilter.toString()] = DialogFragmentFilter.toString()
+                    event.map[SearchFilterType.SEARCH.getTitle()] = getSelectedPosition(SearchFilterType.SEARCH)
+                    event.map[SearchFilterType.PERIOD.getTitle()] = getSelectedPosition(SearchFilterType.PERIOD)
 
                     GlobalBus.post(event)
                     dismiss()
@@ -88,6 +110,20 @@ class DialogFragmentFilter: DialogFragment() {
 
 
         return view
+    }
+
+    private fun getSelectedPosition(type: SearchFilterType): Int {
+        val title = type.getTitle()
+
+        for (anyItem in adapter.list) {
+            val item = anyItem as? SpinnerItem ?: return 0
+
+            if (item.title == title) {
+                return item.selectItemPosition
+            }
+        }
+
+        return 0
     }
 
     override fun onResume() {

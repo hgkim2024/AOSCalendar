@@ -11,6 +11,8 @@ open class RealmVisitPerson: RealmObject() {
     @PrimaryKey
     var key: Long = System.currentTimeMillis()
 
+    var foreignKey: Long = 0
+
     var name: String = ""
 
     var phone: String = ""
