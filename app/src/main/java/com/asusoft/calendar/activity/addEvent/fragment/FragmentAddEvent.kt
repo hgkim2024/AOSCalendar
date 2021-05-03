@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
-// TODO: - 주소 입력 추가
+// TODO: - 주소 입력 추가 - 앱 출시 후 가능 할듯
 // TODO: - 전화번호부 가져오는 기능 개편
 class FragmentAddEvent: Fragment() {
 
@@ -204,7 +204,7 @@ class FragmentAddEvent: Fragment() {
                                         }
 
                                         is VisitItem -> {
-                                            val intent = Intent(CalendarApplication.context, ActivityAddPerson::class.java)
+                                            val intent = Intent(context, ActivityAddPerson::class.java)
                                             if (event != null) {
                                                 intent.putExtra("key", event.key)
                                             }
