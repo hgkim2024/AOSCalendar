@@ -23,8 +23,12 @@ import io.realm.RealmConfiguration
 class CalendarApplication: Application() {
 
     companion object {
-        lateinit var context: Context
+        lateinit var instance: CalendarApplication
         const val THROTTLE = 1000L
+
+        fun getContext(): Context {
+            return instance.baseContext
+        }
 
         fun getRealmConfig(): RealmConfiguration {
             return RealmConfiguration.Builder()
@@ -38,28 +42,29 @@ class CalendarApplication: Application() {
         }
 
         fun getColor(id: Int): Int {
-            return ContextCompat.getColor(context, id)
+            return ContextCompat.getColor(getContext(), id)
         }
 
         fun getColorList(id: Int): ColorStateList? {
-            return ContextCompat.getColorStateList(context, id)
+            return ContextCompat.getColorStateList(getContext(), id)
         }
 
         fun getDrawable(id: Int): Drawable? {
-            return ContextCompat.getDrawable(context, id)
+            return ContextCompat.getDrawable(getContext(), id)
         }
     }
 
     override fun onCreate() {
         super.onCreate()
 
+        instance = this
+
         // Realm 초기화
         Realm.init(this)
 
         // Util 초기화
-        CalculatorUtil.setContext(baseContext)
-        AdUtil.setContext(baseContext)
-        context = baseContext
+        CalculatorUtil.setContext(this)
+        AdUtil.setContext(this)
 
         // AdMob 광고 초기화
         MobileAds.initialize(this) {}
@@ -80,7 +85,7 @@ class CalendarApplication: Application() {
         })
 
         // 공유 레퍼런스 context 초기화
-        PreferenceManager.setApplicationContext(baseContext)
+        PreferenceManager.setApplicationContext(this)
         initPreference()
     }
 

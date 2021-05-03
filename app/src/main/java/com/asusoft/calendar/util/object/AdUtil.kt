@@ -3,9 +3,10 @@ package com.asusoft.calendar.util.`object`
 import android.content.Context
 import com.asusoft.calendar.BuildConfig
 import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 
 object AdUtil {
-    private lateinit var context: Context
+    private lateinit var context: CalendarApplication
 
     private const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 
@@ -23,7 +24,7 @@ object AdUtil {
             }
         }
 
-    fun setContext(context: Context) {
+    fun setContext(context: CalendarApplication) {
         this.context = context
     }
 }

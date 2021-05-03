@@ -4,13 +4,14 @@ import android.R
 import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import com.asusoft.calendar.application.CalendarApplication
 
 
 object CalculatorUtil {
 
-    private lateinit var context: Context
+    private lateinit var context: CalendarApplication
 
-    fun setContext(context: Context) {
+    fun setContext(context: CalendarApplication) {
         this.context = context
     }
 

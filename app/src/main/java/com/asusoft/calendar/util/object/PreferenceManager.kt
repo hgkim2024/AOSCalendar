@@ -2,6 +2,7 @@ package com.asusoft.calendar.util.`object`
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.asusoft.calendar.application.CalendarApplication
 
 /**
  *
@@ -17,9 +18,9 @@ object PreferenceManager {
     const val DEFAULT_VALUE_LONG = -1L
     const val DEFAULT_VALUE_FLOAT = -1f
 
-    lateinit var context: Context
+    lateinit var context: CalendarApplication
 
-    fun setApplicationContext(context: Context) {
+    fun setApplicationContext(context: CalendarApplication) {
         this.context = context
     }
 
