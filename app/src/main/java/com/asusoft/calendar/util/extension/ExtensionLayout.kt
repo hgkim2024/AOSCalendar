@@ -54,7 +54,7 @@ fun ConstraintLayout.addBottomSeparator(margin: Float, color: Int? = null, heigh
     set.clone(this)
 
     set.connect(separator.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, margin)
-    set.connect(separator.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+    set.connect(separator.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, margin)
     set.connect(separator.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
 
     set.applyTo(this)
