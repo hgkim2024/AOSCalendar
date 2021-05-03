@@ -42,7 +42,7 @@ object MonthCalendarUIUtil {
         get() = PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, PreferenceKey.MONTH_DEFAULT_FONT_SIZE.toInt()).toFloat()
 
     public val EVENT_HEIGHT
-        get() = CalculatorUtil.spToPx(FONT_SIZE + 2) + CalculatorUtil.dpToPx(10.0F)
+        get() = CalculatorUtil.spToPx(FONT_SIZE + 3) + CalculatorUtil.dpToPx(10.0F)
 
     public const val ALPHA = 0.5F
     public const val COMPLETE_ALPHA = 0.5F
@@ -121,7 +121,7 @@ object MonthCalendarUIUtil {
 
         val startPadding = CalculatorUtil.dpToPx(3.0F)
         textView.setPadding(startPadding, 0, startPadding, 0)
-        textView.textSize = FONT_SIZE + 2
+        textView.textSize = FONT_SIZE + 3
         textView.setSingleLine()
         textView.ellipsize = TextUtils.TruncateAt.END
 

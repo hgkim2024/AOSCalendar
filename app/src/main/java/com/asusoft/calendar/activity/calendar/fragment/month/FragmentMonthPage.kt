@@ -303,7 +303,7 @@ class FragmentMonthPage: Fragment() {
         val eventList = getDayEventList(date)
 
         title.text = "${eventList.size}개 이벤트"
-        title.textSize = FONT_SIZE + 3
+        title.textSize = FONT_SIZE + 4
 
         addButton.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -314,7 +314,7 @@ class FragmentMonthPage: Fragment() {
 
         if (eventList.isEmpty()) {
             emptyTitle.visibility = View.VISIBLE
-            emptyTitle.textSize = FONT_SIZE + 2
+            emptyTitle.textSize = FONT_SIZE + 3
             emptyTitle.isClickable = true
             emptyTitle.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
