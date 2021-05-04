@@ -364,14 +364,15 @@ object MonthCalendarUIUtil {
 
                     val name = holidayList.first { it.date == dateString }.name
                     weekItem.addEventUI(
-                            context,
-                            dateString.toLong(),
-                            name,
-                            date.time,
-                            date.time,
-                            0,
-                            isComplete = false,
-                            isHoliday = true
+                        context,
+                        dateString.toLong(),
+                        name,
+                        date.time,
+                        date.time,
+                        0,
+                        CalendarApplication.getColor(R.color.holiday),
+                        isComplete = false,
+                        isHoliday = true
                     )
                 }
             }
@@ -384,14 +385,15 @@ object MonthCalendarUIUtil {
                     if (eventList.isNotEmpty()) {
                         val event = eventList.first()
                         weekItem.addEventUI(
-                                context,
-                                event.key,
-                                event.name,
-                                event.startTime,
-                                event.endTime,
-                                order,
-                                isComplete = event.isComplete,
-                                isHoliday = false
+                            context,
+                            event.key,
+                            event.name,
+                            event.startTime,
+                            event.endTime,
+                            order,
+                            event.color,
+                            isComplete = event.isComplete,
+                            isHoliday = false
                         )
                     }
                 }

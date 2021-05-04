@@ -55,6 +55,7 @@ class WeekItem(
             startTime: Long,
             endTime: Long,
             order: Int,
+            color: Int,
             isComplete: Boolean = true,
             isHoliday: Boolean = false
     ) {
@@ -88,7 +89,6 @@ class WeekItem(
         }
 
         if (isHoliday) {
-            setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.holidayBackground))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         } else {
             if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) {
@@ -105,12 +105,12 @@ class WeekItem(
                 }
             }
 
-            setCornerRadiusDrawable(eventView, CalendarApplication.getColor(R.color.colorAccent))
             eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
 
         val startPadding = CalculatorUtil.dpToPx(2.0F)
         eventView.setPadding(startPadding, CalculatorUtil.dpToPx(1.0F), 0, 0)
+        setCornerRadiusDrawable(eventView, color)
 
         // UI 배치
         eventView.id = View.generateViewId()

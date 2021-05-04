@@ -1,5 +1,6 @@
 package com.asusoft.calendar.realm
 
+import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.DateFilterType
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
 import com.asusoft.calendar.application.CalendarApplication
@@ -33,6 +34,8 @@ open class RealmEventDay: RealmObject() {
     var visitList: RealmList<RealmVisitPerson> = RealmList()
 
     var memo: String = ""
+
+    var color: Int = 0
 
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventDay> {
@@ -243,7 +246,8 @@ open class RealmEventDay: RealmObject() {
         endTime: Long,
         isComplete: Boolean,
         visitList: ArrayList<CopyVisitPerson>? = null,
-        memo: String? = null
+        memo: String? = null,
+        color: Int? = null
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -282,6 +286,10 @@ open class RealmEventDay: RealmObject() {
 
         this.isComplete = isComplete
         Logger.d("update isComplete: ${this.isComplete}")
+
+        if (color != null) {
+            this.color = color
+        }
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
         realm.commitTransaction()

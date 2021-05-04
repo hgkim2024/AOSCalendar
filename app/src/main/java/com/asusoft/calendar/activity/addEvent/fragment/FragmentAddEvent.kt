@@ -308,22 +308,24 @@ class FragmentAddEvent: Fragment() {
         if(isEdit) {
             val event = RealmEventDay.select(key)
             event?.update(
-                    titleItem.context,
-                    startDayItem.date.startOfDay.time,
-                    endDayItem.date.startOfDay.time,
-                    completeItem.isComplete,
-                    visitList,
-                    memoItem.context
+                titleItem.context,
+                startDayItem.date.startOfDay.time,
+                endDayItem.date.startOfDay.time,
+                completeItem.isComplete,
+                visitList,
+                memoItem.context,
+                titleItem.color
             )
         } else {
             val eventMultiDay = RealmEventDay()
             eventMultiDay.update(
-                    titleItem.context,
-                    startDayItem.date.startOfDay.time,
-                    endDayItem.date.startOfDay.time,
-                    completeItem.isComplete,
-                    visitList,
-                    memoItem.context
+                titleItem.context,
+                startDayItem.date.startOfDay.time,
+                endDayItem.date.startOfDay.time,
+                completeItem.isComplete,
+                visitList,
+                memoItem.context,
+                titleItem.color
             )
             eventMultiDay.insert()
         }
