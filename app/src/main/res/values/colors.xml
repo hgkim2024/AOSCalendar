@@ -3,11 +3,11 @@
 
     <color name="colorPrimary">@color/background</color>
     <color name="colorPrimaryDark">@color/background</color>
-    <color name="colorAccent">#4169E1</color>
+    <color name="colorAccent">#4179F0</color>
 
     <color name="holiday">#dc143c</color>
     <color name="holidayBackground">#bbdc143c</color>
-    <color name="saturday">#4169E1</color>
+    <color name="saturday">#4179F0</color>
 
     <color name="itemBackground">#FFFFFF</color>
     <color name="background">#FAFAFA</color>
