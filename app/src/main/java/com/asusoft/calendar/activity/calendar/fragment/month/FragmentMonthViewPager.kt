@@ -91,7 +91,7 @@ class FragmentMonthViewPager: Fragment() {
         weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
-        todayLayout.background.alpha = 200
+        todayLayout.background.alpha = 230
         todayLayout.visibility = View.INVISIBLE
 
         todayLayout.clicks()
