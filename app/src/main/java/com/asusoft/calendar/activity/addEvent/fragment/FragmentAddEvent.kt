@@ -29,8 +29,8 @@ import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLIC
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.CompleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextHolder
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTitleItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
@@ -39,6 +39,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jakewharton.rxbinding4.view.clicks
+import dev.sasikanth.colorsheet.ColorSheet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -127,7 +128,7 @@ class FragmentAddEvent: Fragment() {
 
         val list = ArrayList<Any>()
         list.add(
-                EditTextItem(
+                EditTitleItem(
                         title ?: "",
                         "제목"
                 )
@@ -279,7 +280,7 @@ class FragmentAddEvent: Fragment() {
     }
 
     private fun addEventRealm() {
-        lateinit var titleItem: EditTextItem
+        lateinit var titleItem: EditTitleItem
         lateinit var startDayItem: StartDayItem
         lateinit var endDayItem: StartDayItem
         lateinit var completeItem: CompleteItem
@@ -288,7 +289,7 @@ class FragmentAddEvent: Fragment() {
         var startDayCount = 0
         for (item in adapter.list) {
             when (item) {
-                is EditTextItem -> titleItem = item
+                is EditTitleItem -> titleItem = item
 
                 is StartDayItem -> {
                     if (startDayCount == 0)
@@ -398,6 +399,34 @@ class FragmentAddEvent: Fragment() {
 
         }
 
+        val editTextHolder = event.map.getOrDefault(EditTextHolder.toString(), null)
+        if (editTextHolder != null) {
+            val colors = resources.getIntArray(R.array.colors)
+            val colorSheet = ColorSheet()
+
+            val tv = colorSheet.view?.findViewById<TextView>(R.id.sheetTitle)
+            tv?.text = "선택"
+
+            // TODO: - 타이틀 수정 하는 방법 알아보기 - 없음 - 나중에 커스텀으로 만들 것
+            
+            colorSheet
+                    .cornerRadius(8)
+                    .colorPicker(
+                            colors = colors,
+                            noColorOption = false,
+                            selectedColor = ColorSheet.NO_COLOR,
+                            listener = { color ->
+                                for (idx in adapter.list.indices) {
+                                    val item = adapter.list[idx]
+                                    if (item is EditTitleItem) {
+                                        item.color = color
+                                        adapter.notifyItemChanged(idx)
+                                        break
+                                    }
+                                }
+                            })
+                    .show(fragmentManager!!)
+        }
     }
 
 }

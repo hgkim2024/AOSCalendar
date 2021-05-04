@@ -74,4 +74,7 @@ dependencies {
 
     // Log
     implementation 'com.orhanobut:logger:2.2.0'
+
+    // color picker
+    implementation "dev.sasikanth:colorsheet:1.0.1"
 }

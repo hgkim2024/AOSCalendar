@@ -26,7 +26,7 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.complete.Com
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.delete.DeleteItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextHolder
-import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTextItem
+import com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext.EditTitleItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoItem
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
@@ -77,7 +77,7 @@ class RecyclerViewAdapter(
         return when(type) {
             ADD_EVENT -> {
                 return when(item) {
-                    is EditTextItem -> TITLE.value
+                    is EditTitleItem -> TITLE.value
                     is StartDayItem -> START_DAY.value
                     is CompleteItem -> COMPLETE.value
                     is DeleteItem -> DELETE.value

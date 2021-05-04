@@ -95,11 +95,11 @@ object LunarCalendar {
     fun holidayArray(yyyy: String): List<Holiday> {
         val holidayList = holidaysMap[yyyy]
         if (holidayList != null) {
-            Logger.d("캐시")
+//            Logger.d("캐시")
             return holidayList
         }
 
-        Logger.d("캐시 안됨")
+//        Logger.d("캐시 안됨")
 
 //        holidaysArrayList.clear() // 데이터 초기화
         // 양력 휴일

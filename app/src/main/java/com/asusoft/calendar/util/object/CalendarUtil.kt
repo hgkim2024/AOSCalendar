@@ -232,10 +232,10 @@ object CalendarUtil {
         }
     }
 
-    fun setCornerRadiusDrawable(v: View, backgroundColor: Int) {
+    fun setCornerRadiusDrawable(v: View, backgroundColor: Int, r: Float = 2.0F) {
         val shape = GradientDrawable()
         shape.shape = GradientDrawable.RECTANGLE
-        val r = CalculatorUtil.dpToPx(2.0F).toFloat()
+        val r = CalculatorUtil.dpToPx(r).toFloat()
         shape.cornerRadii = floatArrayOf(r, r, r, r, r, r, r, r)
         shape.setColor(backgroundColor)
 //        shape.setStroke(3, borderColor)

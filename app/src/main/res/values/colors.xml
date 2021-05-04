@@ -20,4 +20,14 @@
 
     <color name="today">#00b07b</color>
     <color name="selectDay">#33d993</color>
+
+    <array name="colors">
+        <item>#dc143c</item>
+        <item>#E0874E</item>
+        <item>#E1BE3A</item>
+        <item>#27AA85</item>
+        <item>#4179F0</item>
+        <item>#7C4DFF</item>
+    </array>
+
 </resources>
