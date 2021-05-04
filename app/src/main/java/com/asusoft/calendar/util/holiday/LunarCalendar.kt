@@ -1,13 +1,16 @@
 package com.asusoft.calendar.util.holiday
 
 import android.icu.util.ChineseCalendar
-import com.asusoft.calendar.util.weekOfDay
+import com.orhanobut.logger.Logger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 
 object LunarCalendar {
-    var holidaysArrayList = ArrayList<Holiday>()
+    private var holidaysArrayList = Collections.synchronizedList(ArrayList<Holiday>())
+    var holidaysMap = ConcurrentHashMap<String, List<Holiday>>()
 
     /**
      * 음력날짜를 양력날짜로 변환
@@ -89,8 +92,16 @@ object LunarCalendar {
         return ret.toString()
     }
 
-    fun holidayArray(yyyy: String): ArrayList<Holiday> {
-        holidaysArrayList.clear() // 데이터 초기화
+    fun holidayArray(yyyy: String): List<Holiday> {
+        val holidayList = holidaysMap[yyyy]
+        if (holidayList != null) {
+            Logger.d("캐시")
+            return holidayList
+        }
+
+        Logger.d("캐시 안됨")
+
+//        holidaysArrayList.clear() // 데이터 초기화
         // 양력 휴일
         addHolidaysItem(yyyy, "0101", "새해 첫날")
         addHolidaysItem(yyyy, "0301", "삼일절")
@@ -145,7 +156,14 @@ object LunarCalendar {
         }
 
         holidaysArrayList.sort() // 오름차순 정렬
-        return holidaysArrayList
+
+        if (holidayList == null) {
+            holidaysMap[yyyy] = holidaysArrayList
+        }
+
+        holidaysArrayList = Collections.synchronizedList(ArrayList<Holiday>())
+
+        return holidaysMap[yyyy]!!
     }
 
     private fun solarDays(yyyy: String, date: String): String {
