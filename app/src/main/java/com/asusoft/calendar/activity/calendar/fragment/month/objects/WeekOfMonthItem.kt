@@ -37,12 +37,12 @@ class WeekOfMonthItem(
         val rootLayout: ConstraintLayout,
         val weekLayout: ConstraintLayout,
         val dayViewList: ArrayList<TextView>,
-        val eventViewList: HashMap<Int, HashMap<Int, View>> = HashMap<Int, HashMap<Int, View>>()
+        val eventViewList: HashMap<Int, HashMap<Int, View>> = HashMap()
 ) {
 
     companion object {
         val TOP_MARGIN
-            get() = CalculatorUtil.spToPx(MonthCalendarUiUtil.FONT_SIZE) + CalculatorUtil.dpToPx(13.0F)
+            get() = CalculatorUtil.spToPx(MonthCalendarUiUtil.FONT_SIZE + 4.0F) + CalculatorUtil.dpToPx(10.0F)
 
         private const val LEFT_MARGIN = 1.5F
     }
@@ -88,9 +88,9 @@ class WeekOfMonthItem(
             eventViewList[idx]?.set(order, eventView)
         }
 
-        if (isHoliday) {
-            eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
-        } else {
+        eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+
+        if (!isHoliday) {
             if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) {
                 val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                     override fun onLongPress(e: MotionEvent) {
@@ -104,8 +104,6 @@ class WeekOfMonthItem(
                     false
                 }
             }
-
-            eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
         }
 
         val startPadding = CalculatorUtil.dpToPx(2.0F)

@@ -61,8 +61,8 @@ object MonthCalendarUiUtil {
         todayView.gravity = Gravity.CENTER_HORIZONTAL
 
         todayView.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.spToPx(FONT_SIZE + 4.0F),
-                CalculatorUtil.spToPx(FONT_SIZE + 4.0F)
+                CalculatorUtil.spToPx(FONT_SIZE + 5.0F),
+                CalculatorUtil.spToPx(FONT_SIZE + 5.0F)
         )
 
         val weekLayout = weekOfMonthItem.weekLayout
