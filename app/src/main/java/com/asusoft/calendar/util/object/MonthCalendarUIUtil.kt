@@ -213,19 +213,6 @@ object MonthCalendarUIUtil {
                     0,
                     LinearLayout.LayoutParams.MATCH_PARENT
             )
-
-            val set = ConstraintSet()
-            set.clone(weekLayout)
-
-            set.constrainPercentWidth(tv.id, rate)
-            set.connect(tv.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-
-            when(idx) {
-                0 -> set.connect(tv.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                else -> set.connect(tv.id, ConstraintSet.START, dayViewList.last().id, ConstraintSet.END)
-            }
-
-            set.applyTo(weekLayout)
             dayViewList.add(tv)
 
             if (currentMonthDate.calendarMonth != date.calendarMonth) {
@@ -234,6 +221,22 @@ object MonthCalendarUIUtil {
 
             date = date.tomorrow
         }
+
+        val set = ConstraintSet()
+        set.clone(weekLayout)
+
+        for (idx in dayViewList.indices) {
+            val tv = dayViewList[idx]
+            set.constrainPercentWidth(tv.id, rate)
+            set.connect(tv.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+
+            when (idx) {
+                0 -> set.connect(tv.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                else -> set.connect(tv.id, ConstraintSet.START, dayViewList[idx - 1].id, ConstraintSet.END)
+            }
+        }
+
+        set.applyTo(weekLayout)
 
         return WeekItem(startOfWeekDate, rootLayout, weekLayout, dayViewList)
     }
