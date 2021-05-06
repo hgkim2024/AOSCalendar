@@ -129,7 +129,7 @@ class DayCalendarBodyHolder (
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+//                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
                     }
                 }
             }

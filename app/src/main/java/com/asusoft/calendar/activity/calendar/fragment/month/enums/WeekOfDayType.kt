@@ -33,7 +33,7 @@ enum class WeekOfDayType(val value: Int) {
         return getShortTitle() + "요일"
     }
 
-    fun getFontColor(context: Context): Int {
+    fun getFontColor(): Int {
         return when(this) {
             SUNDAY -> CalendarApplication.getColor(R.color.holiday)
             SATURDAY -> CalendarApplication.getColor(R.color.saturday)

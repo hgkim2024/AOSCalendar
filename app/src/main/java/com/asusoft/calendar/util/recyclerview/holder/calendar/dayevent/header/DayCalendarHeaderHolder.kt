@@ -86,7 +86,7 @@ class DayCalendarHeaderHolder(
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (item.isExpand) {
-                    logItemList(adapter.list)
+//                    logItemList(adapter.list)
                     adapter.list.clear()
                     adapter.notifyDataSetChanged()
                     collapseAnimation(recyclerView)
@@ -94,7 +94,7 @@ class DayCalendarHeaderHolder(
                 } else {
                     item.itemList = getDayEventList(item.date, false)
                     val list = getDayCalendarItemList(item.itemList, item.date)
-                    logItemList(list)
+//                    logItemList(list)
                     adapter.list = list
                     adapter.notifyDataSetChanged()
                     expandAnimation(recyclerView)
@@ -204,7 +204,7 @@ class DayCalendarHeaderHolder(
             when(val item = list[idx]) {
                 is DayCalendarBodyItem -> {
                     when (val event = item.event) {
-                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
+//                        is CopyEventDay -> Logger.d("name: ${event.name}, isComplete: ${event.isComplete}, key: ${event.key}")
                     }
                 }
             }

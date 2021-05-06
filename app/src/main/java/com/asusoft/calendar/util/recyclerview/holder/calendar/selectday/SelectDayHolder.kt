@@ -77,7 +77,7 @@ class SelectDayHolder(
                 dayViewList.add(dayView)
 
                 dayView.text = date.calendarDay.toString()
-                dayView.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+                dayView.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor())
                 dayView.setBackgroundColor(CalendarApplication.getColor(R.color.background))
 
                 if (date.calendarMonth == monthDate.calendarMonth) {

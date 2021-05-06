@@ -286,7 +286,7 @@ open class RealmEventDay: RealmObject() {
         }
 
         this.isComplete = isComplete
-        Logger.d("update isComplete: ${this.isComplete}")
+//        Logger.d("update isComplete: ${this.isComplete}")
 
         if (color != null) {
             this.color = color

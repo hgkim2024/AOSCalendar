@@ -197,7 +197,7 @@ object MonthCalendarUIUtil {
 
             tv.text = date.calendarDay.toString()
             tv.tag = date.time
-            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor(context))
+            tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor())
             tv.setBackgroundColor(CalendarApplication.getColor(R.color.background))
             tv.textSize = FONT_SIZE
             tv.setTypeface(tv.typeface, Typeface.BOLD)
@@ -588,7 +588,7 @@ object MonthCalendarUIUtil {
             }
 
             tv.text = days[idx].getShortTitle()
-            tv.setTextColor(days[idx].getFontColor(context))
+            tv.setTextColor(days[idx].getFontColor())
 
             tv.textSize = FONT_SIZE
         }
