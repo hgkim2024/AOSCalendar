@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.`object`
+package com.asusoft.calendar.util.objects
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View

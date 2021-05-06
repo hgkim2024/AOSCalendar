@@ -1,13 +1,12 @@
 package com.asusoft.calendar.util.recyclerview.holder.setting.seekbar
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class SeekBarHolder (

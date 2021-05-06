@@ -11,10 +11,10 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
-import com.asusoft.calendar.util.`object`.CalendarUtil.setCornerRadiusDrawable
-import com.asusoft.calendar.util.`object`.CalendarUtil.setLeftCornerRadiusDrawable
+import com.asusoft.calendar.util.objects.CalendarUtil.setCornerRadiusDrawable
+import com.asusoft.calendar.util.objects.CalendarUtil.setLeftCornerRadiusDrawable
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
@@ -167,7 +167,7 @@ class RecyclerViewAdapter(
             }
 
             ONE_DAY_EVENT -> {
-                val view = MonthCalendarUIUtil.getEdgeEventView(context)
+                val view = MonthCalendarUiUtil.getEdgeEventView(context)
                 OneDayEventHolder(typeObject, context, view, this)
             }
 

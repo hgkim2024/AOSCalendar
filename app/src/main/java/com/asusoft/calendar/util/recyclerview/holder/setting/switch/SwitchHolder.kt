@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class SwitchHolder (

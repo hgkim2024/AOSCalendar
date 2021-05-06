@@ -33,8 +33,8 @@ import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthViewPa
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
-import com.asusoft.calendar.util.`object`.PreferenceKey
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -45,7 +45,6 @@ import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
-import com.jakewharton.rxbinding4.view.focusChanges
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

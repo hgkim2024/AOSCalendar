@@ -1,7 +1,6 @@
-package com.asusoft.calendar.util.`object`
+package com.asusoft.calendar.util.objects
 
 import android.R
-import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import com.asusoft.calendar.application.CalendarApplication

@@ -17,14 +17,14 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.util.`object`.CalculatorUtil
-import com.asusoft.calendar.util.`object`.CalendarUtil.setCornerRadiusDrawable
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.COMPLETE_ALPHA
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
-import com.asusoft.calendar.util.`object`.PreferenceKey
-import com.asusoft.calendar.util.`object`.PreferenceKey.DRAG_AND_DROP_DEFAULT
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.CalendarUtil.setCornerRadiusDrawable
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.COMPLETE_ALPHA
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.WEEK
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceKey.DRAG_AND_DROP_DEFAULT
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
@@ -32,7 +32,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-class WeekItem(
+class WeekOfMonthItem(
         val weekDate: Date,
         val rootLayout: ConstraintLayout,
         val weekLayout: ConstraintLayout,
@@ -42,7 +42,7 @@ class WeekItem(
 
     companion object {
         val TOP_MARGIN
-            get() = CalculatorUtil.spToPx(MonthCalendarUIUtil.FONT_SIZE) + CalculatorUtil.dpToPx(13.0F)
+            get() = CalculatorUtil.spToPx(MonthCalendarUiUtil.FONT_SIZE) + CalculatorUtil.dpToPx(13.0F)
 
         private const val LEFT_MARGIN = 1.5F
     }
@@ -78,7 +78,7 @@ class WeekItem(
         val eventView = TextView(context)
 
         eventView.tag = key.toString()
-        eventView.textSize = MonthCalendarUIUtil.FONT_SIZE - 1
+        eventView.textSize = MonthCalendarUiUtil.FONT_SIZE - 1
 //        eventView.gravity = Gravity.CENTER_VERTICAL
         eventView.setSingleLine()
         eventView.text = name

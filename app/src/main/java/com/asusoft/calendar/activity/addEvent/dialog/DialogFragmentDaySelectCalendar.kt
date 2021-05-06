@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.CalculatorUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.SELECT_DAY_HEIGHT
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
+import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.SELECT_DAY_HEIGHT
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
@@ -108,7 +108,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         }
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
-        weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context, true))
+        weekHeader.addView(MonthCalendarUiUtil.getWeekHeader(context, true))
 
         val today =
                 if (selectedStartDate != null) {

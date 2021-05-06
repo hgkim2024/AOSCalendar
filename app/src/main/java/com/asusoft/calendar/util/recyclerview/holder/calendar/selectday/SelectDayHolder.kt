@@ -10,9 +10,9 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.CalendarUtil.getEventOrderList
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.WEEK
+import com.asusoft.calendar.util.objects.CalendarUtil.getEventOrderList
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
@@ -38,12 +38,12 @@ class SelectDayHolder(
 
         val monthDate = item.date.startOfMonth
         val startDate = monthDate.startOfWeek
-        val row = MonthCalendarUIUtil.getMonthRow(monthDate)
+        val row = MonthCalendarUiUtil.getMonthRow(monthDate)
         val dayViewList = ArrayList<TextView>()
 
         val bodyLayout = view.findViewById<LinearLayout>(R.id.body_layout)
         if (bodyLayout.childCount == 0) {
-            val monthItem = MonthCalendarUIUtil.getMonthUI(context, item.date.startOfMonth, true)
+            val monthItem = MonthCalendarUiUtil.getMonthUI(context, item.date.startOfMonth, true)
             bodyLayout.addView(monthItem.monthView)
         } else {
             if (row == 6) {
@@ -51,7 +51,7 @@ class SelectDayHolder(
                 val dayView = bodyLayout.findViewWithTag<TextView?>(lastDayCount)
                 if (dayView == null) {
                     bodyLayout.removeAllViews()
-                    val monthItem = MonthCalendarUIUtil.getMonthUI(context, item.date.startOfMonth, true)
+                    val monthItem = MonthCalendarUiUtil.getMonthUI(context, item.date.startOfMonth, true)
                     bodyLayout.addView(monthItem.monthView)
                 }
             } else if (row == 5) {
@@ -59,7 +59,7 @@ class SelectDayHolder(
                 val dayView = bodyLayout.findViewWithTag<TextView?>(lastDayCount)
                 if (dayView != null) {
                     bodyLayout.removeAllViews()
-                    val monthItem = MonthCalendarUIUtil.getMonthUI(context, item.date.startOfMonth, true)
+                    val monthItem = MonthCalendarUiUtil.getMonthUI(context, item.date.startOfMonth, true)
                     bodyLayout.addView(monthItem.monthView)
                 }
             }
@@ -83,14 +83,14 @@ class SelectDayHolder(
                 if (date.calendarMonth == monthDate.calendarMonth) {
                     dayView.alpha = 1.0F
                 } else {
-                    dayView.alpha = MonthCalendarUIUtil.ALPHA
+                    dayView.alpha = MonthCalendarUiUtil.ALPHA
                 }
 
                 dayView.clicks()
                     .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        if (dayView.alpha != MonthCalendarUIUtil.ALPHA) {
+                        if (dayView.alpha != MonthCalendarUiUtil.ALPHA) {
                             val event = HashMapEvent(HashMap())
                             event.map[SelectDayHolder.toString()] = SelectDayHolder.toString()
                             event.map["date"] = date
@@ -110,7 +110,7 @@ class SelectDayHolder(
 
 
         val fragment = typeObject as DialogFragmentDaySelectCalendar
-        MonthCalendarUIUtil.setSelectedDay(
+        MonthCalendarUiUtil.setSelectedDay(
                 fragment.selectedStartDate,
                 fragment.selectedEndDate,
                 monthDate,

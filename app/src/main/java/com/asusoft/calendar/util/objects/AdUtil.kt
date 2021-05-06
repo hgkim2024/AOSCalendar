@@ -1,6 +1,5 @@
-package com.asusoft.calendar.util.`object`
+package com.asusoft.calendar.util.objects
 
-import android.content.Context
 import com.asusoft.calendar.BuildConfig
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication

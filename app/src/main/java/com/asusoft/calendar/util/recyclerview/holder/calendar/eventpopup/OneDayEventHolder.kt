@@ -11,8 +11,8 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
-import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
@@ -56,7 +56,7 @@ class OneDayEventHolder(
                 checkBox.alpha = 0.7F
 
                 if (item.isComplete) {
-                    edgeView.alpha = MonthCalendarUIUtil.COMPLETE_ALPHA
+                    edgeView.alpha = MonthCalendarUiUtil.COMPLETE_ALPHA
                     textView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     textView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
                     checkBox.isChecked = true
@@ -91,7 +91,7 @@ class OneDayEventHolder(
                             adapter.notifyDataSetChanged()
 
                             if (item.startTime != item.endTime) {
-                                MonthCalendarUIUtil.calendarRefresh()
+                                MonthCalendarUiUtil.calendarRefresh()
                             } else {
                                 typeObject.refreshWeek()
                             }

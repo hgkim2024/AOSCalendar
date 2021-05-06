@@ -6,11 +6,10 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
-import com.asusoft.calendar.realm.MyRealmMigration
-import com.asusoft.calendar.util.`object`.AdUtil
-import com.asusoft.calendar.util.`object`.CalculatorUtil
-import com.asusoft.calendar.util.`object`.PreferenceKey
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.AdUtil
+import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration

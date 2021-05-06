@@ -7,7 +7,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.`object`.AdapterUtil
+import com.asusoft.calendar.util.objects.AdapterUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class SpinnerHolder(

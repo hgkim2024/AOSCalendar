@@ -25,18 +25,18 @@ import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
-import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekItem
+import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.CalculatorUtil
-import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.ALPHA
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.EVENT_HEIGHT
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.FONT_SIZE
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
-import com.asusoft.calendar.util.`object`.PreferenceKey
-import com.asusoft.calendar.util.`object`.PreferenceManager
+import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.ALPHA
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.EVENT_HEIGHT
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.FONT_SIZE
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.calendarRefresh
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
@@ -139,31 +139,31 @@ class FragmentMonthPage: Fragment() {
         if (Date().getToday().startOfMonth.time == monthItem.monthDate.startOfMonth.time) {
             val today = Date().getToday()
 
-            lateinit var weekItem: WeekItem
+            lateinit var weekOfMonthItem: WeekOfMonthItem
             lateinit var dayView: TextView
 
-            for (item in monthItem.weekItemList) {
+            for (item in monthItem.weekOfMonthItemList) {
                 val start = item.weekDate.startOfWeek
                 val end = item.weekDate.endOfWeek
 
                 if (start.time <= today.time && today.time <= end.time) {
-                    weekItem = item
+                    weekOfMonthItem = item
                     break
                 }
             }
 
-            for (index in weekItem.dayViewList.indices) {
-                val date = weekItem.weekDate.getNextDay(index)
+            for (index in weekOfMonthItem.dayViewList.indices) {
+                val date = weekOfMonthItem.weekDate.getNextDay(index)
 
                 if (date.time == today.time) {
-                    dayView = weekItem.dayViewList[index]
+                    dayView = weekOfMonthItem.dayViewList[index]
                     if (date.startOfMonth.calendarMonth != Date().getToday().startOfMonth.calendarMonth) {
                         return
                     }
                 }
             }
 
-            todayView = MonthCalendarUIUtil.setTodayMarker(context, weekItem, dayView)
+            todayView = MonthCalendarUiUtil.setTodayMarker(context, weekOfMonthItem, dayView)
         }
     }
 
@@ -176,14 +176,14 @@ class FragmentMonthPage: Fragment() {
     private fun setPageUI(context: Context) {
         monthCalendar = page.findViewById(R.id.month_calendar)
         if (monthCalendar?.childCount == 0) {
-            monthItem = MonthCalendarUIUtil.getMonthUI(context, date.startOfMonth)
+            monthItem = MonthCalendarUiUtil.getMonthUI(context, date.startOfMonth)
             monthCalendar?.addView(monthItem!!.monthView)
             setTodayView(context)
         }
 
         val monthItem: MonthItem = monthItem!!
 
-        for (weekItem in monthItem.weekItemList) {
+        for (weekItem in monthItem.weekOfMonthItemList) {
             for (idx in weekItem.dayViewList.indices) {
                 val dayView = weekItem.dayViewList[idx]
                 setDayViewTouchEvent(
@@ -198,7 +198,7 @@ class FragmentMonthPage: Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setDayViewTouchEvent(
             dayView: View,
-            weekItem: WeekItem,
+            weekOfMonthItem: WeekOfMonthItem,
             idx: Int
     ) {
         val dragFlag = PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, PreferenceKey.DRAG_AND_DROP_DEFAULT)
@@ -210,7 +210,7 @@ class FragmentMonthPage: Fragment() {
                     MotionEvent.ACTION_DOWN -> {
                         if (dayView.alpha == ALPHA) {
                             dayViewClick(
-                                    weekItem,
+                                    weekOfMonthItem,
                                     dayView,
                                     idx
                             )
@@ -222,7 +222,7 @@ class FragmentMonthPage: Fragment() {
                     MotionEvent.ACTION_UP -> {
                         if (dayView.alpha != ALPHA) {
                             dayViewClick(
-                                    weekItem,
+                                    weekOfMonthItem,
                                     dayView,
                                     idx
                             )
@@ -239,7 +239,7 @@ class FragmentMonthPage: Fragment() {
                     MotionEvent.ACTION_MOVE -> { }
                     MotionEvent.ACTION_UP -> {
                         dayViewClick(
-                                weekItem,
+                                weekOfMonthItem,
                                 dayView,
                                 idx
                         )
@@ -251,9 +251,9 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun dayViewClick(
-        weekItem: WeekItem,
-        dayView: View,
-        idx: Int
+            weekOfMonthItem: WeekOfMonthItem,
+            dayView: View,
+            idx: Int
     ) {
         if (!preventDoubleClickFlag) return
         preventDoubleClickFlag = false
@@ -264,13 +264,13 @@ class FragmentMonthPage: Fragment() {
 
         if (prevDayEventView != null) {
             removeDayEventView(
-                weekItem,
+                weekOfMonthItem,
                 dayView,
                 idx
             )
         } else {
             showOneDayEventView(
-                weekItem,
+                weekOfMonthItem,
                 dayView,
                 idx
             )
@@ -402,7 +402,7 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun removeDayEventView(
-            weekItem: WeekItem,
+            weekOfMonthItem: WeekOfMonthItem,
             dayView: View,
             idx: Int
     ) {
@@ -430,7 +430,7 @@ class FragmentMonthPage: Fragment() {
                     if (prevClickDayView == dayView) return
 
                     showOneDayEventView(
-                            weekItem,
+                            weekOfMonthItem,
                             dayView,
                             idx
                     )
@@ -454,21 +454,21 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun showOneDayEventView(
-            weekItem: WeekItem,
+            weekOfMonthItem: WeekOfMonthItem,
             dayView: View,
             idx: Int
     ) {
         dayView.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
         prevClickDayView = dayView
 
-        val selectedDate = weekItem.weekDate.getNextDay(idx)
+        val selectedDate = weekOfMonthItem.weekDate.getNextDay(idx)
         eventViewDate = selectedDate
 
         val xPoint = dayView.getBoundsLocation()
-        val yPoint = weekItem.rootLayout.getBoundsLocation()
+        val yPoint = weekOfMonthItem.rootLayout.getBoundsLocation()
         setOneDayEventView(
                 dayView,
-                weekItem.weekDate.getNextDay(idx),
+                weekOfMonthItem.weekDate.getNextDay(idx),
                 Point(xPoint.x, yPoint.y)
         )
     }
@@ -484,9 +484,9 @@ class FragmentMonthPage: Fragment() {
         if (monthItem == null) return
 
         val context = context!!
-        for (weekItem in monthItem!!.weekItemList) {
+        for (weekItem in monthItem!!.weekOfMonthItemList) {
 
-            MonthCalendarUIUtil.refreshWeek(
+            MonthCalendarUiUtil.refreshWeek(
                     context,
                     weekItem,
                     date
@@ -504,25 +504,25 @@ class FragmentMonthPage: Fragment() {
 
     fun refreshWeek() {
         if (monthItem == null) return
-        var weekItem: WeekItem? = null
+        var weekOfMonthItem: WeekOfMonthItem? = null
         val monthItem = monthItem!!
-        for (item in monthItem.weekItemList) {
+        for (item in monthItem.weekOfMonthItemList) {
             val startDate = item.weekDate.startOfWeek
             val endDate = item.weekDate.endOfWeek
 
             if (eventViewDate in startDate..endDate) {
-                weekItem = item
+                weekOfMonthItem = item
                 break
             }
         }
 
-        if (weekItem == null) return
+        if (weekOfMonthItem == null) return
 
         val context = context!!
-        MonthCalendarUIUtil.refreshWeek(context, weekItem, date)
+        MonthCalendarUiUtil.refreshWeek(context, weekOfMonthItem, date)
 
-        val startDate = weekItem.weekDate.startOfWeek
-        val endDate = weekItem.weekDate.endOfWeek
+        val startDate = weekOfMonthItem.weekDate.startOfWeek
+        val endDate = weekOfMonthItem.weekDate.endOfWeek
         val today = Date().getToday()
 
         if (today in startDate..endDate) {
@@ -579,7 +579,7 @@ class FragmentMonthPage: Fragment() {
             }
         }
 
-        val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUIUtil.toString(), null)
+        val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUiUtil.toString(), null)
         if (monthCalendarUIUtil != null) {
             if (dragInitFlag) return
 

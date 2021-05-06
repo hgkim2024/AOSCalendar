@@ -19,8 +19,8 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
-import com.asusoft.calendar.util.`object`.AdUtil
-import com.asusoft.calendar.util.`object`.AlertUtil
+import com.asusoft.calendar.util.objects.AdUtil
+import com.asusoft.calendar.util.objects.AlertUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener

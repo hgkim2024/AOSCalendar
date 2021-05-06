@@ -14,7 +14,7 @@ import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.jakewharton.rxbinding4.view.clicks
@@ -88,7 +88,7 @@ class FragmentMonthViewPager: Fragment() {
         viewPager = view.findViewById(R.id.month_calendar)
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
-        weekHeader.addView(MonthCalendarUIUtil.getWeekHeader(context))
+        weekHeader.addView(MonthCalendarUiUtil.getWeekHeader(context))
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
         todayLayout.background.alpha = 230

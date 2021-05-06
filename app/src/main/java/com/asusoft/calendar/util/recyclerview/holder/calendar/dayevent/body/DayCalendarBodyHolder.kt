@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
-import com.asusoft.calendar.util.`object`.CalendarUtil
-import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
+import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit

@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.fragment.FragmentAddEvent
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil.calendarRefresh
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.calendarRefresh
 import com.google.android.material.appbar.AppBarLayout
 
 

@@ -7,5 +7,5 @@ import kotlin.collections.ArrayList
 class MonthItem(
         val monthDate: Date,
         val monthView: View,
-        val weekItemList: ArrayList<WeekItem>
+        val weekOfMonthItemList: ArrayList<WeekOfMonthItem>
         )

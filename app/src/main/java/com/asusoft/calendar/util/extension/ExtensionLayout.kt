@@ -1,6 +1,5 @@
 package com.asusoft.calendar.util.extension
 
-import android.graphics.Color
 import android.graphics.Point
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.util.`object`.CalculatorUtil
+import com.asusoft.calendar.util.objects.CalculatorUtil
 
 fun View.getBoundsLocation(): Point {
     val viewGroup = parent as ViewGroup

@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.`object`
+package com.asusoft.calendar.util.objects
 
 import android.content.ClipDescription
 import android.content.Context
@@ -20,10 +20,10 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
-import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekItem
+import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.`object`.CalendarUtil.getEventOrderList
+import com.asusoft.calendar.util.objects.CalendarUtil.getEventOrderList
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
@@ -34,7 +34,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
-object MonthCalendarUIUtil {
+object MonthCalendarUiUtil {
     public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
@@ -48,7 +48,7 @@ object MonthCalendarUIUtil {
     public const val COMPLETE_ALPHA = 0.5F
     public const val SELECT_DAY_HEIGHT = 40.0F
 
-    fun setTodayMarker(context: Context, weekItem: WeekItem, dayView: TextView): TextView {
+    fun setTodayMarker(context: Context, weekOfMonthItem: WeekOfMonthItem, dayView: TextView): TextView {
 
         val todayView = TextView(context)
         todayView.id = View.generateViewId()
@@ -65,7 +65,7 @@ object MonthCalendarUIUtil {
                 CalculatorUtil.spToPx(FONT_SIZE + 4.0F)
         )
 
-        val weekLayout = weekItem.weekLayout
+        val weekLayout = weekOfMonthItem.weekLayout
         weekLayout.addView(todayView)
 
         val set = ConstraintSet()
@@ -164,7 +164,7 @@ object MonthCalendarUIUtil {
             startOfWeekDate: Date,
             currentMonthDate: Date,
             isPopup: Boolean = false
-    ): WeekItem {
+    ): WeekOfMonthItem {
         val rootLayout = ConstraintLayout(context)
         rootLayout.id = View.generateViewId()
 
@@ -238,7 +238,7 @@ object MonthCalendarUIUtil {
 
         set.applyTo(weekLayout)
 
-        return WeekItem(startOfWeekDate, rootLayout, weekLayout, dayViewList)
+        return WeekOfMonthItem(startOfWeekDate, rootLayout, weekLayout, dayViewList)
     }
 
     fun getMonthUI(
@@ -248,7 +248,7 @@ object MonthCalendarUIUtil {
     ): MonthItem {
 //        val start = System.currentTimeMillis()
 
-        val weekItemList = ArrayList<WeekItem>()
+        val weekItemList = ArrayList<WeekOfMonthItem>()
         val row = getMonthRow(startOfMonthDate)
         var date = startOfMonthDate.startOfWeek
         val monthLayout = LinearLayout(context)
@@ -282,7 +282,7 @@ object MonthCalendarUIUtil {
 //        Logger.d("action: ${CalculatorUtil.pxToDp(147.0F)}")
 //        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
-        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekOfMonthItem.TOP_MARGIN
         val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
 
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
@@ -337,33 +337,33 @@ object MonthCalendarUIUtil {
 
     private fun addEvent(
             context: Context,
-            weekItem: WeekItem,
+            weekOfMonthItem: WeekOfMonthItem,
             eventMaxCount: Int,
     ) {
-        weekItem.eventViewList.clear()
+        weekOfMonthItem.eventViewList.clear()
 
         for (idx in 0 until WEEK) {
-            weekItem.eventViewList[idx] = HashMap()
+            weekOfMonthItem.eventViewList[idx] = HashMap()
         }
 
-        val eventDayList = RealmEventDay.selectOneWeek(weekItem.weekDate)
+        val eventDayList = RealmEventDay.selectOneWeek(weekOfMonthItem.weekDate)
         val multiDayList = eventDayList.filter { it.startTime != it.endTime }
         val oneDayList = eventDayList.filter { it.startTime == it.endTime }
-        val orderMap = getEventOrderList(weekItem.weekDate, multiDayList, oneDayList, eventMaxCount)
+        val orderMap = getEventOrderList(weekOfMonthItem.weekDate, multiDayList, oneDayList, eventMaxCount)
 
         val holidayMap = orderMap.filter { it.key <= 1231 }
         if (holidayMap.isNotEmpty()) {
-            val holidayList = LunarCalendar.holidayArray("${weekItem.weekDate.calendarYear}")
-            for (index in weekItem.dayViewList.indices) {
-                val date = weekItem.weekDate.getNextDay(index)
+            val holidayList = LunarCalendar.holidayArray("${weekOfMonthItem.weekDate.calendarYear}")
+            for (index in weekOfMonthItem.dayViewList.indices) {
+                val date = weekOfMonthItem.weekDate.getNextDay(index)
 
                 val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
                 val key = dateString.toLong()
                 if (holidayMap[key] != null) {
-                    weekItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
+                    weekOfMonthItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
 
                     val name = holidayList.first { it.date == dateString }.name
-                    weekItem.addEventUI(
+                    weekOfMonthItem.addEventUI(
                         context,
                         dateString.toLong(),
                         name,
@@ -384,7 +384,7 @@ object MonthCalendarUIUtil {
                     val eventList = eventDayList.filter { it.key == item.key }
                     if (eventList.isNotEmpty()) {
                         val event = eventList.first()
-                        weekItem.addEventUI(
+                        weekOfMonthItem.addEventUI(
                             context,
                             event.key,
                             event.name,
@@ -404,9 +404,9 @@ object MonthCalendarUIUtil {
             val item = orderMap[index.toLong()]
             if (item != null) {
                 if (eventMaxCount < item) {
-                    val dayView = weekItem.dayViewList[index]
+                    val dayView = weekOfMonthItem.dayViewList[index]
                     val countTextView = TextView(context)
-                    weekItem.weekLayout.addView(countTextView)
+                    weekOfMonthItem.weekLayout.addView(countTextView)
                     countTextView.id = View.generateViewId()
 
                     countTextView.text = "+${item - eventMaxCount}"
@@ -416,7 +416,7 @@ object MonthCalendarUIUtil {
                     countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
 
                     val set = ConstraintSet()
-                    set.clone(weekItem.weekLayout)
+                    set.clone(weekOfMonthItem.weekLayout)
 
                     val topMargin = CalculatorUtil.dpToPx(5.0F)
                     val leftMargin = CalculatorUtil.dpToPx(5.0F)
@@ -424,7 +424,7 @@ object MonthCalendarUIUtil {
                     set.connect(countTextView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
                     set.connect(countTextView.id, ConstraintSet.END, dayView.id, ConstraintSet.END, leftMargin)
 
-                    set.applyTo(weekItem.weekLayout)
+                    set.applyTo(weekOfMonthItem.weekLayout)
                 }
             }
         }
@@ -433,16 +433,16 @@ object MonthCalendarUIUtil {
 
     fun refreshWeek(
             context: Context,
-            weekItem: WeekItem,
+            weekOfMonthItem: WeekOfMonthItem,
             startOfMonthDate: Date
     ) {
         val removeViewList = ArrayList<View>()
 
-        for (idx in 0 until weekItem.weekLayout.childCount) {
-            val v = weekItem.weekLayout.getChildAt(idx)
+        for (idx in 0 until weekOfMonthItem.weekLayout.childCount) {
+            val v = weekOfMonthItem.weekLayout.getChildAt(idx)
 
             var addFlag = true
-            for (dayView in weekItem.dayViewList) {
+            for (dayView in weekOfMonthItem.dayViewList) {
                 if (v == dayView) {
                     addFlag = false
                     break
@@ -459,17 +459,17 @@ object MonthCalendarUIUtil {
         }
 
         val row = getMonthRow(startOfMonthDate)
-        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekItem.TOP_MARGIN
+        val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekOfMonthItem.TOP_MARGIN
         val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
 
         addEvent(
                 context,
-                weekItem,
+                weekOfMonthItem,
                 eventMaxCount,
         )
 
-        for (index in weekItem.dayViewList.indices) {
-            val dayView = weekItem.dayViewList[index]
+        for (index in weekOfMonthItem.dayViewList.indices) {
+            val dayView = weekOfMonthItem.dayViewList[index]
             if (dayView.alpha == ALPHA) {
                 dayView.bringToFront()
             }
@@ -646,7 +646,7 @@ object MonthCalendarUIUtil {
                     FragmentMonthPage.dragInitFlag = false
 
                     val event = HashMapEvent(java.util.HashMap())
-                    event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                    event.map[MonthCalendarUiUtil.toString()] = MonthCalendarUiUtil.toString()
                     event.map["startDragDate"] = v.tag as Long
                     GlobalBus.post(event)
                 }
@@ -664,7 +664,7 @@ object MonthCalendarUIUtil {
                 v.invalidate()
 
                 val event = HashMapEvent(java.util.HashMap())
-                event.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                event.map[MonthCalendarUiUtil.toString()] = MonthCalendarUiUtil.toString()
                 event.map["removeDayEventView"] = "removeDayEventView"
                 GlobalBus.post(event)
 
@@ -680,7 +680,7 @@ object MonthCalendarUIUtil {
                 if (vw != null) {
                     if (!FragmentMonthPage.dragInitFlag) {
                         val eventMap = HashMapEvent(java.util.HashMap())
-                        eventMap.map[MonthCalendarUIUtil.toString()] = MonthCalendarUIUtil.toString()
+                        eventMap.map[MonthCalendarUiUtil.toString()] = MonthCalendarUiUtil.toString()
                         eventMap.map["endDragDate"] = v.tag as Long
                         eventMap.map["key"] = (vw.tag as String).toLong()
                         GlobalBus.post(eventMap)

@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.`object`
+package com.asusoft.calendar.util.objects
 
 import android.app.AlertDialog
 import android.content.Context

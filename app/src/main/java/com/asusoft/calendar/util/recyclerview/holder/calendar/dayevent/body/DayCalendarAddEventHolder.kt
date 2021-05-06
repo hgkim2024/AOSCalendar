@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
-import com.asusoft.calendar.util.`object`.CalendarUtil
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfDay
 import com.jakewharton.rxbinding4.view.clicks

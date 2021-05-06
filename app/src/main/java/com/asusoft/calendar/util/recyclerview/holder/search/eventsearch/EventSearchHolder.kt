@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.realm.copy.CopyEventDay
-import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
+import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.toStringDay
 import java.util.*
@@ -24,7 +24,7 @@ class EventSearchHolder (
 
         val edge = view.findViewById<View>(R.id.edge)
         if (item.isComplete) {
-            edge.alpha = MonthCalendarUIUtil.ALPHA
+            edge.alpha = MonthCalendarUiUtil.ALPHA
         } else {
             edge.alpha = 1.0F
         }
