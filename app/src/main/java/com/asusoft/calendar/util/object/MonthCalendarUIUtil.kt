@@ -134,9 +134,6 @@ object MonthCalendarUIUtil {
         textView.gravity = Gravity.CENTER_VERTICAL
         textView.maxLines = 1
 
-        checkBox.buttonTintList = CalendarApplication.getColorList(R.color.colorAccent)
-        checkBox.alpha = 0.7F
-
         checkBox.layoutParams = ConstraintLayout.LayoutParams(
                 CalculatorUtil.dpToPx(35.0F),
                 ConstraintLayout.LayoutParams.MATCH_PARENT

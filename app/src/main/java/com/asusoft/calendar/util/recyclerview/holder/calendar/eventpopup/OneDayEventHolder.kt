@@ -1,14 +1,15 @@
 package com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.`object`.CalendarUtil.getDayEventList
 import com.asusoft.calendar.util.`object`.MonthCalendarUIUtil
@@ -20,6 +21,7 @@ import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 class OneDayEventHolder(
         private val typeObject: Any,
@@ -39,80 +41,69 @@ class OneDayEventHolder(
         if (textView == null) return
         if (checkBox == null) return
 
-        var key = 0L
-        var date = Date()
-        var isComplete = false
-
-        if (item is CopyEventDay) {
-            key = item.key
-            date = Date(item.startTime).startOfMonth
-            isComplete = item.isComplete
-        }
-
 //        Logger.d("bind isComplete: $isComplete")
 
-        var isHoliday = false
-        val name =
-                when (item) {
-                    is CopyEventDay -> item.name
-                    is String -> {
-                        isHoliday = true
-                        item
-                    }
-                    else -> ""
-                }
+        when (item) {
+            is CopyEventDay -> {
+                textView.text = item.name
+                edgeView.setBackgroundColor(item.color)
+                checkBox.visibility = View.VISIBLE
 
-        if (isHoliday) {
-            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
-            checkBox.visibility = View.INVISIBLE
-        } else {
-            edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
-            checkBox.visibility = View.VISIBLE
-        }
+                val states = arrayOf(intArrayOf(android.R.attr.state_enabled))
+                val colors = intArrayOf(item.color)
 
-        textView.text = name
+                checkBox.buttonTintList = ColorStateList(states, colors)
+                checkBox.alpha = 0.7F
 
-        if (isComplete) {
-            edgeView.alpha = MonthCalendarUIUtil.COMPLETE_ALPHA
-            textView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            textView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
-            checkBox.isChecked = true
-        } else {
-            edgeView.alpha = 1.0F
-            textView.paintFlags = 0
-            textView.setTextColor(CalendarApplication.getColor(R.color.font))
-            checkBox.isChecked = false
-        }
-
-        view.clicks()
-            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-            .subscribe {
-                clickEvent(key, date)
-            }
-
-        checkBox.clicks()
-            .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                if (typeObject !is FragmentMonthPage) return@subscribe
-
-                when(item) {
-                    is CopyEventDay -> {
-                        item.updateIsCompete(!item.isComplete)
-                    }
-
-                    else -> return@subscribe
-                }
-
-                adapter.list = getDayEventList(typeObject.eventViewDate)
-                adapter.notifyDataSetChanged()
-
-                if (item.startTime != item.endTime) {
-                    MonthCalendarUIUtil.calendarRefresh()
+                if (item.isComplete) {
+                    edgeView.alpha = MonthCalendarUIUtil.COMPLETE_ALPHA
+                    textView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    textView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
+                    checkBox.isChecked = true
                 } else {
-                    typeObject.refreshWeek()
+                    edgeView.alpha = 1.0F
+                    textView.paintFlags = 0
+                    textView.setTextColor(CalendarApplication.getColor(R.color.font))
+                    checkBox.isChecked = false
                 }
+
+                view.clicks()
+                        .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                        .subscribe {
+                            clickEvent(item.key, Date(item.startTime).startOfMonth)
+                        }
+
+                checkBox.clicks()
+                        .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            if (typeObject !is FragmentMonthPage) return@subscribe
+
+                            when (item) {
+                                is CopyEventDay -> {
+                                    item.updateIsCompete(!item.isComplete)
+                                }
+
+                                else -> return@subscribe
+                            }
+
+                            adapter.list = getDayEventList(typeObject.eventViewDate)
+                            adapter.notifyDataSetChanged()
+
+                            if (item.startTime != item.endTime) {
+                                MonthCalendarUIUtil.calendarRefresh()
+                            } else {
+                                typeObject.refreshWeek()
+                            }
+                        }
             }
+            is String -> {
+                textView.text = item
+                edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
+                checkBox.visibility = View.INVISIBLE
+            }
+        }
+
     }
 
     private fun clickEvent(key: Long, date: Date) {

@@ -226,7 +226,8 @@ open class RealmEventDay: RealmObject() {
                 endTime,
                 isComplete,
                 visitList,
-                memo
+                memo,
+                color
         )
     }
 

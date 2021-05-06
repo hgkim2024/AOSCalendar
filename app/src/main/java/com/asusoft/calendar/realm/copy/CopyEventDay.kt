@@ -9,7 +9,8 @@ class CopyEventDay(
         var endTime: Long,
         var isComplete: Boolean = false,
         var visitList: ArrayList<CopyVisitPerson>,
-        var memo: String
+        var memo: String,
+        var color: Int
 ) {
 
     fun updateIsCompete(isComplete: Boolean) {

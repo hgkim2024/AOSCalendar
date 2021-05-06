@@ -2,11 +2,13 @@ package com.asusoft.calendar.util.recyclerview.holder.addeventholder.edittext
 
 import android.text.Editable
 import android.text.TextWatcher
+import com.asusoft.calendar.R
+import com.asusoft.calendar.application.CalendarApplication
 
 class EditTitleItem(
         var context: String,
         val hint: String,
-        var color: Int = 0
+        var color: Int = CalendarApplication.getColor(R.color.colorAccent)
 ) {
     var textWatcher: TextWatcher? = null
 

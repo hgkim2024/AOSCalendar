@@ -130,7 +130,7 @@ class WeekItem(
             iv.id = View.generateViewId()
             iv.scaleType = ImageView.ScaleType.FIT_CENTER
             iv.setImageResource(R.drawable.ic_baseline_done_outline_24)
-            iv.setColorFilter(CalendarApplication.getColor(R.color.colorAccent))
+            iv.setColorFilter(color)
             iv.foregroundGravity = Gravity.END
             iv.bringToFront()
             eventView.alpha = COMPLETE_ALPHA
