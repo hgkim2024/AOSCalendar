@@ -60,7 +60,7 @@ class DayCalendarBodyHolder (
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (event is CopyEventDay)
-                    event.updateIsCompete(!event.isComplete)
+                    event.updateIsCompete(checkBox.isChecked)
 
                 val itemList = getDayEventList(item.date, false)
                 val list = getDayCalendarItemList(itemList, item.date)

@@ -288,22 +288,22 @@ object MonthCalendarUiUtil {
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
 
         for (idx in 0 until row) {
-            val weekItem = getOneWeekUI(context, date, startOfMonthDate, isPopup)
+            val weekOfMonthItem = getOneWeekUI(context, date, startOfMonthDate, isPopup)
 
             if (idx < row - 1) {
-                weekItem.rootLayout.addBottomSeparator(0.0F)
+                weekOfMonthItem.rootLayout.addBottomSeparator(0.0F)
             }
 
             if (!isPopup) {
                 addEvent(
                         context,
-                        weekItem,
+                        weekOfMonthItem,
                         eventMaxCount,
                 )
             }
 
-            for (index in weekItem.dayViewList.indices) {
-                val dayView = weekItem.dayViewList[index]
+            for (index in weekOfMonthItem.dayViewList.indices) {
+                val dayView = weekOfMonthItem.dayViewList[index]
                 if (dayView.alpha == ALPHA) {
                     dayView.bringToFront()
                 }
@@ -313,7 +313,7 @@ object MonthCalendarUiUtil {
                 }
             }
 
-            val weekLayout = weekItem.rootLayout
+            val weekLayout = weekOfMonthItem.rootLayout
             monthLayout.addView(weekLayout)
 
             weekLayout.layoutParams = LinearLayout.LayoutParams(
@@ -323,9 +323,9 @@ object MonthCalendarUiUtil {
             )
 
             val padding = CalculatorUtil.dpToPx(7.5F)
-            weekItem.weekLayout.setPadding(padding, 0, padding, 0)
+            weekOfMonthItem.weekLayout.setPadding(padding, 0, padding, 0)
 
-            weekItemList.add(weekItem)
+            weekItemList.add(weekOfMonthItem)
             date = date.nextWeek
         }
 

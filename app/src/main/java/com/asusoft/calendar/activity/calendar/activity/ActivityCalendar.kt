@@ -32,6 +32,7 @@ import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
+import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
@@ -321,8 +322,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment,
-                        FragmentDayCalendar.newInstance(date),
-                        FragmentDayCalendar.toString()
+                            FragmentWeekPage.newInstance(),
+                            FragmentWeekPage.toString()
                     ).commit()
             }
         }

@@ -69,6 +69,10 @@ object CalculatorUtil {
         return actionBarHeight
     }
 
+    fun getDeviceWidth(): Int {
+        return context.resources.displayMetrics.widthPixels
+    }
+
     fun getDeviceHeight(): Int {
         return context.resources.displayMetrics.heightPixels
     }

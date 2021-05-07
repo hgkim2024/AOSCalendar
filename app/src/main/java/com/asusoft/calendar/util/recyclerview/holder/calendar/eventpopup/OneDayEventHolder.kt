@@ -81,7 +81,7 @@ class OneDayEventHolder(
 
                             when (item) {
                                 is CopyEventDay -> {
-                                    item.updateIsCompete(!item.isComplete)
+                                    item.updateIsCompete(checkBox.isChecked)
                                 }
 
                                 else -> return@subscribe
