@@ -72,6 +72,7 @@ class WeekItem(
 //        eventView.tag = key.toString()
         tv.textSize = WeekCalendarUiUtil.FONT_SIZE
         tv.text = name
+//        tv.ellipsize = TextUtils.TruncateAt.MARQUEE
 
         for (idx in startDay.value..endDay.value) {
             eventViewList[idx]?.set(order, eventView)

@@ -1,14 +1,17 @@
 package com.asusoft.calendar.util.objects
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
@@ -19,6 +22,7 @@ import kotlin.collections.ArrayList
 
 object WeekCalendarUiUtil {
 
+    private const val WEIGHT_SUM = 100.0F
     public const val FONT_SIZE: Float = 14.0F
     public const val COMPLETE_ALPHA = 0.5F
 
@@ -168,5 +172,46 @@ object WeekCalendarUiUtil {
     fun getOneDayView(context: Context): View {
         val inflater = LayoutInflater.from(context)
         return inflater.inflate(R.layout.view_event_of_the_week, null, false)
+    }
+
+    fun getWeekHeader(context: Context): View {
+        val weekHeaderLayout = LinearLayout(context)
+        weekHeaderLayout.weightSum = WEIGHT_SUM
+        weekHeaderLayout.orientation = LinearLayout.VERTICAL
+
+        weekHeaderLayout.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        )
+
+        val days = WeekOfDayType.values()
+
+        for (idx in 0 until MonthCalendarUiUtil.WEEK) {
+            val tv = TextView(context)
+            weekHeaderLayout.addView(tv)
+
+            tv.layoutParams = LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    WEIGHT_SUM / MonthCalendarUiUtil.WEEK
+            )
+
+            tv.gravity = Gravity.CENTER
+
+//            if (isPopup) {
+//                tv.gravity = Gravity.CENTER
+//            } else {
+//                val leftPadding = CalculatorUtil.dpToPx(0F)
+//                tv.setPadding(leftPadding, 0, 0, 0)
+//                tv.gravity = Gravity.CENTER_VERTICAL
+//            }
+
+            tv.text = days[idx].getShortTitle()
+            tv.setTextColor(days[idx].getFontColor())
+
+            tv.textSize = FONT_SIZE
+        }
+
+        return weekHeaderLayout
     }
 }
