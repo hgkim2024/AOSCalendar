@@ -20,6 +20,7 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.*
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.toStringDay
 import com.asusoft.calendar.util.weekOfDay
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
@@ -90,6 +91,7 @@ class WeekItem(
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
+//                    Logger.d("week click data: ${weekDate.toStringDay()}")
                     clickEvent(key, weekDate)
                 }
 
@@ -98,7 +100,7 @@ class WeekItem(
 //                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    Logger.d("checkbox: ${checkbox.isChecked}")
+//                    Logger.d("checkbox: ${checkbox.isChecked}")
                     if (checkbox.isChecked) {
                         eventView.alpha = WeekCalendarUiUtil.COMPLETE_ALPHA
                     } else {

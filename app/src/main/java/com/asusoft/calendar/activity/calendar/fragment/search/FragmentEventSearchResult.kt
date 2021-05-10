@@ -98,7 +98,7 @@ class FragmentEventSearchResult: Fragment() {
     fun refresh(s: String) {
         searchText = s
         val list = getList(s)
-        Logger.d("refresh(), list: $list")
+//        Logger.d("refresh(), list: $list")
         adapter.list = list as ArrayList<Any>
         adapter.notifyDataSetChanged()
         isEmpty()

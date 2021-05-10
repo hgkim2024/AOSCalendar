@@ -158,7 +158,7 @@ class FragmentWeekViewPager: Fragment() {
 
         if (activity is ActivityCalendar) {
             (activity as ActivityCalendar).setWeekDate(date)
-            Logger.d("setWeekDate: ${date.toStringDay()}")
+//            Logger.d("setWeekDate: ${date.toStringDay()}")
         }
     }
     

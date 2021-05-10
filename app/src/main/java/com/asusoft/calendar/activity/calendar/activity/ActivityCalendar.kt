@@ -312,6 +312,12 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     private fun changeRootFragment() {
+        for (fragment in supportFragmentManager.fragments) {
+            fragment.onPause()
+            fragment.onStop()
+            fragment.onDestroy()
+        }
+
         when(curFragmentIdx) {
             MONTH -> {
 //                Logger.d("change fragment date: ${date.toStringDay()}")

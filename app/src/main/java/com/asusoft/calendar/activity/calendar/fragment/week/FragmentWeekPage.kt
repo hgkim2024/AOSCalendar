@@ -65,12 +65,14 @@ class FragmentWeekPage: Fragment() {
 
         date = Date(time)
         GlobalBus.register(this)
+//        Logger.d("register week date: ${date.toStringDay()}, address: $this")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         GlobalBus.unregister(this)
+//        Logger.d("unregister week date: ${date.toStringDay()}, address: $this")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,7 +99,7 @@ class FragmentWeekPage: Fragment() {
     private fun setPageUI(context: Context) {
         weekCalendar = page.findViewById(R.id.calendar)
         if (weekCalendar?.childCount == 1) {
-            Logger.d("setPageUI date: ${date.toStringDay()}")
+//            Logger.d("setPageUI date: ${date.toStringDay()}")
             weekItem = WeekCalendarUiUtil.getOneWeekUI(context, date.startOfWeek)
             weekCalendar?.addView(weekItem!!.rootLayout)
 
@@ -166,6 +168,7 @@ class FragmentWeekPage: Fragment() {
                     val intent = Intent(context, ActivityAddEvent::class.java)
                     intent.putExtra("key", key)
                     startActivity(intent)
+//                    Logger.d("week date: ${date.toStringDay()}, address: $this")
                     return
                 }
             }
