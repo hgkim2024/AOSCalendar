@@ -11,16 +11,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.util.calendarDay
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.asusoft.calendar.util.getNextDay
-import com.asusoft.calendar.util.getToday
-import com.asusoft.calendar.util.toStringDay
 import com.orhanobut.logger.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.math.abs
 
 class FragmentWeekViewPager: Fragment() {
 
@@ -172,7 +170,29 @@ class FragmentWeekViewPager: Fragment() {
         }
     }
 
-    // TODO: - move page 만들기
+    private fun movePage(date: Date) {
+        adapter.initFlag = true
+        isMovePage = true
+
+        val curPageDate = Date(adapter.getItemId(curPosition))
+        val diff = ((date.time - curPageDate.time) / 1000 / 60 / 60 / 24 / 7).toInt()
+
+        if (diff == 0) {
+            adapter.initFlag = false
+            isMovePage = false
+            return
+        }
+
+        val isSmoothScroll = abs(diff) <= pageCount + 1
+
+        viewPager.setCurrentItem(viewPager.currentItem + diff, isSmoothScroll)
+
+        if (!isSmoothScroll) {
+            adapter.initFlag = true
+            isMovePage = false
+            scrollStateIdle(date)
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {

@@ -121,4 +121,12 @@ class TimeUtilTest {
         val str = TimeUtil.toString(today.startOfMonth.prevMonth)
         println("startOfWeek: $str")
     }
+
+    @Test
+    fun movePage() {
+        val moveDate = Date().getToday()
+        val curPageDate = moveDate.getNextDay(-14)
+        val diff = ((moveDate.time - curPageDate.time) / 1000 / 60 / 60 / 24 / 7).toInt()
+        println("diff: $diff")
+    }
 }
