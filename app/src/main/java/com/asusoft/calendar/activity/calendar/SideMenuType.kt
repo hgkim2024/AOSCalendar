@@ -17,7 +17,7 @@ enum class SideMenuType(val value: Int) {
         return when(this) {
             TOP -> ""
             MONTH -> "월"
-            DAY -> "일"
+            DAY -> "주"
         }
     }
 
@@ -25,7 +25,7 @@ enum class SideMenuType(val value: Int) {
         return when(this) {
             TOP -> null
             MONTH -> CalendarApplication.getDrawable(R.drawable.ic_baseline_view_module_24)
-            DAY -> CalendarApplication.getDrawable(R.drawable.ic_baseline_playlist_add_24)
+            DAY -> CalendarApplication.getDrawable(R.drawable.ic_baseline_view_list_24)
         }
     }
 

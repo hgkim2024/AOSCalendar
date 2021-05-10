@@ -105,7 +105,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
 
                 GlobalBus.post(event)
 
-                (activity as? ActivityCalendar)?.setDate(date)
+                (activity as? ActivityCalendar)?.setMonthDate(date)
 
                 dismiss()
             }

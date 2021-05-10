@@ -28,11 +28,10 @@ import com.asusoft.calendar.activity.calendar.dialog.filter.DialogFragmentFilter
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.DateFilterType
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.SearchFilterType
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
-import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthViewPager
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
-import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
+import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekViewPager
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
@@ -44,8 +43,10 @@ import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
+import com.asusoft.calendar.util.toStringDay
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
+import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -61,10 +62,11 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     companion object {
         const val MONTH = 0
-        const val Day = 1
+        const val WEEK = 1
     }
 
-    private var date = Date().getToday()
+    private var monthDate = Date().getToday()
+    private var weekDate = Date().getToday()
     private var curFragmentIdx = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE)
     private lateinit var drawerLayout: DrawerLayout
     private var searchView: SearchView? = null
@@ -85,7 +87,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    DialogFragmentSelectYearMonth.newInstance(date)
+                    DialogFragmentSelectYearMonth.newInstance(monthDate)
                             .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
                 }
 
@@ -289,8 +291,12 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         supportActionBar?.setHomeAsUpIndicator(drawable)
     }
 
-    fun setDate(date: Date) {
-        this.date = date
+    fun setMonthDate(date: Date) {
+        this.monthDate = date
+    }
+
+    fun setWeekDate(date: Date) {
+        this.weekDate = date
     }
 
     fun setTitle(text: String) {
@@ -312,18 +318,18 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment,
-                        FragmentMonthViewPager.newInstance(date),
+                        FragmentMonthViewPager.newInstance(monthDate),
                         FragmentMonthViewPager.toString()
                     ).commit()
             }
 
-            Day -> {
-//                Logger.d("change fragment date: ${date.toStringDay()}")
+            WEEK -> {
+                Logger.d("change fragment date: ${weekDate.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment,
-                            FragmentWeekPage.newInstance(),
-                            FragmentWeekPage.toString()
+                            FragmentWeekViewPager.newInstance(weekDate),
+                            FragmentWeekViewPager.toString()
                     ).commit()
             }
         }
@@ -342,12 +348,15 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             if (type != null) {
                 curFragmentIdx = when(type) {
                     SideMenuType.MONTH -> MONTH
-                    SideMenuType.DAY -> Day
+                    SideMenuType.DAY -> WEEK
                     else -> return
                 }
 
-                changeRootFragment()
                 drawerLayout.closeDrawers()
+                GlobalScope.async(Dispatchers.Main) {
+                    delay(300)
+                    changeRootFragment()
+                }
             }
             return
         }

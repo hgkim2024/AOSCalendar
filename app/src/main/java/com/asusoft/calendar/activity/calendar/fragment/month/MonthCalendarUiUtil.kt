@@ -1,4 +1,4 @@
-package com.asusoft.calendar.util.objects
+package com.asusoft.calendar.activity.calendar.fragment.month
 
 import android.content.ClipDescription
 import android.content.Context
@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
-import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
@@ -29,6 +28,9 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
+import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -45,7 +47,7 @@ object MonthCalendarUiUtil {
         get() = CalculatorUtil.spToPx(FONT_SIZE + 3) + CalculatorUtil.dpToPx(10.0F)
 
     public const val ALPHA = 0.5F
-    public const val COMPLETE_ALPHA = 0.5F
+    public const val COMPLETE_ALPHA = 0.4F
     public const val SELECT_DAY_HEIGHT = 40.0F
 
     fun setTodayMarker(context: Context, weekOfMonthItem: WeekOfMonthItem, dayView: TextView): TextView {

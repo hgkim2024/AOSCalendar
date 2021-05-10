@@ -55,7 +55,7 @@ class DayCalendarHeaderHolder(
         if (typeObject is FragmentDayCalendar) {
             if (typeObject.activity is ActivityCalendar) {
                 (typeObject.activity as ActivityCalendar).setTitle(item.date.toStringMonth())
-                (typeObject.activity as ActivityCalendar).setDate(item.date.startOfMonth)
+                (typeObject.activity as ActivityCalendar).setMonthDate(item.date.startOfMonth)
             }
         }
 

@@ -2,20 +2,16 @@ package com.asusoft.calendar.activity.calendar.fragment.week.objects
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.TextUtils
-import android.view.GestureDetector
-import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.HorizontalScrollView
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
-import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
+import com.asusoft.calendar.activity.calendar.fragment.week.WeekCalendarUiUtil
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.endOfWeek
@@ -26,7 +22,6 @@ import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 class WeekItem(

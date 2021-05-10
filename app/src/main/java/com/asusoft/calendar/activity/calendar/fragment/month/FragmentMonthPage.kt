@@ -30,11 +30,10 @@ import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.ALPHA
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.EVENT_HEIGHT
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.FONT_SIZE
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil.calendarRefresh
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.ALPHA
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.EVENT_HEIGHT
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.FONT_SIZE
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.calendarRefresh
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -70,6 +69,8 @@ class FragmentMonthPage: Fragment() {
     }
 
     private lateinit var date: Date
+    private var initFlag = false
+
     private var monthItem: MonthItem? = null
     private lateinit var page: View
     lateinit var eventViewDate: Date
@@ -77,7 +78,6 @@ class FragmentMonthPage: Fragment() {
     private var prevClickDayView: View? = null
     private var prevDayEventView: ConstraintLayout? = null
     private var monthCalendar: ConstraintLayout? = null
-    private var initFlag = false
     private var bottomFlag = false
     private var dialogHeight = 0
     private var preventDoubleClickFlag = true
@@ -107,7 +107,7 @@ class FragmentMonthPage: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = this.context!!
         val inflater = LayoutInflater.from(context)
-        page = inflater.inflate(R.layout.fragment_month_calender, null, false)
+        page = inflater.inflate(R.layout.fragment_constraint_layout, null, false)
 
         if (initFlag) {
             setPageUI(context)
@@ -174,8 +174,8 @@ class FragmentMonthPage: Fragment() {
     }
 
     private fun setPageUI(context: Context) {
-        monthCalendar = page.findViewById(R.id.month_calendar)
-        if (monthCalendar?.childCount == 0) {
+        monthCalendar = page.findViewById(R.id.calendar)
+        if (monthCalendar?.childCount == 1) {
             monthItem = MonthCalendarUiUtil.getMonthUI(context, date.startOfMonth)
             monthCalendar?.addView(monthItem!!.monthView)
             setTodayView(context)

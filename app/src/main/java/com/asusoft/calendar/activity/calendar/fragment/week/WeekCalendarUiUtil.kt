@@ -1,6 +1,7 @@
-package com.asusoft.calendar.util.objects
+package com.asusoft.calendar.activity.calendar.fragment.week
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +18,16 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.holiday.LunarCalendar
+import com.asusoft.calendar.util.objects.CalendarUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
 object WeekCalendarUiUtil {
 
+    public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
     public const val FONT_SIZE: Float = 14.0F
-    public const val COMPLETE_ALPHA = 0.5F
+    public const val COMPLETE_ALPHA = 0.4F
 
     fun getOneWeekUI(
             context: Context,
@@ -34,16 +37,16 @@ object WeekCalendarUiUtil {
         rootLayout.id = View.generateViewId()
         rootLayout.isFillViewport = true
 
-        rootLayout.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+        rootLayout.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 
         val weekLayout = ConstraintLayout(context)
         rootLayout.addView(weekLayout)
         weekLayout.id = View.generateViewId()
 
-        val rate: Float = 1.0F / MonthCalendarUiUtil.WEEK
+        val rate: Float = 1.0F / WEEK
         var date = startOfWeekDate
 
         val dayViewList = ArrayList<View>()
@@ -53,7 +56,7 @@ object WeekCalendarUiUtil {
                 LinearLayout.LayoutParams.MATCH_PARENT
         )
 
-        for(idx in 0 until MonthCalendarUiUtil.WEEK) {
+        for(idx in 0 until WEEK) {
             val vw = View(context)
             vw.id = View.generateViewId()
             weekLayout.addView(vw)
@@ -111,7 +114,7 @@ object WeekCalendarUiUtil {
     ) {
         weekItem.eventViewList.clear()
 
-        for (idx in 0 until MonthCalendarUiUtil.WEEK) {
+        for (idx in 0 until WEEK) {
             weekItem.eventViewList[idx] = HashMap()
         }
 
@@ -186,17 +189,18 @@ object WeekCalendarUiUtil {
 
         val days = WeekOfDayType.values()
 
-        for (idx in 0 until MonthCalendarUiUtil.WEEK) {
+        for (idx in 0 until WEEK) {
             val tv = TextView(context)
             weekHeaderLayout.addView(tv)
 
             tv.layoutParams = LinearLayout.LayoutParams(
-                    0,
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    WEIGHT_SUM / MonthCalendarUiUtil.WEEK
+                    0,
+                    WEIGHT_SUM / WEEK
             )
 
             tv.gravity = Gravity.CENTER
+            tv.tag = idx
 
 //            if (isPopup) {
 //                tv.gravity = Gravity.CENTER
@@ -213,5 +217,15 @@ object WeekCalendarUiUtil {
         }
 
         return weekHeaderLayout
+    }
+
+    fun isEmptyEvent(weekItem: WeekItem): Boolean {
+        for (item in weekItem.eventViewList) {
+            if (item.value.size > 0) {
+                return false
+            }
+        }
+
+        return true
     }
 }

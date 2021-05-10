@@ -14,7 +14,7 @@ import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
 import com.asusoft.calendar.util.objects.CalendarUtil.setCornerRadiusDrawable
 import com.asusoft.calendar.util.objects.CalendarUtil.setLeftCornerRadiusDrawable
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
+import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator

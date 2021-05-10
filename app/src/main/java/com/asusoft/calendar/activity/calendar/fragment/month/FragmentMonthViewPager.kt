@@ -14,7 +14,6 @@ import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.util.*
-import com.asusoft.calendar.util.objects.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.jakewharton.rxbinding4.view.clicks
@@ -84,8 +83,7 @@ class FragmentMonthViewPager: Fragment() {
         val context = this.context!!
         val view = inflater.inflate(R.layout.fragment_view_pager, container, false)
 
-        adapter = AdapterMonthCalendar(activity!!, date)
-        viewPager = view.findViewById(R.id.month_calendar)
+        viewPager = view.findViewById(R.id.calendar)
 
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUiUtil.getWeekHeader(context))
@@ -101,7 +99,7 @@ class FragmentMonthViewPager: Fragment() {
                 isScroll = false
                 val moveDate = Date().getToday()
                 movePage(moveDate)
-                (activity as? ActivityCalendar)?.setDate(moveDate)
+                (activity as? ActivityCalendar)?.setMonthDate(moveDate)
                 todayLayout.visibility = View.INVISIBLE
             }
 
@@ -113,6 +111,7 @@ class FragmentMonthViewPager: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        adapter = AdapterMonthCalendar(activity!!, date)
         viewPager.adapter = adapter
         viewPager.setCurrentItem(AdapterMonthCalendar.START_POSITION, false)
         curPosition = AdapterMonthCalendar.START_POSITION
@@ -209,7 +208,7 @@ class FragmentMonthViewPager: Fragment() {
         isVisibleTodayView(date)
 
         if (activity is ActivityCalendar) {
-            (activity as ActivityCalendar).setDate(date)
+            (activity as ActivityCalendar).setMonthDate(date)
         }
     }
 
