@@ -11,13 +11,17 @@ import androidx.viewpager2.widget.ViewPager2
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
+import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 class FragmentWeekViewPager: Fragment() {
@@ -41,6 +45,7 @@ class FragmentWeekViewPager: Fragment() {
     private lateinit var headerView: View
     private lateinit var adapter: AdapterWeekCalendar
     private lateinit var viewPager: ViewPager2
+    private lateinit var todayLayout: TextView
     var date = Date().getToday()
 
     private val pageCount = 1
@@ -78,6 +83,23 @@ class FragmentWeekViewPager: Fragment() {
         headerLayout.addView(headerView)
 
         viewPager = view.findViewById(R.id.week_calendar)
+
+        todayLayout = view.findViewById<TextView>(R.id.tv_today)
+        todayLayout.background.alpha = 230
+        todayLayout.visibility = View.INVISIBLE
+
+        todayLayout.clicks()
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    isScroll = false
+                    val moveDate = Date().getToday()
+                    movePage(moveDate)
+                    (activity as? ActivityCalendar)?.setMonthDate(moveDate)
+                    todayLayout.visibility = View.INVISIBLE
+                }
+
+        isVisibleTodayView(date)
 
         return view
     }
@@ -152,7 +174,7 @@ class FragmentWeekViewPager: Fragment() {
             isMovePage = false
         }
 
-//        isVisibleTodayView(date)
+        isVisibleTodayView(date)
 
         if (activity is ActivityCalendar) {
             (activity as ActivityCalendar).setWeekDate(date)
@@ -175,7 +197,7 @@ class FragmentWeekViewPager: Fragment() {
         isMovePage = true
 
         val curPageDate = Date(adapter.getItemId(curPosition))
-        val diff = ((date.time - curPageDate.time) / 1000 / 60 / 60 / 24 / 7).toInt()
+        val diff = ((date.startOfWeek.time - curPageDate.startOfWeek.time) / 1000 / 60 / 60 / 24 / 7).toInt()
 
         if (diff == 0) {
             adapter.initFlag = false
@@ -191,6 +213,21 @@ class FragmentWeekViewPager: Fragment() {
             adapter.initFlag = true
             isMovePage = false
             scrollStateIdle(date)
+        }
+    }
+
+    private fun isVisibleTodayView(date: Date) {
+        val today = Date().getToday().startOfWeek.time
+        val curTime = date.startOfWeek.time
+        if (today != curTime) {
+            if (today < curTime) {
+                todayLayout.text = "<  오늘"
+            } else {
+                todayLayout.text = "오늘  >"
+            }
+            todayLayout.visibility = View.VISIBLE
+        } else {
+            todayLayout.visibility = View.INVISIBLE
         }
     }
 

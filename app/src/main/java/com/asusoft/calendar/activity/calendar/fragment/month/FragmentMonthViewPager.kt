@@ -99,7 +99,7 @@ class FragmentMonthViewPager: Fragment() {
                 isScroll = false
                 val moveDate = Date().getToday()
                 movePage(moveDate)
-                (activity as? ActivityCalendar)?.setMonthDate(moveDate)
+                (activity as? ActivityCalendar)?.setWeekDate(moveDate)
                 todayLayout.visibility = View.INVISIBLE
             }
 
