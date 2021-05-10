@@ -15,13 +15,17 @@ import com.asusoft.calendar.activity.calendar.fragment.week.WeekCalendarUiUtil
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.endOfWeek
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.*
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 class WeekItem(
@@ -82,6 +86,14 @@ class WeekItem(
             eventView.alpha = WeekCalendarUiUtil.COMPLETE_ALPHA
         }
 
+        tv.clicks()
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    clickEvent(key, weekDate)
+                }
+
+        // TODO: - 2일 이상인 경우 전체 갱신을 하도록 변경
         checkbox.clicks()
 //                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -140,7 +152,7 @@ class WeekItem(
         val set = ConstraintSet()
         set.clone(weekLayout)
 
-        val margin = CalculatorUtil.dpToPx(3.0F)
+        val margin = CalculatorUtil.dpToPx(2.0F)
         set.connect(eventView.id, ConstraintSet.TOP, startDayView.id, ConstraintSet.TOP, margin)
         set.connect(eventView.id, ConstraintSet.BOTTOM, endDayView.id, ConstraintSet.BOTTOM, margin)
 
@@ -149,7 +161,7 @@ class WeekItem(
                 val view = eventViewList[idx]?.get(order - 1)
 
                 if (view != null) {
-                    set.connect(eventView.id, ConstraintSet.START, view.id, ConstraintSet.END, margin)
+                    set.connect(eventView.id, ConstraintSet.START, view.id, ConstraintSet.END, margin * 2)
                     break
                 }
             }
@@ -158,6 +170,14 @@ class WeekItem(
         }
 
         set.applyTo(weekLayout)
+    }
+
+    private fun clickEvent(key: Long, date: Date) {
+        val event = HashMapEvent(java.util.HashMap())
+        event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
+        event.map["key"] = key
+        event.map["date"] = date.startOfWeek
+        GlobalBus.post(event)
     }
 
 }

@@ -33,13 +33,13 @@ import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.ALPHA
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.EVENT_HEIGHT
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.FONT_SIZE
-import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.calendarRefresh
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.jakewharton.rxbinding4.view.clicks
@@ -651,7 +651,7 @@ class FragmentMonthPage: Fragment() {
                         )
 
                         dragStartDay = 0
-                        calendarRefresh()
+                        CalendarUtil.calendarRefresh()
                     }
                 }
             }

@@ -2,8 +2,11 @@ package com.asusoft.calendar.util.objects
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -251,4 +254,14 @@ object CalendarUtil {
         v.background = shape
     }
 
+    fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
+        val event = HashMapEvent(java.util.HashMap())
+        event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
+
+        if (isRemoveDayEventView) {
+            event.map["removeDayEventView"] = "removeDayEventView"
+        }
+
+        GlobalBus.post(event)
+    }
 }

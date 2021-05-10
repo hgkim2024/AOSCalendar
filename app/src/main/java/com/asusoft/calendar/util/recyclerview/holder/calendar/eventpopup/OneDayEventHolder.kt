@@ -15,6 +15,7 @@ import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
 import com.jakewharton.rxbinding4.view.clicks
@@ -91,7 +92,7 @@ class OneDayEventHolder(
                             adapter.notifyDataSetChanged()
 
                             if (item.startTime != item.endTime) {
-                                MonthCalendarUiUtil.calendarRefresh()
+                                CalendarUtil.calendarRefresh()
                             } else {
                                 typeObject.refreshWeek()
                             }

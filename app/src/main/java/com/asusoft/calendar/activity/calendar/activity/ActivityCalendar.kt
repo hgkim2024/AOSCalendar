@@ -324,7 +324,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             }
 
             WEEK -> {
-                Logger.d("change fragment date: ${weekDate.toStringDay()}")
+//                Logger.d("change fragment date: ${weekDate.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment,

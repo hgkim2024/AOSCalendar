@@ -443,15 +443,7 @@ object MonthCalendarUiUtil {
         for (idx in 0 until weekOfMonthItem.weekLayout.childCount) {
             val v = weekOfMonthItem.weekLayout.getChildAt(idx)
 
-            var addFlag = true
-            for (dayView in weekOfMonthItem.dayViewList) {
-                if (v == dayView) {
-                    addFlag = false
-                    break
-                }
-            }
-
-            if (addFlag) {
+            if (!weekOfMonthItem.dayViewList.contains(v)) {
                 removeViewList.add(v)
             }
         }
@@ -609,17 +601,6 @@ object MonthCalendarUiUtil {
         }
 
         return row
-    }
-
-    fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
-        val event = HashMapEvent(java.util.HashMap())
-        event.map[ActivityAddEvent.toStringActivity()] = ActivityAddEvent.toStringActivity()
-        
-        if (isRemoveDayEventView) {
-            event.map["removeDayEventView"] = "removeDayEventView"
-        }
-
-        GlobalBus.post(event)
     }
 
     private fun onDrag(v: View, event: DragEvent): Boolean {

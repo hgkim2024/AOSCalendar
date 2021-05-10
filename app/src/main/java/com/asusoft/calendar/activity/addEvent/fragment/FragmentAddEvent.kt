@@ -329,8 +329,6 @@ class FragmentAddEvent: Fragment() {
             )
             eventMultiDay.insert()
         }
-
-        activity?.finish()
     }
 
     private fun removeEvent(key: Long) {

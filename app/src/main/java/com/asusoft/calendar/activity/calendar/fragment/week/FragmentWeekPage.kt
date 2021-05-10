@@ -1,6 +1,7 @@
 package com.asusoft.calendar.activity.calendar.fragment.week
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +10,25 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
+import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.removeFromSuperView
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
+import com.asusoft.calendar.util.startOfMonth
 import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.toStringDay
 import com.asusoft.calendar.util.toStringMonth
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
@@ -88,6 +97,7 @@ class FragmentWeekPage: Fragment() {
     private fun setPageUI(context: Context) {
         weekCalendar = page.findViewById(R.id.calendar)
         if (weekCalendar?.childCount == 1) {
+            Logger.d("setPageUI date: ${date.toStringDay()}")
             weekItem = WeekCalendarUiUtil.getOneWeekUI(context, date.startOfWeek)
             weekCalendar?.addView(weekItem!!.rootLayout)
 
@@ -122,11 +132,43 @@ class FragmentWeekPage: Fragment() {
         }
     }
 
+    private fun refreshPage() {
+        if (weekCalendar == null) return
+
+        weekItem!!.rootLayout.removeFromSuperView()
+        weekItem!!.rootLayout.removeAllViews()
+
+        setPageUI(context!!)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
         val weekViewPager = event.map.getOrDefault(FragmentWeekViewPager.toString(), null)
         if (weekViewPager != null) {
             setAsyncPageUI(context!!)
+        }
+
+        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        if (addEventActivity != null) {
+            refreshPage()
+        }
+
+        val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
+        if (oneDayEventHolder != null) {
+
+            val date = event.map.getOrDefault("date", null) as? Date ?: return
+            if (date != this.date.startOfWeek) return
+
+            val key = event.map.getOrDefault("key", null) as? Long
+            if (key != null) {
+                val event = RealmEventDay.select(key)
+                if (event != null) {
+                    val intent = Intent(context, ActivityAddEvent::class.java)
+                    intent.putExtra("key", key)
+                    startActivity(intent)
+                    return
+                }
+            }
         }
     }
 }
