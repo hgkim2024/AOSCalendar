@@ -242,8 +242,10 @@ class FragmentWeekViewPager: Fragment() {
 
         val activityCalendar = event.map.getOrDefault(ActivityCalendar.toString(), null)
         if (activityCalendar != null) {
-            val date = event.map["date"] as Date
-            movePage(date)
+            val date = event.map["date"] as? Date
+            if (date != null) {
+                movePage(date)
+            }
         }
     }
 }

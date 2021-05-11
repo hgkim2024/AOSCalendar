@@ -2,10 +2,7 @@ package com.asusoft.calendar.activity.calendar.fragment.week
 
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.asusoft.calendar.util.calendarDay
-import com.asusoft.calendar.util.getNextDay
-import com.asusoft.calendar.util.startOfMonth
-import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.*
 import com.orhanobut.logger.Logger
 import java.util.*
 
@@ -25,7 +22,7 @@ class AdapterWeekCalendar(fm: FragmentActivity, date: Date) : FragmentStateAdapt
     override fun getItemId(position: Int): Long = Date(start).getNextDay((position - START_POSITION) * WeekCalendarUiUtil.WEEK).startOfWeek.time
 
     override fun containsItem(itemId: Long): Boolean {
-        return Date(itemId).calendarDay == 1
+        return Date(itemId).weekOfDay == 0
     }
 
     companion object {
