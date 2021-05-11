@@ -1,7 +1,12 @@
 package com.asusoft.calendar.activity.calendar.fragment.week.objects
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
+import android.graphics.Point
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.HorizontalScrollView
@@ -69,7 +74,7 @@ class WeekItem(
 
         val tv = eventView.findViewById<TextView>(R.id.tv)
         
-//        eventView.tag = key.toString()
+        eventView.tag = key.toString()
         tv.textSize = WeekCalendarUiUtil.FONT_SIZE
         tv.text = name
 //        tv.ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -86,14 +91,6 @@ class WeekItem(
         if (isComplete) {
             eventView.alpha = WeekCalendarUiUtil.COMPLETE_ALPHA
         }
-
-//        tv.clicks()
-//                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-////                    Logger.d("week click data: ${weekDate.toStringDay()}")
-//                    clickEvent(key, weekDate)
-//                }
 
         checkbox.clicks()
 //                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -116,21 +113,20 @@ class WeekItem(
             checkbox.visibility = View.GONE
         }
 
-//        if (!isHoliday) {
-//            if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, PreferenceKey.DRAG_AND_DROP_DEFAULT)) {
-//                val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-//                    override fun onLongPress(e: MotionEvent) {
-//                        onClick(eventView, e)
-//                    }
-//                })
-//
-//                eventView.setOnTouchListener { v, event ->
-////                onClick(v, event)
-//                    gestureDetector.onTouchEvent(event)
-//                    false
-//                }
-//            }
-//        }
+        if (!isHoliday) {
+            if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, PreferenceKey.DRAG_AND_DROP_DEFAULT)) {
+                val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onLongPress(e: MotionEvent) {
+                        onClick(eventView, e)
+                    }
+                })
+
+                eventView.setOnTouchListener { v, event ->
+                    gestureDetector.onTouchEvent(event)
+                    false
+                }
+            }
+        }
 
         val startPadding = CalculatorUtil.dpToPx(2.0F)
         eventView.setPadding(startPadding, CalculatorUtil.dpToPx(1.0F), 0, 0)
@@ -170,12 +166,30 @@ class WeekItem(
         set.applyTo(weekLayout)
     }
 
-    private fun clickEvent(key: Long, date: Date) {
-        val event = HashMapEvent(java.util.HashMap())
-        event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
-        event.map["key"] = key
-        event.map["date"] = date.startOfWeek
-        GlobalBus.post(event)
-    }
+    private fun onClick(v: View, event: MotionEvent): Boolean {
+        if (!PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, PreferenceKey.DRAG_AND_DROP_DEFAULT)) return false
 
+        val x = event.x
+        val y = event.y
+
+        val item = ClipData.Item(v.tag as CharSequence)
+        val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+        val data = ClipData(v.tag.toString(), mimeTypes, item)
+        val dragShadow: View.DragShadowBuilder = object : View.DragShadowBuilder(v) {
+
+            override fun onProvideShadowMetrics(shadowSize: Point, shadowTouchPoint: Point) {
+                shadowSize.set(v.width, v.height)
+                shadowTouchPoint.set(x.toInt(), y.toInt())
+            }
+        }
+
+        v.startDragAndDrop(
+                data,
+                dragShadow,
+                v,
+                0
+        )
+
+        return true
+    }
 }

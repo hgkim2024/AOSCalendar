@@ -99,7 +99,6 @@ class WeekOfMonthItem(
                 })
 
                 eventView.setOnTouchListener { v, event ->
-//                onClick(v, event)
                     gestureDetector.onTouchEvent(event)
                     false
                 }

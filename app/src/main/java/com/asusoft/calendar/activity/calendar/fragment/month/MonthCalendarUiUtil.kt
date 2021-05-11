@@ -46,7 +46,7 @@ object MonthCalendarUiUtil {
     public val EVENT_HEIGHT
         get() = CalculatorUtil.spToPx(FONT_SIZE + 3) + CalculatorUtil.dpToPx(10.0F)
 
-    public const val ALPHA = 0.5F
+    public const val ALPHA = 0.4F
     public const val COMPLETE_ALPHA = 0.4F
     public const val SELECT_DAY_HEIGHT = 40.0F
 

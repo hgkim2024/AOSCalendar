@@ -27,18 +27,15 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
-import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
-import com.asusoft.calendar.util.startOfWeek
-import com.asusoft.calendar.util.toStringDay
-import com.asusoft.calendar.util.toStringMonth
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -66,6 +63,7 @@ class FragmentWeekPage: Fragment() {
         }
 
         const val ANIMATION_DURATION: Long = 150
+        var dragInitFlag = true
     }
 
     private lateinit var date: Date
@@ -82,6 +80,8 @@ class FragmentWeekPage: Fragment() {
     private var dialogHeight = 0
     private var bottomFlag = false
 
+    private var dragStartDay = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,7 +92,7 @@ class FragmentWeekPage: Fragment() {
 
         date = Date(time)
         GlobalBus.register(this)
-        Logger.d("onCreate date: ${date.startOfWeek.toStringDay()}")
+//        Logger.d("onCreate date: ${date.startOfWeek.toStringDay()}")
 //        Logger.d("register week date: ${date.toStringDay()}, address: $this")
     }
 
@@ -128,7 +128,7 @@ class FragmentWeekPage: Fragment() {
     private fun setPageUI(context: Context) {
         weekCalendar = page.findViewById(R.id.calendar)
         if (weekItem == null) {
-            Logger.d("setPageUI date: ${date.toStringDay()}")
+//            Logger.d("setPageUI date: ${date.toStringDay()}")
             weekItem = WeekCalendarUiUtil.getOneWeekUI(context, date.startOfWeek)
             val weekItem = weekItem!!
             weekCalendar?.addView(weekItem.rootLayout)
@@ -460,6 +460,110 @@ class FragmentWeekPage: Fragment() {
                     return
                 }
             }
+        }
+
+        val weekCalendarUiUtil = event.map.getOrDefault(WeekCalendarUiUtil.toString(), null)
+        if (weekCalendarUiUtil != null) {
+            if (dragInitFlag) return
+
+            val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+            if (startTime != null) {
+
+                val startDate = Date(startTime)
+                val startMonth = date.startOfMonth.startOfWeek
+                val endMonth = date.endOfMonth.endOfWeek
+
+                if (startDate in startMonth..endMonth) {
+                    dragStartDay = startTime
+                }
+            }
+
+            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            if (removeDayEventView != null) {
+                removeDayEventView()
+            }
+
+
+
+            val weekCalendarUiUtil = event.map.getOrDefault(WeekCalendarUiUtil.toString(), null)
+            if (weekCalendarUiUtil != null) {
+                if (dragInitFlag) return
+
+                val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+                if (startTime != null) {
+
+                    val startDate = Date(startTime)
+                    val startMonth = date.startOfMonth.startOfWeek
+                    val endMonth = date.endOfMonth.endOfWeek
+
+                    if (startDate in startMonth..endMonth) {
+                        dragStartDay = startTime
+                    }
+                }
+
+                val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+                if (removeDayEventView != null) {
+                    removeDayEventView()
+                }
+
+                val endTime = event.map.getOrDefault("endDragDate", null) as? Long
+                val key = event.map.getOrDefault("key", null) as? Long
+
+                if (endTime != null
+                        && key != null
+                        && dragStartDay > 0) {
+
+                    var startDate = Date(dragStartDay)
+                    var endDate = Date(endTime)
+                    val startMonth = date.startOfMonth.startOfWeek
+                    val endMonth = date.endOfMonth.endOfWeek
+
+                    if (startDate in startMonth..endMonth
+                            && endDate in startMonth..endMonth) {
+//                    Logger.d("Drag start Date: ${Date(dragStartDay).toStringDay()}")
+//                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
+//                    Logger.d("key: ${Date(key).toStringDay()}")
+
+                        val event = RealmEventDay.select(key)
+                        if (event != null) {
+                            dragInitFlag = true
+
+                            var inverseFlag = false
+
+                            if (startDate > endDate) {
+                                startDate = Date(endTime)
+                                endDate = Date(dragStartDay)
+                                inverseFlag = true
+                            }
+
+                            var diff = 0
+                            var date = startDate
+
+                            while(date.startOfDay < endDate.startOfDay) {
+                                date = date.getNextDay(1)
+                                if (inverseFlag) diff-- else diff++
+                            }
+
+                            if (diff == 0) {
+                                dragStartDay = 0
+                                return
+                            }
+
+                            event.update(
+                                    event.name,
+                                    Date(event.startTime).getNextDay(diff).time,
+                                    Date(event.endTime).getNextDay(diff).time,
+                                    event.isComplete
+                            )
+
+                            dragStartDay = 0
+                            CalendarUtil.calendarRefresh()
+                        }
+                    }
+                }
+            }
+
+
         }
     }
 }

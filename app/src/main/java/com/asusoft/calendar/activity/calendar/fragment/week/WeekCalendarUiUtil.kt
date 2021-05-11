@@ -1,7 +1,14 @@
 package com.asusoft.calendar.activity.calendar.fragment.week
 
+import android.content.ClipDescription
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.graphics.Typeface
+import android.os.Build
+import android.util.Log
+import android.view.DragEvent
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +24,8 @@ import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.eventbus.GlobalBus
+import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalendarUtil
@@ -62,9 +71,9 @@ object WeekCalendarUiUtil {
             val vw = View(context)
             vw.id = View.generateViewId()
             weekLayout.addView(vw)
-//            tv.setOnDragListener { v, event ->
-//                MonthCalendarUIUtil.onDrag(v, event)
-//            }
+            vw.setOnDragListener { v, event ->
+                onDrag(v, event)
+            }
 
             vw.tag = date.time
             vw.setBackgroundColor(CalendarApplication.getColor(R.color.background))
@@ -204,14 +213,6 @@ object WeekCalendarUiUtil {
             tv.gravity = Gravity.CENTER
             tv.tag = idx
 
-//            if (isPopup) {
-//                tv.gravity = Gravity.CENTER
-//            } else {
-//                val leftPadding = CalculatorUtil.dpToPx(0F)
-//                tv.setPadding(leftPadding, 0, 0, 0)
-//                tv.gravity = Gravity.CENTER_VERTICAL
-//            }
-
             tv.text = days[idx].getShortTitle()
             tv.setTextColor(days[idx].getFontColor())
 
@@ -255,5 +256,90 @@ object WeekCalendarUiUtil {
         )
 
         Logger.d("refreshPage date: ${weekItem.weekDate.toStringDay()}")
+    }
+
+    private fun onDrag(v: View, event: DragEvent): Boolean {
+        // Defines a variable to store the action type for the incoming event
+        when (event.action) {
+            DragEvent.ACTION_DRAG_STARTED -> {
+                return if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                    val vw = event.localState as View
+                    vw.visibility = View.INVISIBLE
+                    true
+                } else {
+                    false
+                }
+            }
+
+            DragEvent.ACTION_DRAG_ENTERED -> {
+
+                val backgroundColor = CalendarApplication.getColor(R.color.separator)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    v.background.colorFilter = BlendModeColorFilter(backgroundColor, BlendMode.SRC_IN)
+                } else {
+                    v.background.setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
+                }
+
+                if (FragmentWeekPage.dragInitFlag) {
+                    FragmentWeekPage.dragInitFlag = false
+
+                    val event = HashMapEvent(HashMap())
+                    event.map[WeekCalendarUiUtil.toString()] = WeekCalendarUiUtil.toString()
+                    event.map["startDragDate"] = v.tag as Long
+                    GlobalBus.post(event)
+                }
+
+                v.invalidate()
+                return true
+            }
+
+            DragEvent.ACTION_DRAG_LOCATION -> {
+                return true
+            }
+
+            DragEvent.ACTION_DRAG_EXITED -> {
+                v.background.clearColorFilter()
+                v.invalidate()
+
+                val event = HashMapEvent(HashMap())
+                event.map[WeekCalendarUiUtil.toString()] = WeekCalendarUiUtil.toString()
+                event.map["removeDayEventView"] = "removeDayEventView"
+                GlobalBus.post(event)
+
+                return true
+            }
+
+            DragEvent.ACTION_DROP -> {
+                v.background.clearColorFilter()
+                v.invalidate()
+
+                val vw = event.localState as? View
+
+                if (vw != null) {
+                    if (!FragmentWeekPage.dragInitFlag) {
+                        val eventMap = HashMapEvent(HashMap())
+                        eventMap.map[WeekCalendarUiUtil.toString()] = WeekCalendarUiUtil.toString()
+                        eventMap.map["endDragDate"] = v.tag as Long
+                        eventMap.map["key"] = (vw.tag as String).toLong()
+                        GlobalBus.post(eventMap)
+                    }
+                }
+
+                return true
+            }
+
+            DragEvent.ACTION_DRAG_ENDED -> {
+                v.background.clearColorFilter()
+                v.invalidate()
+
+                val vw = event.localState as View
+                vw.visibility = View.VISIBLE
+
+                return true
+            }
+
+            else -> Log.e("DragDrop Example", "Unknown action type received by OnDragListener.")
+        }
+        return false
     }
 }
