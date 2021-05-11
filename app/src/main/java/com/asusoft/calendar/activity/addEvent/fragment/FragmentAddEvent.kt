@@ -106,6 +106,7 @@ class FragmentAddEvent: Fragment() {
         var isComplete = false
         var visitCount = 0
         var memo: String? = null
+        var color = 0
 
         if (key != -1L) {
             isEdit = true
@@ -124,6 +125,7 @@ class FragmentAddEvent: Fragment() {
             isComplete = event.isComplete
             visitCount = event.visitList.size
             memo = event.memo
+            color = event.color
         }
 
 
@@ -131,7 +133,8 @@ class FragmentAddEvent: Fragment() {
         list.add(
                 EditTitleItem(
                         title ?: "",
-                        "제목"
+                        "제목",
+                        color
                 )
         )
 

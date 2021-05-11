@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -169,6 +170,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         val closeButton = searchView.findViewById<ImageView>(R.id.search_close_btn)
         closeButton.setOnClickListener {
 //            Logger.d("closeButton setOnClickListener")
+            hideKeyboard()
             searchView.isIconified = true
             resultPop()
             supportFragmentManager.popBackStack()
@@ -241,7 +243,11 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        hideKeyboard()
+        GlobalScope.async(Dispatchers.Main) {
+            delay(300)
+            onBackPressed()
+        }
         return true
     }
 
@@ -249,6 +255,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
         when(menuItem.itemId) {
             android.R.id.home -> {
+                hideKeyboard()
                 if (supportFragmentManager.backStackEntryCount == 0) {
                     drawerLayout.openDrawer(Gravity.LEFT)
                     return true
@@ -256,6 +263,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             }
 
             R.id.filter -> {
+                hideKeyboard()
                 DialogFragmentFilter
                     .newInstance(
                             searchType.value,
@@ -381,6 +389,15 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
         datePickerDialog.setCancelable(true)
         datePickerDialog.show()
+    }
+
+    private fun hideKeyboard() {
+        val focusView: View? = currentFocus
+        if (focusView != null) {
+            val imm: InputMethodManager? = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(focusView.windowToken, 0)
+            focusView.clearFocus()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
