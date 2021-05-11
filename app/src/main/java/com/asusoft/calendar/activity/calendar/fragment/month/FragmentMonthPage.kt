@@ -73,14 +73,15 @@ class FragmentMonthPage: Fragment() {
 
     private var monthItem: MonthItem? = null
     private lateinit var page: View
-    lateinit var eventViewDate: Date
 
+    lateinit var eventViewDate: Date
     private var prevClickDayView: View? = null
     private var prevDayEventView: ConstraintLayout? = null
-    private var monthCalendar: ConstraintLayout? = null
-    private var bottomFlag = false
-    private var dialogHeight = 0
     private var preventDoubleClickFlag = true
+    private var dialogHeight = 0
+    private var bottomFlag = false
+
+    private var monthCalendar: ConstraintLayout? = null
 
     private var todayView: View? = null
     private var dragStartDay = 0L

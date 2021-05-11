@@ -13,11 +13,13 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
+import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
+import com.asusoft.calendar.util.startOfWeek
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
@@ -71,33 +73,43 @@ class OneDayEventHolder(
                 view.clicks()
                         .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                         .subscribe {
-                            clickEvent(item.key, Date(item.startTime).startOfMonth)
+                            when(typeObject) {
+                                is FragmentMonthPage -> clickEvent(item.key, Date(item.startTime).startOfMonth)
+                                is FragmentWeekPage -> clickEvent(item.key, Date(item.startTime).startOfWeek)
+                            }
                         }
 
                 checkBox.clicks()
                         .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            if (typeObject !is FragmentMonthPage) return@subscribe
+                            if (
+                                    !(typeObject is FragmentMonthPage
+                                    || typeObject is FragmentWeekPage)
+                            ) return@subscribe
 
-                            when (item) {
-                                is CopyEventDay -> {
-                                    item.updateIsCompete(checkBox.isChecked)
-                                }
+                            item.updateIsCompete(checkBox.isChecked)
 
-                                else -> return@subscribe
+                            val date = when(typeObject) {
+                                is FragmentMonthPage -> typeObject.eventViewDate
+                                is FragmentWeekPage -> typeObject.eventViewDate
+                                else -> Date()
                             }
 
-                            adapter.list = getDayEventList(typeObject.eventViewDate)
+                            adapter.list = getDayEventList(date)
                             adapter.notifyDataSetChanged()
 
                             if (item.startTime != item.endTime) {
                                 CalendarUtil.calendarRefresh()
                             } else {
-                                typeObject.refreshWeek()
+                                when(typeObject) {
+                                    is FragmentMonthPage -> typeObject.refreshWeek()
+                                    is FragmentWeekPage -> typeObject.refreshPage()
+                                }
                             }
                         }
             }
+
             is String -> {
                 textView.text = item
                 edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))

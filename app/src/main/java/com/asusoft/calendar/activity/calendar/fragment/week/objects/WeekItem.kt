@@ -87,15 +87,14 @@ class WeekItem(
             eventView.alpha = WeekCalendarUiUtil.COMPLETE_ALPHA
         }
 
-        tv.clicks()
-                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-//                    Logger.d("week click data: ${weekDate.toStringDay()}")
-                    clickEvent(key, weekDate)
-                }
+//        tv.clicks()
+//                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe {
+////                    Logger.d("week click data: ${weekDate.toStringDay()}")
+//                    clickEvent(key, weekDate)
+//                }
 
-        // TODO: - 2일 이상인 경우 전체 갱신을 하도록 변경
         checkbox.clicks()
 //                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -114,6 +113,10 @@ class WeekItem(
                             endTime,
                             checkbox.isChecked
                     )
+
+                    if (startDay != endDay) {
+                        CalendarUtil.calendarRefresh()
+                    }
                 }
 
         if (isHoliday) {
