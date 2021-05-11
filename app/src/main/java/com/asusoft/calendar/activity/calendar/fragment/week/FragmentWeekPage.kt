@@ -305,8 +305,8 @@ class FragmentWeekPage: Fragment() {
             date: Date,
             point: Point
     ) {
-        if (weekCalendar == null) return
-        val weekCalendar = weekCalendar!!
+        if (weekItem == null) return
+        val weekCalendar = weekItem!!.weekLayout
 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.view_one_day_pop_up, null, false)
@@ -396,8 +396,10 @@ class FragmentWeekPage: Fragment() {
                     point.y + dayView.height
                 }
 
+//        Logger.d("point.x: ${point.x}")
+
         val startMargin =
-                if (point.x + dialogWidth >= weekCalendar.width)
+                if (point.x + dialogWidth >= dayView.width)
                     point.x - dialogWidth
                 else
                     point.x
