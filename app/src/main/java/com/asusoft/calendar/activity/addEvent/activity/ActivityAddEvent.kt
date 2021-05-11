@@ -2,9 +2,11 @@ package com.asusoft.calendar.activity.addEvent.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
@@ -51,7 +53,7 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                 appBarLayout,
                 "elevation",
                 0f
-            )
+        )
         )
         appBarLayout.stateListAnimator = stateListAnimator
 
@@ -59,10 +61,9 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             supportFragmentManager
                 .beginTransaction()
                 .add(
-                    R.id.fragment,
-                    FragmentAddEvent.
-                    newInstance(key, startDate, endDate),
-                    FragmentAddEvent.toString()
+                        R.id.fragment,
+                        FragmentAddEvent.newInstance(key, startDate, endDate),
+                        FragmentAddEvent.toString()
                 )
                 .commit()
         else
@@ -74,6 +75,14 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     override fun finish() {
+
+        val focusView: View? = currentFocus
+        if (focusView != null) {
+            val imm: InputMethodManager? = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(focusView.windowToken, 0)
+            focusView.clearFocus()
+        }
+
         if (refreshFlag) {
             CalendarUtil.calendarRefresh(true)
         }

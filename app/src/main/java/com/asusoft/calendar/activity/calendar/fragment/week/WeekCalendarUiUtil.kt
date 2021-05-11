@@ -17,8 +17,10 @@ import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -227,5 +229,31 @@ object WeekCalendarUiUtil {
         }
 
         return true
+    }
+
+    fun refreshPage(
+            context: Context,
+            weekItem: WeekItem
+    ) {
+        val removeViewList = ArrayList<View>()
+
+        for (idx in 0 until weekItem.weekLayout.childCount) {
+            val v = weekItem.weekLayout.getChildAt(idx)
+
+            if (!weekItem.dayViewList.contains(v)) {
+                removeViewList.add(v)
+            }
+        }
+
+        for (v in removeViewList) {
+            v.removeFromSuperView()
+        }
+
+        addEvent(
+                context,
+                weekItem
+        )
+
+        Logger.d("refreshPage date: ${weekItem.weekDate.toStringDay()}")
     }
 }

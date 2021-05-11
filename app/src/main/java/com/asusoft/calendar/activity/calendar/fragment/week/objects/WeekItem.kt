@@ -100,11 +100,6 @@ class WeekItem(
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
 //                    Logger.d("checkbox: ${checkbox.isChecked}")
-                    if (checkbox.isChecked) {
-                        eventView.alpha = WeekCalendarUiUtil.COMPLETE_ALPHA
-                    } else {
-                        eventView.alpha = 1.0F
-                    }
 
                     val event = RealmEventDay.select(key)
                     event?.update(
@@ -114,9 +109,7 @@ class WeekItem(
                             checkbox.isChecked
                     )
 
-                    if (startDay != endDay) {
-                        CalendarUtil.calendarRefresh()
-                    }
+                    CalendarUtil.calendarRefresh()
                 }
 
         if (isHoliday) {

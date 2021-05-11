@@ -23,20 +23,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
-import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
-import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
+import com.asusoft.calendar.util.getNextDay
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
+import com.asusoft.calendar.util.startOfWeek
+import com.asusoft.calendar.util.toStringDay
+import com.asusoft.calendar.util.toStringMonth
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -90,6 +92,7 @@ class FragmentWeekPage: Fragment() {
 
         date = Date(time)
         GlobalBus.register(this)
+        Logger.d("onCreate date: ${date.startOfWeek.toStringDay()}")
 //        Logger.d("register week date: ${date.toStringDay()}, address: $this")
     }
 
@@ -124,13 +127,13 @@ class FragmentWeekPage: Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setPageUI(context: Context) {
         weekCalendar = page.findViewById(R.id.calendar)
-        if (weekCalendar?.childCount == 1) {
+        if (weekItem == null) {
             Logger.d("setPageUI date: ${date.toStringDay()}")
             weekItem = WeekCalendarUiUtil.getOneWeekUI(context, date.startOfWeek)
             val weekItem = weekItem!!
             weekCalendar?.addView(weekItem.rootLayout)
 
-//            Logger.d("weekItem!!.eventViewList: ${weekItem!!.eventViewList.size}")
+//            Logger.d("weekItem!!.eventViewList: ${weekItem.eventViewList.size}")
 
             val tvEmpty = page.findViewById<TextView>(R.id.tv_empty)
             if (WeekCalendarUiUtil.isEmptyEvent(weekItem)) {
@@ -150,7 +153,8 @@ class FragmentWeekPage: Fragment() {
                             dayViewClick(
                                     weekItem,
                                     dayView,
-                                    idx
+                                    idx,
+                                    event.x.toInt()
                             )
                         }
                     }
@@ -180,25 +184,17 @@ class FragmentWeekPage: Fragment() {
     }
 
     fun refreshPage() {
+        if (weekItem == null) return
         if (weekCalendar == null) return
 
-        val weekCalendar = weekCalendar!!
-        val tvEmpty = page.findViewById<TextView>(R.id.tv_empty)
-
-        for (idx in 0 until weekCalendar.childCount) {
-            val view: View? = weekCalendar.getChildAt(idx)
-            if (view != tvEmpty && view != prevDayEventView) {
-                view?.removeFromSuperView()
-            }
-        }
-
-        setPageUI(context!!)
+        WeekCalendarUiUtil.refreshPage(context!!, weekItem!!)
     }
 
     private fun dayViewClick(
             weekItem: WeekItem,
             dayView: View,
-            idx: Int
+            idx: Int,
+            xPosition: Int
     ) {
         if (!preventDoubleClickFlag) return
         preventDoubleClickFlag = false
@@ -211,13 +207,15 @@ class FragmentWeekPage: Fragment() {
             removeDayEventView(
                     weekItem,
                     dayView,
-                    idx
+                    idx,
+                    xPosition
             )
         } else {
             showOneDayEventView(
                     weekItem,
                     dayView,
-                    idx
+                    idx,
+                    xPosition
             )
         }
 
@@ -230,7 +228,8 @@ class FragmentWeekPage: Fragment() {
     private fun removeDayEventView(
             weekItem: WeekItem,
             dayView: View,
-            idx: Int
+            idx: Int,
+            xPosition: Int
     ) {
         if (prevDayEventView != null) {
             val view = prevDayEventView!!
@@ -244,7 +243,7 @@ class FragmentWeekPage: Fragment() {
             val translateAnim = TranslateAnimation(0F, 0F, 0F, if (bottomFlag) dialogHeight.toFloat() else 0F)
             animationSet.addAnimation(translateAnim)
 
-            animationSet.duration = FragmentMonthPage.ANIMATION_DURATION
+            animationSet.duration = ANIMATION_DURATION
 
             animationSet.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
@@ -258,7 +257,8 @@ class FragmentWeekPage: Fragment() {
                     showOneDayEventView(
                             weekItem,
                             dayView,
-                            idx
+                            idx,
+                            xPosition
                     )
                 }
             })
@@ -282,7 +282,8 @@ class FragmentWeekPage: Fragment() {
     private fun showOneDayEventView(
             weekItem: WeekItem,
             dayView: View,
-            idx: Int
+            idx: Int,
+            xPosition: Int
     ) {
         dayView.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
         prevClickDayView = dayView
@@ -290,14 +291,12 @@ class FragmentWeekPage: Fragment() {
         val selectedDate = weekItem.weekDate.getNextDay(idx)
         eventViewDate = selectedDate
 
-        // TODO: - x 포지션을 클릭한 위치로 할 것
-        val xPoint = dayView.getBoundsLocation()
         val yPoint = weekItem.dayViewList[idx].getBoundsLocation()
 
         setOneDayEventView(
                 dayView,
                 weekItem.weekDate.getNextDay(idx),
-                Point(xPoint.x, yPoint.y)
+                Point(xPosition, yPoint.y)
         )
     }
 
@@ -399,7 +398,7 @@ class FragmentWeekPage: Fragment() {
 
         val startMargin =
                 if (point.x + dialogWidth >= weekCalendar.width)
-                    point.x + dayView.width - dialogWidth
+                    point.x - dialogWidth
                 else
                     point.x
 
@@ -416,7 +415,7 @@ class FragmentWeekPage: Fragment() {
         val translateAnim = TranslateAnimation(0F, 0F, if (bottomFlag) dialogHeight.toFloat() else 0F, 0F)
         animationSet.addAnimation(translateAnim)
 
-        animationSet.duration = FragmentMonthPage.ANIMATION_DURATION
+        animationSet.duration = ANIMATION_DURATION
         eventLayout.startAnimation(animationSet)
     }
 

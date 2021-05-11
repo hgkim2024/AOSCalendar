@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +20,10 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
-import com.asusoft.calendar.util.objects.AdUtil
-import com.asusoft.calendar.util.objects.AlertUtil
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.AdUtil
+import com.asusoft.calendar.util.objects.AlertUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
@@ -186,7 +187,7 @@ class FragmentAddEvent: Fragment() {
                             override fun onItemClick(view: View?, position: Int) {
                                 GlobalScope.async(Dispatchers.Main) {
                                     delay(CLICK_DELAY)
-                                    when(adapter.list[position]) {
+                                    when (adapter.list[position]) {
                                         is StartDayItem -> {
                                             val selectDayList = ArrayList<StartDayItem>()
 
@@ -308,24 +309,24 @@ class FragmentAddEvent: Fragment() {
         if(isEdit) {
             val event = RealmEventDay.select(key)
             event?.update(
-                titleItem.context,
-                startDayItem.date.startOfDay.time,
-                endDayItem.date.startOfDay.time,
-                completeItem.isComplete,
-                visitList,
-                memoItem.context,
-                titleItem.color
+                    titleItem.context,
+                    startDayItem.date.startOfDay.time,
+                    endDayItem.date.startOfDay.time,
+                    completeItem.isComplete,
+                    visitList,
+                    memoItem.context,
+                    titleItem.color
             )
         } else {
             val eventMultiDay = RealmEventDay()
             eventMultiDay.update(
-                titleItem.context,
-                startDayItem.date.startOfDay.time,
-                endDayItem.date.startOfDay.time,
-                completeItem.isComplete,
-                visitList,
-                memoItem.context,
-                titleItem.color
+                    titleItem.context,
+                    startDayItem.date.startOfDay.time,
+                    endDayItem.date.startOfDay.time,
+                    completeItem.isComplete,
+                    visitList,
+                    memoItem.context,
+                    titleItem.color
             )
             eventMultiDay.insert()
         }
