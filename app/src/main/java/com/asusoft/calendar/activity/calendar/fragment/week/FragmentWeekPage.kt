@@ -69,7 +69,7 @@ class FragmentWeekPage: Fragment() {
     private lateinit var date: Date
     private var initFlag = false
 
-    var weekItem: WeekItem? = null
+    private var weekItem: WeekItem? = null
     private lateinit var page: View
     private var weekCalendar: ConstraintLayout? = null
 

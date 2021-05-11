@@ -168,13 +168,18 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         underLine?.setBackgroundColor(Color.TRANSPARENT)
 
         val closeButton = searchView.findViewById<ImageView>(R.id.search_close_btn)
-        closeButton.setOnClickListener {
-//            Logger.d("closeButton setOnClickListener")
-            hideKeyboard()
-            searchView.isIconified = true
-            resultPop()
-            supportFragmentManager.popBackStack()
-        }
+        closeButton.clicks()
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    hideKeyboard()
+                    GlobalScope.async(Dispatchers.Main) {
+                        delay(300)
+                        searchView.isIconified = true
+                        resultPop()
+                        supportFragmentManager.popBackStack()
+                    }
+                }
 
         tv?.setOnClickListener {
             resultPop()
@@ -319,6 +324,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     fun setWeekDate(date: Date) {
         this.weekDate = date
+    }
+
+    fun getWeekDate(): Date {
+        return weekDate
     }
 
     fun setTitle(text: String) {

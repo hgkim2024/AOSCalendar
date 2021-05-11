@@ -83,6 +83,11 @@ class FragmentWeekViewPager: Fragment() {
         headerView = WeekCalendarUiUtil.getWeekHeader(context)
         headerLayout.addView(headerView)
 
+        val weekDate: Date? = (activity as? ActivityCalendar)?.getWeekDate()
+        if (weekDate != null) {
+            setHeaderText(weekDate)
+        }
+
         viewPager = view.findViewById(R.id.week_calendar)
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
