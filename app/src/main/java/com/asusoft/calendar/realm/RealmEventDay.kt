@@ -256,6 +256,8 @@ open class RealmEventDay: RealmObject() {
 
         if (name != "") {
             this.name = name
+        } else {
+            this.name = "이벤트"
         }
 
         if (startTime > 0) {
@@ -289,7 +291,11 @@ open class RealmEventDay: RealmObject() {
 //        Logger.d("update isComplete: ${this.isComplete}")
 
         if (color != null) {
-            this.color = color
+            if (color == 0) {
+                this.color = CalendarApplication.getColor(R.color.colorAccent)
+            } else {
+                this.color = color
+            }
         }
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
