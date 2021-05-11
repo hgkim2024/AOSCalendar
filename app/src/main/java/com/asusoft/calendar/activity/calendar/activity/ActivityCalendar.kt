@@ -87,8 +87,21 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    DialogFragmentSelectYearMonth.newInstance(monthDate)
-                            .show(supportFragmentManager, DialogFragmentSelectYearMonth.toString())
+
+                    when(curFragmentIdx) {
+                        MONTH -> {
+                            DialogFragmentSelectYearMonth
+                                    .newInstance(monthDate)
+                                    .show(
+                                            supportFragmentManager,
+                                            DialogFragmentSelectYearMonth.toString()
+                                    )
+                        }
+
+                        WEEK -> {
+                            // TODO: - 추가
+                        }
+                    }
                 }
 
         drawerLayout = findViewById(R.id.drawer_layout)
