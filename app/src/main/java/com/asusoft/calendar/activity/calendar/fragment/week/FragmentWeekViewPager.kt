@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
+import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMonth
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
@@ -237,6 +238,12 @@ class FragmentWeekViewPager: Fragment() {
         if (fragmentWeekPage != null) {
             val date = event.map["date"] as Date
             setHeaderText(date)
+        }
+
+        val activityCalendar = event.map.getOrDefault(ActivityCalendar.toString(), null)
+        if (activityCalendar != null) {
+            val date = event.map["date"] as Date
+            movePage(date)
         }
     }
 }

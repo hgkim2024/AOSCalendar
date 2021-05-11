@@ -2,9 +2,11 @@ package com.asusoft.calendar.activity.calendar.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -33,17 +35,16 @@ import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSear
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekViewPager
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
+import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
-import com.asusoft.calendar.util.getToday
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
-import com.asusoft.calendar.util.toStringDay
 import com.google.android.material.appbar.AppBarLayout
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
@@ -99,7 +100,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                         }
 
                         WEEK -> {
-                            // TODO: - 추가
+                            showDatePickerDialog()
                         }
                     }
                 }
@@ -354,6 +355,32 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         PreferenceManager.setInt(PreferenceKey.SELECTED_CALENDAR_TYPE, curFragmentIdx)
+    }
+
+    private fun showDatePickerDialog() {
+
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            val dateString = "$year-${String.format("%02d", month + 1)}-${String.format("%02d", day)}"
+            weekDate = weekDate.stringToDate(dateString)
+
+            val event = HashMapEvent(HashMap())
+            event.map[ActivityCalendar.toString()] = ActivityCalendar.toString()
+            event.map["date"] = weekDate
+            GlobalBus.getBus().post(event)
+
+            Log.d("Asu", "change date: ${weekDate.toStringDay()}")
+        }
+
+        val datePickerDialog = DatePickerDialog(
+                this,
+                dateSetListener,
+                weekDate.calendarYear,
+                weekDate.calendarMonth - 1,
+                weekDate.calendarDay
+        )
+
+        datePickerDialog.setCancelable(true)
+        datePickerDialog.show()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
