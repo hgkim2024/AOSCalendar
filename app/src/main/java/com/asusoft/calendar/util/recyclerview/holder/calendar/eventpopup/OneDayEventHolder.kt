@@ -1,8 +1,10 @@
 package com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
@@ -33,6 +35,7 @@ class OneDayEventHolder(
         private val adapter: RecyclerViewAdapter
 ) : RecyclerView.ViewHolder(view) {
 
+    @SuppressLint("ClickableViewAccessibility")
     fun bind(position: Int) {
         val item = adapter.list[position]
 
@@ -69,15 +72,6 @@ class OneDayEventHolder(
                     textView.setTextColor(CalendarApplication.getColor(R.color.font))
                     checkBox.isChecked = false
                 }
-
-                view.clicks()
-                        .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-                        .subscribe {
-                            when(typeObject) {
-                                is FragmentMonthPage -> clickEvent(item.key, Date(item.startTime).startOfMonth)
-                                is FragmentWeekPage -> clickEvent(item.key, Date(item.startTime).startOfWeek)
-                            }
-                        }
 
                 checkBox.clicks()
                         .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -117,14 +111,6 @@ class OneDayEventHolder(
             }
         }
 
-    }
-
-    private fun clickEvent(key: Long, date: Date) {
-        val event = HashMapEvent(HashMap())
-        event.map[OneDayEventHolder.toString()] = OneDayEventHolder.toString()
-        event.map["key"] = key
-        event.map["date"] = date
-        GlobalBus.post(event)
     }
 
     companion object {

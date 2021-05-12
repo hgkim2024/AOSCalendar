@@ -33,6 +33,7 @@ import com.asusoft.calendar.util.objects.CalendarUtil.getDayEventList
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.ALPHA
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.EVENT_HEIGHT
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.FONT_SIZE
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -40,6 +41,7 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.jakewharton.rxbinding4.view.clicks
@@ -331,6 +333,33 @@ class FragmentMonthPage: Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+
+        recyclerView.addOnItemTouchListener(
+                RecyclerItemClickListener(
+                        context,
+                        recyclerView,
+                        object : RecyclerItemClickListener.OnItemClickListener {
+                            override fun onItemClick(view: View?, position: Int) {
+                                GlobalScope.async(Dispatchers.Main) {
+                                    delay(RecyclerViewAdapter.CLICK_DELAY)
+                                    val item = adapter.list[position] as? CopyEventDay
+                                    if (item != null) {
+                                        val event = RealmEventDay.select(item.key)
+                                        if (event != null) {
+                                            val intent = Intent(context, ActivityAddEvent::class.java)
+                                            intent.putExtra("key", item.key)
+                                            startActivity(intent)
+//                                            Logger.d("week date: ${date.toStringDay()}, address: $this")
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onItemLongClick(view: View?, position: Int) {}
+                        }
+                )
+        )
+
         var dialogWidth: Int = 150
         dialogHeight = 30 + 14
 
@@ -552,32 +581,6 @@ class FragmentMonthPage: Fragment() {
         val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
         if (monthViewPager != null) {
             setAsyncPageUI(context!!)
-        }
-
-        val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
-        if (oneDayEventHolder != null) {
-
-            val date = event.map.getOrDefault("date", null) as? Date ?: return
-            if (date != this.date.startOfMonth) return
-
-            val key = event.map.getOrDefault("key", null) as? Long
-            if (key != null) {
-                if (!preventDoubleClickFlag) return
-                preventDoubleClickFlag = false
-
-                GlobalScope.async {
-                    delay(CalendarApplication.THROTTLE)
-                    preventDoubleClickFlag = true
-                }
-
-                val event = RealmEventDay.select(key)
-                if (event != null) {
-                    val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("key", key)
-                    startActivity(intent)
-                    return
-                }
-            }
         }
 
         val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUiUtil.toString(), null)

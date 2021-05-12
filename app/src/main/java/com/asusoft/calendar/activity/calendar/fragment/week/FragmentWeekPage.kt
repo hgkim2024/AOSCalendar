@@ -27,6 +27,7 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
+import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
@@ -34,6 +35,7 @@ import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.jakewharton.rxbinding4.view.clicks
@@ -348,6 +350,32 @@ class FragmentWeekPage: Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+        recyclerView.addOnItemTouchListener(
+                RecyclerItemClickListener(
+                        context,
+                        recyclerView,
+                        object : RecyclerItemClickListener.OnItemClickListener {
+                            override fun onItemClick(view: View?, position: Int) {
+                                GlobalScope.async(Dispatchers.Main) {
+                                    delay(RecyclerViewAdapter.CLICK_DELAY)
+                                    val item = adapter.list[position] as? CopyEventDay
+                                    if (item != null) {
+                                        val event = RealmEventDay.select(item.key)
+                                        if (event != null) {
+                                            val intent = Intent(context, ActivityAddEvent::class.java)
+                                            intent.putExtra("key", item.key)
+                                            startActivity(intent)
+//                                            Logger.d("week date: ${date.toStringDay()}, address: $this")
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onItemLongClick(view: View?, position: Int) {}
+                        }
+                )
+        )
+
         var dialogWidth: Int = 150
         dialogHeight = 30 + 14
 
@@ -442,25 +470,6 @@ class FragmentWeekPage: Fragment() {
             val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
             if (removeDayEventView != null) {
                 removeDayEventView()
-            }
-        }
-
-        val oneDayEventHolder = event.map.getOrDefault(OneDayEventHolder.toString(), null)
-        if (oneDayEventHolder != null) {
-
-            val date = event.map.getOrDefault("date", null) as? Date ?: return
-            if (date != this.date.startOfWeek) return
-
-            val key = event.map.getOrDefault("key", null) as? Long
-            if (key != null) {
-                val event = RealmEventDay.select(key)
-                if (event != null) {
-                    val intent = Intent(context, ActivityAddEvent::class.java)
-                    intent.putExtra("key", key)
-                    startActivity(intent)
-//                    Logger.d("week date: ${date.toStringDay()}, address: $this")
-                    return
-                }
             }
         }
 
