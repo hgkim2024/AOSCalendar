@@ -20,6 +20,7 @@ import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.ADD_EVENT
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
@@ -313,7 +314,10 @@ class RecyclerViewAdapter(
                 val toItem = list[toPosition]
                 if (fromItem is CopyEventDay
                         && toItem is CopyEventDay
-                        && fromItem.isComplete == toItem.isComplete) {
+                        && fromItem.isComplete == toItem.isComplete
+                        && ( (fromItem.startTime == fromItem.endTime && toItem.startTime == toItem.endTime)
+                                || (fromItem.startTime != fromItem.endTime && toItem.startTime != toItem.endTime))
+                ) {
                     swapItems(fromPosition, toPosition)
 
 //                    Logger.d("fromPosition: ${fromPosition}, toPosition: ${toPosition}")
@@ -323,12 +327,19 @@ class RecyclerViewAdapter(
                     fromItem.updateOrder(fromOrder)
                     toItem.updateOrder(toOrder)
 
-                    when (typeObject) {
-                        is FragmentMonthPage -> {typeObject.refreshWeek()}
-                        is FragmentWeekPage -> {typeObject.refreshPage()}
+                    if (toItem.startTime != toItem.endTime) {
+                        CalendarUtil.calendarRefresh()
+                    } else {
+                        when (typeObject) {
+                            is FragmentMonthPage -> typeObject.refreshWeek()
+                            is FragmentWeekPage -> typeObject.refreshPage()
+                        }
                     }
+
+
                 }
             }
+            else -> {}
         }
     }
 
