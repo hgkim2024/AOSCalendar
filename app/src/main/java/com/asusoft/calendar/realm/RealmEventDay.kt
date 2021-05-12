@@ -37,6 +37,8 @@ open class RealmEventDay: RealmObject() {
 
     var color: Int = 0
 
+    var order: Double = System.currentTimeMillis().toDouble()
+
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventDay> {
             val startTime = date.startOfWeek.time
@@ -62,7 +64,8 @@ open class RealmEventDay: RealmObject() {
                     .lessThanOrEqualTo("startTime", startTime)
                     .and()
                     .greaterThanOrEqualTo("endTime", endTime)
-                    
+
+                    .sort("order")
                     .findAll()
             
             realm.commitTransaction()
@@ -96,6 +99,7 @@ open class RealmEventDay: RealmObject() {
                     .and()
                     .greaterThanOrEqualTo("endTime", endTime)
 
+                    .sort("order")
                     .findAll()
 
             realm.commitTransaction()
@@ -227,7 +231,8 @@ open class RealmEventDay: RealmObject() {
                 isComplete,
                 visitList,
                 memo,
-                color
+                color,
+                order
         )
     }
 
@@ -299,6 +304,15 @@ open class RealmEventDay: RealmObject() {
         }
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")
+        realm.commitTransaction()
+        realm.refresh()
+    }
+
+    fun updateOrder(order: Double) {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+
+        realm.beginTransaction()
+        this.order = order
         realm.commitTransaction()
         realm.refresh()
     }

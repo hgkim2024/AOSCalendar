@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.SideMenuType
+import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
@@ -15,6 +16,7 @@ import com.asusoft.calendar.util.objects.CalendarUtil.setCornerRadiusDrawable
 import com.asusoft.calendar.util.objects.CalendarUtil.setLeftCornerRadiusDrawable
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
+import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
@@ -52,6 +54,7 @@ import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchItem
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -304,8 +307,29 @@ class RecyclerViewAdapter(
     }
 
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
-        // TODO: - 정렬 기능 넣을지 생각해보기
-//        swapItems(fromPosition, toPosition)
+        when(type) {
+            ONE_DAY_EVENT -> {
+                val fromItem = list[fromPosition]
+                val toItem = list[toPosition]
+                if (fromItem is CopyEventDay
+                        && toItem is CopyEventDay
+                        && fromItem.isComplete == toItem.isComplete) {
+                    swapItems(fromPosition, toPosition)
+
+//                    Logger.d("fromPosition: ${fromPosition}, toPosition: ${toPosition}")
+                    val fromOrder = toItem.order
+                    val toOrder = fromItem.order
+
+                    fromItem.updateOrder(fromOrder)
+                    toItem.updateOrder(toOrder)
+
+                    when (typeObject) {
+                        is FragmentMonthPage -> {typeObject.refreshWeek()}
+                        is FragmentWeekPage -> {typeObject.refreshPage()}
+                    }
+                }
+            }
+        }
     }
 
     override fun onItemDismiss(position: Int) {
@@ -350,7 +374,11 @@ class RecyclerViewAdapter(
     }
 
     private fun swapItems(positionFrom: Int, positionTo: Int) {
-        Collections.swap(list, positionFrom, positionTo)
+        val item = list.removeAt(positionFrom)
+        list.add(positionTo, item)
+
         notifyItemMoved(positionFrom, positionTo)
+        notifyItemChanged(positionFrom)
+        notifyItemChanged(positionTo)
     }
 }

@@ -8,6 +8,7 @@ import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.holiday.LunarCalendar
+import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -215,6 +216,7 @@ object CalendarUtil {
         orderMap: HashMap<Long, Int>
     ) {
         for (eventOneDay in realmEventOneDayList) {
+//            Logger.d("event name: ${eventOneDay.getCopy().name}")
             val weekOfDay = Date(eventOneDay.startTime).weekOfDay
 
             var index = 0

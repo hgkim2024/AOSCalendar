@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
@@ -43,6 +44,7 @@ import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
+import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -333,6 +335,9 @@ class FragmentMonthPage: Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        touchHelper.attachToRecyclerView(recyclerView)
 
         recyclerView.addOnItemTouchListener(
                 RecyclerItemClickListener(

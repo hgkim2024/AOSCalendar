@@ -234,14 +234,15 @@ object WeekCalendarUiUtil {
 
     fun refreshPage(
             context: Context,
-            weekItem: WeekItem
+            weekItem: WeekItem,
+            prevDayEventView: ConstraintLayout?
     ) {
         val removeViewList = ArrayList<View>()
 
         for (idx in 0 until weekItem.weekLayout.childCount) {
             val v = weekItem.weekLayout.getChildAt(idx)
 
-            if (!weekItem.dayViewList.contains(v)) {
+            if (!weekItem.dayViewList.contains(v) && v != prevDayEventView) {
                 removeViewList.add(v)
             }
         }
@@ -255,7 +256,7 @@ object WeekCalendarUiUtil {
                 weekItem
         )
 
-        Logger.d("refreshPage date: ${weekItem.weekDate.toStringDay()}")
+//        Logger.d("refreshPage date: ${weekItem.weekDate.toStringDay()}")
     }
 
     private fun onDrag(v: View, event: DragEvent): Boolean {

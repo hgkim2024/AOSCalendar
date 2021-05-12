@@ -10,7 +10,8 @@ class CopyEventDay(
         var isComplete: Boolean = false,
         var visitList: ArrayList<CopyVisitPerson>,
         var memo: String,
-        var color: Int
+        var color: Int,
+        var order: Double
 ) {
 
     fun updateIsCompete(isComplete: Boolean) {
@@ -33,6 +34,12 @@ class CopyEventDay(
                 endTime,
                 isComplete
         )
+    }
+
+    fun updateOrder(order: Double) {
+        this.order = order
+        val item = RealmEventDay.select(key)
+        item?.updateOrder(order)
     }
 
     fun delete() {

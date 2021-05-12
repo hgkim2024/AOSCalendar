@@ -31,6 +31,7 @@ import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -468,6 +469,8 @@ object MonthCalendarUiUtil {
                 dayView.bringToFront()
             }
         }
+
+//        Logger.d("refreshWeek")
     }
 
     fun setSelectedDay(
