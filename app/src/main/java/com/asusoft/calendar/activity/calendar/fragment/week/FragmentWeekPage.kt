@@ -307,6 +307,104 @@ class FragmentWeekPage: Fragment() {
         )
     }
 
+    fun resizeOneDayEventView(
+            eventList: ArrayList<Any>
+    ) {
+        val eventLayout = prevDayEventView ?: return
+        val dayView = prevClickDayView ?: return
+
+        val title = eventLayout.findViewById<TextView>(R.id.title)
+        val emptyTitle = eventLayout.findViewById<TextView>(R.id.tv_empty)
+        val point = dayView.getBoundsLocation()
+        point.set(point.x, point.y + dayView.height)
+
+        title.text = "${eventList.size}개 이벤트"
+
+        if (eventList.isEmpty()) {
+            emptyTitle.visibility = View.VISIBLE
+        } else {
+            emptyTitle.visibility = View.INVISIBLE
+        }
+
+        locationOneDayEventView(
+                eventLayout,
+                dayView,
+                eventList,
+                point
+        )
+    }
+
+    private fun locationOneDayEventView(
+            eventLayout: ConstraintLayout,
+            dayView: View,
+            eventList: ArrayList<Any>,
+            point: Point
+    ) {
+        if (weekItem == null) return
+        val weekCalendar = weekItem!!.weekLayout
+
+        var dialogWidth: Int = 150
+        dialogHeight = 30 + 14
+
+        dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
+        dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
+
+        if (eventList.isEmpty()) dialogHeight += MonthCalendarUiUtil.EVENT_HEIGHT
+        dialogHeight += (MonthCalendarUiUtil.EVENT_HEIGHT * eventList.size)
+
+        if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < weekCalendar.height) {
+            if (point.y + dayView.height + dialogHeight >= weekCalendar.height - 10) {
+                val height = weekCalendar.height - point.y - dayView.height - 10
+
+                if (point.y - dayView.height > height - 10) {
+                    if (point.y - dayView.height - 10 < dialogHeight) {
+                        dialogHeight = point.y - dayView.height - 10
+                    }
+                } else {
+                    dialogHeight = height
+                }
+            }
+        } else {
+            if (dialogHeight + dayView.height >= weekCalendar.height - 10) {
+                dialogHeight = weekCalendar.height - dayView.height - 10
+            }
+        }
+
+        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
+                dialogWidth,
+                dialogHeight
+        )
+
+//        Logger.d("Click Point: $point")
+//        Logger.d("page height: ${monthCalendar.height }")
+
+        val set = ConstraintSet()
+        set.clone(weekCalendar)
+
+        val topMargin =
+                if (point.y + dayView.height + dialogHeight >= weekCalendar.height) {
+                    bottomFlag = true
+                    point.y - dialogHeight
+                }
+                else {
+                    bottomFlag = false
+                    point.y + dayView.height
+                }
+
+//        Logger.d("point.x: ${point.x}")
+
+        val startMargin =
+                if (point.x + dialogWidth >= dayView.width)
+                    point.x - dialogWidth
+                else
+                    point.x
+
+        set.connect(eventLayout.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
+
+        set.applyTo(weekCalendar)
+    }
+
     private fun setOneDayEventView(
             dayView: View,
             date: Date,
@@ -388,66 +486,12 @@ class FragmentWeekPage: Fragment() {
                 )
         )
 
-        var dialogWidth: Int = 150
-        dialogHeight = 30 + 14
-
-        dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
-        dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
-
-        if (eventList.isEmpty()) dialogHeight += MonthCalendarUiUtil.EVENT_HEIGHT
-        dialogHeight += (MonthCalendarUiUtil.EVENT_HEIGHT * eventList.size)
-
-        if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < weekCalendar.height) {
-            if (point.y + dayView.height + dialogHeight >= weekCalendar.height - 10) {
-                val height = weekCalendar.height - point.y - dayView.height - 10
-
-                if (point.y - dayView.height > height - 10) {
-                    if (point.y - dayView.height - 10 < dialogHeight) {
-                        dialogHeight = point.y - dayView.height - 10
-                    }
-                } else {
-                    dialogHeight = height
-                }
-            }
-        } else {
-            if (dialogHeight + dayView.height >= weekCalendar.height - 10) {
-                dialogHeight = weekCalendar.height - dayView.height - 10
-            }
-        }
-
-        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
-                dialogWidth,
-                dialogHeight
+        locationOneDayEventView(
+                eventLayout,
+                dayView,
+                eventList,
+                point
         )
-
-//        Logger.d("Click Point: $point")
-//        Logger.d("page height: ${monthCalendar.height }")
-
-        val set = ConstraintSet()
-        set.clone(weekCalendar)
-
-        val topMargin =
-                if (point.y + dayView.height + dialogHeight >= weekCalendar.height) {
-                    bottomFlag = true
-                    point.y - dialogHeight
-                }
-                else {
-                    bottomFlag = false
-                    point.y + dayView.height
-                }
-
-//        Logger.d("point.x: ${point.x}")
-
-        val startMargin =
-                if (point.x + dialogWidth >= dayView.width)
-                    point.x - dialogWidth
-                else
-                    point.x
-
-        set.connect(eventLayout.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
-        set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
-
-        set.applyTo(weekCalendar)
 
         val animationSet = AnimationSet(false)
 

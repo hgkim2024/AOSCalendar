@@ -44,6 +44,8 @@ import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayC
 import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.header.DayCalendarHeaderHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType
 import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType.*
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventType
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayHolidayHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.eventsearch.EventSearchHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayHolder
@@ -88,6 +90,13 @@ class RecyclerViewAdapter(
                     is VisitItem -> VISIT.value
                     is MemoItem -> MEMO.value
                     else -> 0
+                }
+            }
+
+            ONE_DAY_EVENT -> {
+                return when(item) {
+                    is String -> OneDayEventType.HOLIDAY.value
+                    else -> OneDayEventType.EVENT.value
                 }
             }
 
@@ -172,7 +181,10 @@ class RecyclerViewAdapter(
 
             ONE_DAY_EVENT -> {
                 val view = MonthCalendarUiUtil.getEdgeEventView(context)
-                OneDayEventHolder(typeObject, context, view, this)
+                when(viewType) {
+                    OneDayEventType.HOLIDAY.value -> OneDayHolidayHolder(typeObject, context, view, this)
+                    else -> OneDayEventHolder(typeObject, context, view, this)
+                }
             }
 
             SELECT_DAY -> {
@@ -273,7 +285,12 @@ class RecyclerViewAdapter(
                 }
             }
 
-            ONE_DAY_EVENT -> (holder as OneDayEventHolder).bind(position)
+            ONE_DAY_EVENT -> {
+                when(holder) {
+                    is OneDayEventHolder -> holder.bind(position)
+                    is OneDayHolidayHolder -> holder.bind(position)
+                }
+            }
             SELECT_DAY -> (holder as SelectDayHolder).bind(position)
             DAY_CALENDAR_HEADER -> (holder as DayCalendarHeaderHolder).bind(position)
             DAY_CALENDAR_BODY -> {
@@ -377,6 +394,27 @@ class RecyclerViewAdapter(
 
                 if (item is CopyRecentSearchTerms) {
                     RealmRecentSearchTerms.select(item.key)?.delete()
+                }
+            }
+
+            ONE_DAY_EVENT -> {
+                val item = list.removeAt(position)
+                notifyItemRemoved(position)
+
+                if (item is CopyEventDay) {
+                    item.delete()
+
+                    when (typeObject) {
+                        is FragmentMonthPage -> {
+                            typeObject.refreshWeek()
+                            typeObject.resizeOneDayEventView(list)
+                        }
+
+                        is FragmentWeekPage -> {
+                            typeObject.refreshPage()
+                            typeObject.resizeOneDayEventView(list)
+                        }
+                    }
                 }
             }
 

@@ -45,7 +45,6 @@ import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
-import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
@@ -287,6 +286,98 @@ class FragmentMonthPage: Fragment() {
         }
     }
 
+    fun resizeOneDayEventView(
+            eventList: ArrayList<Any>
+    ) {
+        val eventLayout = prevDayEventView ?: return
+        val dayView = prevClickDayView ?: return
+
+        val title = eventLayout.findViewById<TextView>(R.id.title)
+        val emptyTitle = eventLayout.findViewById<TextView>(R.id.tv_empty)
+        val point = dayView.getBoundsLocation()
+        point.set(point.x, point.y + dayView.height)
+
+        title.text = "${eventList.size}개 이벤트"
+
+        if (eventList.isEmpty()) {
+            emptyTitle.visibility = View.VISIBLE
+        } else {
+            emptyTitle.visibility = View.INVISIBLE
+        }
+
+        locationOneDayEventView(
+                eventLayout,
+                dayView,
+                eventList,
+                point
+        )
+    }
+
+    private fun locationOneDayEventView(
+            eventLayout: ConstraintLayout,
+            dayView: View,
+            eventList: ArrayList<Any>,
+            point: Point
+    ) {
+        val monthCalendar = monthCalendar ?: return
+
+        var dialogWidth: Int = 150
+        dialogHeight = 30 + 14
+
+        dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
+        dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
+
+        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT
+        dialogHeight += (EVENT_HEIGHT * eventList.size)
+
+        if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < monthCalendar.height) {
+            if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {
+                val height = monthCalendar.height - point.y - dayView.height - 10
+
+                if (point.y - dayView.height > height - 10) {
+                    if (point.y - dayView.height - 10 < dialogHeight) {
+                        dialogHeight = point.y - dayView.height - 10
+                    }
+                } else {
+                    dialogHeight = height
+                }
+            }
+        } else {
+            if (dialogHeight + dayView.height >= monthCalendar.height - 10) {
+                dialogHeight = monthCalendar.height - dayView.height - 10
+            }
+        }
+
+        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
+                dialogWidth,
+                dialogHeight
+        )
+
+        val set = ConstraintSet()
+        set.clone(monthCalendar)
+
+        val topMargin =
+                if (point.y + dayView.height + dialogHeight >= monthCalendar.height) {
+                    bottomFlag = true
+                    point.y - dialogHeight
+                }
+                else {
+                    bottomFlag = false
+                    point.y + dayView.height
+                }
+
+        val startMargin =
+                if (point.x + dialogWidth >= monthCalendar.width)
+                    point.x + dayView.width - dialogWidth
+                else
+                    point.x
+
+        set.connect(eventLayout.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
+
+        set.applyTo(monthCalendar)
+    }
+
     private fun setOneDayEventView(
             dayView: View,
             date: Date,
@@ -365,64 +456,12 @@ class FragmentMonthPage: Fragment() {
                 )
         )
 
-        var dialogWidth: Int = 150
-        dialogHeight = 30 + 14
-
-        dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
-        dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
-
-        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT
-        dialogHeight += (EVENT_HEIGHT * eventList.size)
-
-        if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < monthCalendar.height) {
-            if (point.y + dayView.height + dialogHeight >= monthCalendar.height - 10) {
-                val height = monthCalendar.height - point.y - dayView.height - 10
-
-                if (point.y - dayView.height > height - 10) {
-                    if (point.y - dayView.height - 10 < dialogHeight) {
-                        dialogHeight = point.y - dayView.height - 10
-                    }
-                } else {
-                    dialogHeight = height
-                }
-            }
-        } else {
-            if (dialogHeight + dayView.height >= monthCalendar.height - 10) {
-                dialogHeight = monthCalendar.height - dayView.height - 10
-            }
-        }
-
-        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
-                dialogWidth,
-                dialogHeight
+        locationOneDayEventView(
+                eventLayout,
+                dayView,
+                eventList,
+                point
         )
-
-//        Logger.d("Click Point: $point")
-//        Logger.d("page height: ${monthCalendar.height }")
-
-        val set = ConstraintSet()
-        set.clone(monthCalendar)
-
-        val topMargin =
-                if (point.y + dayView.height + dialogHeight >= monthCalendar.height) {
-                    bottomFlag = true
-                    point.y - dialogHeight
-                }
-                else {
-                    bottomFlag = false
-                    point.y + dayView.height
-                }
-
-        val startMargin =
-                if (point.x + dialogWidth >= monthCalendar.width)
-                    point.x + dayView.width - dialogWidth
-                else
-                    point.x
-
-        set.connect(eventLayout.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
-        set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
-
-        set.applyTo(monthCalendar)
 
         val animationSet = AnimationSet(false)
 

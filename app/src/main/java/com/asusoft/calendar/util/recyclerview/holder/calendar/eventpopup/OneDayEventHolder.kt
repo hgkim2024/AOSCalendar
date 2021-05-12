@@ -77,7 +77,7 @@ class OneDayEventHolder(
 
                 val outValue = TypedValue()
                 context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-                view.foreground = AppCompatResources.getDrawable(context, outValue.resourceId)
+                view.background = AppCompatResources.getDrawable(context, outValue.resourceId)
                 view.isClickable = true
                 view.focusable = View.FOCUSABLE
 
@@ -110,12 +110,6 @@ class OneDayEventHolder(
                                 }
                             }
                         }
-            }
-
-            is String -> {
-                textView.text = item
-                edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
-                checkBox.visibility = View.INVISIBLE
             }
         }
 

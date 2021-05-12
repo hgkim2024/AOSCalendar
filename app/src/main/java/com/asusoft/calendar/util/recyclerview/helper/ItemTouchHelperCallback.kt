@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarAddEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
+import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayHolidayHolder
 
 class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
 
@@ -30,6 +32,11 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             viewHolder: RecyclerView.ViewHolder,
             direction: Int
     ) {
+        when(viewHolder) {
+            is OneDayHolidayHolder,
+            is DayCalendarAddEventHolder -> return
+        }
+
         adapter.onItemDismiss(viewHolder.adapterPosition)
     }
 
@@ -46,11 +53,17 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             actionState: Int,
             isCurrentlyActive: Boolean
     ) {
-        if(viewHolder is DayCalendarAddEventHolder) {
-            return
+        when(viewHolder) {
+            is OneDayHolidayHolder,
+            is DayCalendarAddEventHolder -> return
         }
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+//            if (viewHolder is OneDayEventHolder) {
+//                return
+//            }
+
             val viewItem = viewHolder.itemView
             SwipeBackgroundHelper.paintDrawCommandToStart(canvas, viewItem, R.drawable.ic_baseline_delete_24, dX)
         }
