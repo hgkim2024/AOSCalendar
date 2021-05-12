@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
@@ -72,6 +74,12 @@ class OneDayEventHolder(
                     textView.setTextColor(CalendarApplication.getColor(R.color.font))
                     checkBox.isChecked = false
                 }
+
+                val outValue = TypedValue()
+                context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                view.foreground = AppCompatResources.getDrawable(context, outValue.resourceId)
+                view.isClickable = true
+                view.focusable = View.FOCUSABLE
 
                 checkBox.clicks()
                         .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
