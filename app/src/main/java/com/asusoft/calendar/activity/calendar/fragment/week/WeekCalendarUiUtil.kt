@@ -76,6 +76,8 @@ object WeekCalendarUiUtil {
             }
 
             vw.tag = date.time
+            vw.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+
             vw.layoutParams = ConstraintLayout.LayoutParams(
                     0,
                     0

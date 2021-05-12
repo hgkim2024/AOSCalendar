@@ -3,7 +3,6 @@ package com.asusoft.calendar.activity.calendar.fragment.week
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -143,6 +142,7 @@ class FragmentWeekPage: Fragment() {
             val tvEmpty = page.findViewById<TextView>(R.id.tv_empty)
             if (WeekCalendarUiUtil.isEmptyEvent(weekItem)) {
                 tvEmpty.visibility = View.VISIBLE
+                tvEmpty.bringToFront()
             } else {
                 tvEmpty.visibility = View.GONE
             }
@@ -204,7 +204,7 @@ class FragmentWeekPage: Fragment() {
         preventDoubleClickFlag = false
 
         if (prevClickDayView != null) {
-            prevClickDayView!!.setBackgroundColor(Color.TRANSPARENT)
+            prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
         }
 
         if (prevDayEventView != null) {
