@@ -6,8 +6,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.objects.CalculatorUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import java.lang.Exception
 
 fun View.getBoundsLocation(): Point {
     val viewGroup = parent as ViewGroup
@@ -21,9 +27,8 @@ fun View.getBoundsLocation(): Point {
 
 fun View.removeFromSuperView() {
     // 이미 삭제된 경우 return
-    if (parent !is ViewGroup) return
+    val viewGroup = parent as? ViewGroup ?: return
 
-    val viewGroup = parent as ViewGroup
     if (viewGroup.childCount > 0) {
         viewGroup.removeView(this)
     }

@@ -49,6 +49,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.lang.Exception
+import java.lang.NullPointerException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -253,9 +255,7 @@ class FragmentWeekPage: Fragment() {
                 override fun onAnimationRepeat(animation: Animation?) {}
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    view.visibility = View.GONE
-                    GlobalScope.async (Dispatchers.Main) {
-                        delay(ANIMATION_DURATION)
+                    GlobalScope.async(Dispatchers.Main) {
                         view.removeFromSuperView()
                     }
 
@@ -314,6 +314,8 @@ class FragmentWeekPage: Fragment() {
     ) {
         if (weekItem == null) return
         val weekCalendar = weekItem!!.weekLayout
+
+        Logger.d("setOneDayEventView")
 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.view_one_day_pop_up, null, false)
