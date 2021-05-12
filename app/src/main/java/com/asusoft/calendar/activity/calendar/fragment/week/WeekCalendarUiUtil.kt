@@ -61,10 +61,21 @@ object WeekCalendarUiUtil {
         var date = startOfWeekDate
 
         val dayViewList = ArrayList<View>()
+        val emptyView = TextView(context)
+        weekLayout.addView(emptyView)
+        emptyView.id = View.generateViewId()
+        emptyView.tag = "tv_empty"
+        emptyView.text = "등록된 이벤트가 없습니다."
+        emptyView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
 
         weekLayout.layoutParams = FrameLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
+        )
+
+        emptyView.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
 
         for(idx in 0 until WEEK) {
@@ -87,6 +98,8 @@ object WeekCalendarUiUtil {
             date = date.tomorrow
         }
 
+        emptyView.bringToFront()
+
         val set = ConstraintSet()
         set.clone(weekLayout)
 
@@ -101,6 +114,11 @@ object WeekCalendarUiUtil {
                 else -> set.connect(vw.id, ConstraintSet.TOP, dayViewList[idx - 1].id, ConstraintSet.BOTTOM)
             }
         }
+
+        set.connect(emptyView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+        set.connect(emptyView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        set.connect(emptyView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        set.connect(emptyView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
 
         set.applyTo(weekLayout)
 

@@ -180,7 +180,7 @@ class FragmentMonthPage: Fragment() {
 
     private fun setPageUI(context: Context) {
         monthCalendar = page.findViewById(R.id.calendar)
-        if (monthCalendar?.childCount == 1) {
+        if (monthItem == null) {
             monthItem = MonthCalendarUiUtil.getMonthUI(context, date.startOfMonth)
             monthCalendar?.addView(monthItem!!.monthView)
             setTodayView(context)

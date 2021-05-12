@@ -139,10 +139,9 @@ class FragmentWeekPage: Fragment() {
 
 //            Logger.d("weekItem!!.eventViewList: ${weekItem.eventViewList.size}")
 
-            val tvEmpty = page.findViewById<TextView>(R.id.tv_empty)
+            val tvEmpty = weekItem.weekLayout.findViewWithTag<TextView>("tv_empty")
             if (WeekCalendarUiUtil.isEmptyEvent(weekItem)) {
                 tvEmpty.visibility = View.VISIBLE
-                tvEmpty.bringToFront()
             } else {
                 tvEmpty.visibility = View.GONE
             }
@@ -355,6 +354,7 @@ class FragmentWeekPage: Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.bringToFront()
 
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
