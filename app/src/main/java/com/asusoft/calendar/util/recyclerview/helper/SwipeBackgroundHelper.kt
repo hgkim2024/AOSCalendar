@@ -54,7 +54,7 @@ class SwipeBackgroundHelper {
                     canvas,
                     viewItem,
                     dX,
-                    0.2F,
+                    0.15F,
                     drawCommand
             )
             drawIcon(canvas, viewItem, dX, drawCommand.icon)

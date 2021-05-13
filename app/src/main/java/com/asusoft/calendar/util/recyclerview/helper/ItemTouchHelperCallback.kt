@@ -7,6 +7,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarAddEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayHolidayHolder
+import com.orhanobut.logger.Logger
 
 class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
 
@@ -16,7 +17,10 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
     ): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
         val swipeFlags = ItemTouchHelper.START
-        return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
+
+//        Logger.d("getMovementFlags: ${makeMovementFlags(dragFlags, swipeFlags)}")
+
+        return makeMovementFlags(dragFlags, swipeFlags)
     }
 
     override fun onMove(

@@ -341,7 +341,8 @@ class FragmentWeekPage: Fragment() {
             point: Point
     ) {
         if (weekItem == null) return
-        val weekCalendar = weekItem!!.weekLayout
+        val rootLayout = weekCalendar ?: return
+        val weekCalendar = weekItem?.weekLayout ?: return
 
         var dialogWidth: Int = 150
         dialogHeight = 30 + 14
@@ -379,7 +380,7 @@ class FragmentWeekPage: Fragment() {
 //        Logger.d("page height: ${monthCalendar.height }")
 
         val set = ConstraintSet()
-        set.clone(weekCalendar)
+        set.clone(rootLayout)
 
         val topMargin =
                 if (point.y + dayView.height + dialogHeight >= weekCalendar.height) {
@@ -402,16 +403,18 @@ class FragmentWeekPage: Fragment() {
         set.connect(eventLayout.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
         set.connect(eventLayout.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
 
-        set.applyTo(weekCalendar)
+        set.applyTo(rootLayout)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setOneDayEventView(
             dayView: View,
             date: Date,
             point: Point
     ) {
         if (weekItem == null) return
-        val weekCalendar = weekItem!!.weekLayout
+        val rootLayout = weekCalendar ?: return
+        val weekCalendar = weekItem?.weekLayout ?: return
 
         Logger.d("setOneDayEventView")
 
@@ -422,7 +425,7 @@ class FragmentWeekPage: Fragment() {
         val emptyTitle = view.findViewById<TextView>(R.id.tv_empty)
         val addButton = view.findViewById<ImageButton>(R.id.add_button)
 
-        weekCalendar.addView(eventLayout)
+        rootLayout.addView(eventLayout)
         prevDayEventView = eventLayout
 
         val eventList = CalendarUtil.getDayEventList(date)
