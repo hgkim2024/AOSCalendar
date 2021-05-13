@@ -294,8 +294,9 @@ class FragmentMonthPage: Fragment() {
 
         val title = eventLayout.findViewById<TextView>(R.id.title)
         val emptyTitle = eventLayout.findViewById<TextView>(R.id.tv_empty)
-        val point = dayView.getBoundsLocation()
-        point.set(point.x, point.y + dayView.height)
+        val xPoint = dayView.getBoundsLocation()
+        val rootLayout = ((dayView.parent as? ViewGroup)?.parent as? ViewGroup) ?: return
+        val yPoint = rootLayout.getBoundsLocation()
 
         title.text = "${eventList.size}개 이벤트"
 
@@ -309,7 +310,7 @@ class FragmentMonthPage: Fragment() {
                 eventLayout,
                 dayView,
                 eventList,
-                point
+                Point(xPoint.x, yPoint.y)
         )
     }
 

@@ -315,8 +315,8 @@ class FragmentWeekPage: Fragment() {
 
         val title = eventLayout.findViewById<TextView>(R.id.title)
         val emptyTitle = eventLayout.findViewById<TextView>(R.id.tv_empty)
-        val point = dayView.getBoundsLocation()
-        point.set(point.x, point.y + dayView.height)
+        val xPoint = eventLayout.getBoundsLocation()
+        val yPoint = dayView.getBoundsLocation()
 
         title.text = "${eventList.size}개 이벤트"
 
@@ -330,7 +330,7 @@ class FragmentWeekPage: Fragment() {
                 eventLayout,
                 dayView,
                 eventList,
-                point
+                Point(xPoint.x, yPoint.y)
         )
     }
 
@@ -454,7 +454,6 @@ class FragmentWeekPage: Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.bringToFront()
 
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
