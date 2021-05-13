@@ -256,11 +256,12 @@ object WeekCalendarUiUtil {
             prevDayEventView: ConstraintLayout?
     ) {
         val removeViewList = ArrayList<View>()
+        val tvEmpty = weekItem.weekLayout.findViewWithTag<TextView?>("tv_empty") ?: return
 
         for (idx in 0 until weekItem.weekLayout.childCount) {
             val v = weekItem.weekLayout.getChildAt(idx)
 
-            if (!weekItem.dayViewList.contains(v) && v != prevDayEventView) {
+            if (!weekItem.dayViewList.contains(v) && v != prevDayEventView && v != tvEmpty) {
                 removeViewList.add(v)
             }
         }

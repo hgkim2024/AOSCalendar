@@ -141,12 +141,7 @@ class FragmentWeekPage: Fragment() {
 
 //            Logger.d("weekItem!!.eventViewList: ${weekItem.eventViewList.size}")
 
-            val tvEmpty = weekItem.weekLayout.findViewWithTag<TextView>("tv_empty")
-            if (WeekCalendarUiUtil.isEmptyEvent(weekItem)) {
-                tvEmpty.visibility = View.VISIBLE
-            } else {
-                tvEmpty.visibility = View.GONE
-            }
+            isEmptyViewShow()
 
             for (idx in weekItem.dayViewList.indices) {
                 val dayView = weekItem.dayViewList[idx]
@@ -193,6 +188,7 @@ class FragmentWeekPage: Fragment() {
         if (weekCalendar == null) return
 
         WeekCalendarUiUtil.refreshPage(context!!, weekItem!!, prevDayEventView)
+        isEmptyViewShow()
     }
 
     private fun dayViewClick(
@@ -512,6 +508,16 @@ class FragmentWeekPage: Fragment() {
         intent.putExtra("startDate", date.time)
         intent.putExtra("endDate", date.time)
         startActivity(intent)
+    }
+
+    private fun isEmptyViewShow() {
+        val weekItem = weekItem ?: return
+        val tvEmpty = weekItem.weekLayout.findViewWithTag<TextView?>("tv_empty") ?: return
+        if (WeekCalendarUiUtil.isEmptyEvent(weekItem)) {
+            tvEmpty.visibility = View.VISIBLE
+        } else {
+            tvEmpty.visibility = View.GONE
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
