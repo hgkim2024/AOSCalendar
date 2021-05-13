@@ -406,15 +406,21 @@ class RecyclerViewAdapter(
 
                     when (typeObject) {
                         is FragmentMonthPage -> {
-                            typeObject.refreshWeek()
+                            if (item.startTime == item.endTime) {
+                                typeObject.refreshWeek()
+                            }
                             typeObject.resizeOneDayEventView(list)
                         }
 
                         is FragmentWeekPage -> {
-                            typeObject.refreshPage()
+                            if (item.startTime == item.endTime) {
+                                typeObject.refreshPage()
+                            }
                             typeObject.resizeOneDayEventView(list)
                         }
                     }
+
+                    CalendarUtil.calendarRefresh()
                 }
             }
 
