@@ -379,7 +379,7 @@ class FragmentWeekPage: Fragment() {
         set.clone(rootLayout)
 
         val topMargin =
-                if (point.y + dayView.height + dialogHeight >= weekCalendar.height) {
+                if (point.y + (dayView.height * 2) + dialogHeight >= weekCalendar.height) {
                     bottomFlag = true
                     point.y - dialogHeight
                 }
@@ -410,7 +410,6 @@ class FragmentWeekPage: Fragment() {
     ) {
         if (weekItem == null) return
         val rootLayout = weekCalendar ?: return
-        val weekCalendar = weekItem?.weekLayout ?: return
 
         Logger.d("setOneDayEventView")
 
