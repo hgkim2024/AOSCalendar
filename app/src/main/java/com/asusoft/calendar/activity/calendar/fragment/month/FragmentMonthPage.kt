@@ -358,11 +358,10 @@ class FragmentMonthPage: Fragment() {
         set.clone(monthCalendar)
 
         val topMargin =
-                if (point.y + dayView.height + dialogHeight >= monthCalendar.height) {
+                if (point.y + (dayView.height * 2) + dialogHeight >= monthCalendar.height) {
                     bottomFlag = true
                     point.y - dialogHeight
-                }
-                else {
+                } else {
                     bottomFlag = false
                     point.y + dayView.height
                 }
