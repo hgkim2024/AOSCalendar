@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -80,6 +81,9 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // TODO: - 추후에 가로모드 지원 옵션 만들기
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         GlobalBus.register(this)
 //        Logger.d("toolbar height: ${toolbar.height}")

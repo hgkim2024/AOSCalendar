@@ -5,6 +5,7 @@ import android.animation.StateListAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -46,6 +47,10 @@ class ActivityAddPerson : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_persion)
+
+        // TODO: - 추후에 가로모드 지원 옵션 만들기
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         val key = intent.getLongExtra("key", -1L)
         val visitList =
                 if (key != -1L) {

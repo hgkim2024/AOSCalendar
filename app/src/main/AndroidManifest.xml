@@ -19,12 +19,8 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admod_app_id" />
 
-        <activity
-            android:name=".activity.addEvent.activity.ActivityAddEvent"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.calendar.activity.ActivityCalendar"
-            android:screenOrientation="portrait">
+        <activity android:name=".activity.addEvent.activity.ActivityAddEvent" />
+        <activity android:name=".activity.calendar.activity.ActivityCalendar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
