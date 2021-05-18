@@ -265,7 +265,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         when(menuItem.itemId) {
             android.R.id.home -> {
                 hideKeyboard()
-                if (supportFragmentManager.backStackEntryCount == 0) {
+                if (supportFragmentManager.backStackEntryCount <= 1) {
                     drawerLayout.openDrawer(Gravity.LEFT)
                     return true
                 }
@@ -308,7 +308,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     private fun homeButtonIconChange() {
-        val drawable = if (supportFragmentManager.backStackEntryCount > 0) {
+        val drawable = if (supportFragmentManager.backStackEntryCount > 1) {
             CalendarApplication.getDrawable(R.drawable.ic_baseline_arrow_back_24)
         } else {
             searchView?.clearFocus()
@@ -347,31 +347,38 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     }
 
     private fun changeRootFragment() {
+        Logger.d("Fragment Count: ${supportFragmentManager.fragments.size}")
+
+        if (supportFragmentManager.fragments.size > 0) {
+            supportFragmentManager.popBackStack(
+                    supportFragmentManager.getBackStackEntryAt(0).id,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+
         for (fragment in supportFragmentManager.fragments) {
-            fragment.onPause()
-            fragment.onStop()
-            fragment.onDestroy()
+            supportFragmentManager.beginTransaction().remove(fragment).commit()
         }
 
         when(curFragmentIdx) {
             MONTH -> {
 //                Logger.d("change fragment date: ${date.toStringDay()}")
                 supportFragmentManager.beginTransaction()
-                    .replace(
+                    .add(
                         R.id.fragment,
                         FragmentMonthViewPager.newInstance(monthDate),
                         FragmentMonthViewPager.toString()
-                    ).commit()
+                    ).addToBackStack(null).commit()
             }
 
             WEEK -> {
 //                Logger.d("change fragment date: ${weekDate.toStringDay()}")
                 supportFragmentManager.beginTransaction()
-                    .replace(
+                    .add(
                         R.id.fragment,
                             FragmentWeekViewPager.newInstance(weekDate),
                             FragmentWeekViewPager.toString()
-                    ).commit()
+                    ).addToBackStack(null).commit()
             }
         }
 
