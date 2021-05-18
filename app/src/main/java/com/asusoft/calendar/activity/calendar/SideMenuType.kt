@@ -7,7 +7,7 @@ import com.asusoft.calendar.application.CalendarApplication
 enum class SideMenuType(val value: Int) {
     TOP(0),
     MONTH(1),
-    DAY(2);
+    WEEK(2);
 
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }
@@ -17,7 +17,7 @@ enum class SideMenuType(val value: Int) {
         return when(this) {
             TOP -> ""
             MONTH -> "월"
-            DAY -> "주"
+            WEEK -> "주"
         }
     }
 
@@ -25,7 +25,7 @@ enum class SideMenuType(val value: Int) {
         return when(this) {
             TOP -> null
             MONTH -> CalendarApplication.getDrawable(R.drawable.ic_baseline_view_module_24)
-            DAY -> CalendarApplication.getDrawable(R.drawable.ic_baseline_view_list_24)
+            WEEK -> CalendarApplication.getDrawable(R.drawable.ic_baseline_view_list_24)
         }
     }
 

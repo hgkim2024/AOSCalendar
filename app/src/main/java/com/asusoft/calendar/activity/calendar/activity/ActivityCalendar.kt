@@ -63,10 +63,7 @@ import java.util.concurrent.TimeUnit
 
 class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
-    companion object {
-        const val MONTH = 0
-        const val WEEK = 1
-    }
+    companion object;
 
     private var monthDate = Date().getToday()
     private var weekDate = Date().getToday()
@@ -95,7 +92,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                 .subscribe {
 
                     when(curFragmentIdx) {
-                        MONTH -> {
+                        SideMenuType.MONTH.value -> {
                             DialogFragmentSelectYearMonth
                                     .newInstance(monthDate)
                                     .show(
@@ -104,7 +101,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                                     )
                         }
 
-                        WEEK -> {
+                        SideMenuType.WEEK.value -> {
                             showDatePickerDialog()
                         }
                     }
@@ -361,7 +358,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         when(curFragmentIdx) {
-            MONTH -> {
+            SideMenuType.MONTH.value -> {
 //                Logger.d("change fragment date: ${date.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                     .add(
@@ -371,7 +368,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
                     ).addToBackStack(null).commit()
             }
 
-            WEEK -> {
+            SideMenuType.WEEK.value -> {
 //                Logger.d("change fragment date: ${weekDate.toStringDay()}")
                 supportFragmentManager.beginTransaction()
                     .add(
@@ -430,8 +427,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
             if (type != null) {
                 curFragmentIdx = when(type) {
-                    SideMenuType.MONTH -> MONTH
-                    SideMenuType.DAY -> WEEK
+                    SideMenuType.MONTH -> SideMenuType.MONTH.value
+                    SideMenuType.WEEK -> SideMenuType.WEEK.value
                     else -> return
                 }
 

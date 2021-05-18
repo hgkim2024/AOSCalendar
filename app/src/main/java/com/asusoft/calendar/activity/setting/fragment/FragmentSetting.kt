@@ -67,7 +67,7 @@ class FragmentSetting: Fragment() {
                                                 FragmentMonthSetting.toString()
                                         )
 
-                                        SideMenuType.DAY -> replaceFragment(
+                                        SideMenuType.WEEK -> replaceFragment(
                                                 FragmentDaySetting.newInstance(),
                                                 FragmentDaySetting.toString()
                                         )
