@@ -1,5 +1,6 @@
 package com.asusoft.calendar.activity.calendar.fragment.week
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -189,12 +191,24 @@ class FragmentWeekViewPager: Fragment() {
     }
     
     private fun setHeaderText(date: Date) {
+        val today = Date().getToday().startOfDay
         val weekTypes = WeekOfDayType.values()
+        val days = WeekOfDayType.values()
+
         for (idx in 0 until WeekCalendarUiUtil.WEEK) {
             val tv = headerView.findViewWithTag<TextView?>(idx)
             val currentDate = date.getNextDay(idx)
             
             tv.text = "${weekTypes[idx].getShortTitle()}\n(${currentDate.calendarDay})"
+
+            if (today == currentDate) {
+                val color = CalendarApplication.getColor(R.color.today)
+                CalendarUtil.setCornerRadiusDrawable(tv, color, 5.0F)
+                tv.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+            } else {
+                tv.setBackgroundColor(Color.TRANSPARENT)
+                tv.setTextColor(days[idx].getFontColor())
+            }
         }
     }
 
