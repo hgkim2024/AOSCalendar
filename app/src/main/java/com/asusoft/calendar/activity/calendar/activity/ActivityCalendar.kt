@@ -67,7 +67,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     private var monthDate = Date().getToday()
     private var weekDate = Date().getToday()
-    private var curFragmentIdx = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE)
+    private var curFragmentIdx = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE, SideMenuType.MONTH.value)
     private lateinit var drawerLayout: DrawerLayout
     private var searchView: SearchView? = null
     var fragmentRecentSearchTerms: FragmentRecentSearchTerms? = null
