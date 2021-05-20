@@ -22,6 +22,7 @@ import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.google.android.material.appbar.AppBarLayout
@@ -71,17 +72,7 @@ class ActivityAddPerson : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // remove shadow
-        val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
-        val stateListAnimator = StateListAnimator()
-        stateListAnimator.addState(
-                IntArray(0), ObjectAnimator.ofFloat(
-                appBarLayout,
-                "elevation",
-                0f
-            )
-        )
-        appBarLayout.stateListAnimator = stateListAnimator
+        removeActionBarShadow()
 
         val floatingButton = findViewById<FloatingActionButton>(R.id.floating_button)
         floatingButton.clicks()

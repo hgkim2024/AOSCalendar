@@ -42,7 +42,7 @@ class WeekOfMonthItem(
 
     companion object {
         val TOP_MARGIN
-            get() = CalculatorUtil.spToPx(MonthCalendarUiUtil.FONT_SIZE + 4.0F) + CalculatorUtil.dpToPx(10.0F)
+            get() = CalculatorUtil.spToPx(MonthCalendarUiUtil.DAY_FONT_SIZE + 4.0F) + CalculatorUtil.dpToPx(10.0F)
 
         private const val LEFT_MARGIN = 1.5F
     }
@@ -78,7 +78,7 @@ class WeekOfMonthItem(
         val eventView = TextView(context)
 
         eventView.tag = key.toString()
-        eventView.textSize = MonthCalendarUiUtil.FONT_SIZE - 1
+        eventView.textSize = MonthCalendarUiUtil.ITEM_FONT_SIZE
 //        eventView.gravity = Gravity.CENTER_VERTICAL
         eventView.setSingleLine()
         eventView.text = name

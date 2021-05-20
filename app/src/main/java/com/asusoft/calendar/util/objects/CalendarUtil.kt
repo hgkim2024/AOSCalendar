@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.graphics.drawable.GradientDrawable
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +51,14 @@ import kotlin.collections.HashMap
 object CalendarUtil {
     const val ANIMATION_DURATION: Long = 150
 
-    val DAY_FONT_SIZE: Float
-        get() = PreferenceManager.getInt(PreferenceKey.DAY_CALENDAR_FONT_SIZE, PreferenceKey.DAY_DEFAULT_FONT_SIZE.toInt()).toFloat()
+    private val DAY_HEADER_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.DAY_CALENDAR_HEADER_FONT_SIZE, PreferenceKey.DAY_CALENDAR_HEADER_DEFAULT_FONT_SIZE)
+
+    private val DAY_ITEM_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.DAY_CALENDAR_ITEM_FONT_SIZE, PreferenceKey.DAY_CALENDAR_ITEM_DEFAULT_FONT_SIZE)
+
+    private val EVENT_HEIGHT
+        get() = CalculatorUtil.spToPx(DAY_ITEM_FONT_SIZE) + CalculatorUtil.dpToPx(10.0F)
 
     fun getDayEventList(date: Date, isHoliday: Boolean = true): ArrayList<Any> {
         val eventList: ArrayList<Any> = ArrayList()
@@ -317,7 +326,9 @@ object CalendarUtil {
         calendar.addView(eventLayout)
 
         title.text = "${eventList.size}개 이벤트"
-        title.textSize = MonthCalendarUiUtil.FONT_SIZE + 4
+        title.textSize = DAY_HEADER_FONT_SIZE
+        title.setSingleLine()
+        title.ellipsize = TextUtils.TruncateAt.MARQUEE
 
         addButton.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -328,8 +339,11 @@ object CalendarUtil {
 
         if (eventList.isEmpty()) {
             emptyTitle.visibility = View.VISIBLE
-            emptyTitle.textSize = MonthCalendarUiUtil.FONT_SIZE + 3
+            emptyTitle.textSize = DAY_HEADER_FONT_SIZE - 1.0F
             emptyTitle.isClickable = true
+            emptyTitle.setSingleLine()
+            emptyTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
             emptyTitle.clicks()
                     .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                     .subscribeOn(AndroidSchedulers.mainThread())
@@ -388,6 +402,78 @@ object CalendarUtil {
         fragment.startActivity(intent)
     }
 
+    fun getEdgeEventView(
+            context: Context
+    ): ConstraintLayout {
+        val eventLayout = ConstraintLayout(context)
+        val edgeView = View(context)
+        val textView = TextView(context)
+        val checkBox = CheckBox(context)
+
+        eventLayout.id = View.generateViewId()
+        edgeView.id = View.generateViewId()
+        textView.id = View.generateViewId()
+        checkBox.id = View.generateViewId()
+
+        edgeView.tag = 0
+        textView.tag = 1
+        checkBox.tag = 2
+
+        eventLayout.addView(edgeView)
+        eventLayout.addView(textView)
+        eventLayout.addView(checkBox)
+
+        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                EVENT_HEIGHT
+        )
+
+        edgeView.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(4.0F),
+                0
+        )
+
+        val startPadding = CalculatorUtil.dpToPx(3.0F)
+        textView.setPadding(startPadding, 0, startPadding, 0)
+        textView.textSize = DAY_ITEM_FONT_SIZE
+        textView.setSingleLine()
+        textView.ellipsize = TextUtils.TruncateAt.END
+
+        textView.layoutParams = ConstraintLayout.LayoutParams(
+                0,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+        )
+
+        textView.setTextColor(CalendarApplication.getColor(R.color.font))
+        textView.gravity = Gravity.CENTER_VERTICAL
+        textView.maxLines = 1
+
+        checkBox.layoutParams = ConstraintLayout.LayoutParams(
+                CalculatorUtil.dpToPx(35.0F),
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+        )
+
+        val set = ConstraintSet()
+        set.clone(eventLayout)
+
+        val topMargin = CalculatorUtil.dpToPx(2.0F)
+        val startMargin = CalculatorUtil.dpToPx(7.0F)
+
+        set.connect(edgeView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
+        set.connect(edgeView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, topMargin)
+        set.connect(edgeView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
+
+        set.connect(textView.id, ConstraintSet.START, edgeView.id, ConstraintSet.END)
+        set.connect(textView.id, ConstraintSet.END, checkBox.id, ConstraintSet.START)
+
+        set.connect(checkBox.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+        set.applyTo(eventLayout)
+
+        return eventLayout
+    }
+
+
     fun showOneDayEventLayoutAnimation(
             eventLayout: ConstraintLayout,
             bottomFlag: Boolean,
@@ -437,8 +523,8 @@ object CalendarUtil {
         dialogWidth = CalculatorUtil.dpToPx(dialogWidth.toFloat())
         dialogHeight = CalculatorUtil.dpToPx(dialogHeight.toFloat())
 
-        if (eventList.isEmpty()) dialogHeight += MonthCalendarUiUtil.EVENT_HEIGHT
-        dialogHeight += (MonthCalendarUiUtil.EVENT_HEIGHT * eventList.size)
+        if (eventList.isEmpty()) dialogHeight += EVENT_HEIGHT
+        dialogHeight += (EVENT_HEIGHT * eventList.size)
 
         if (point.y + dayView.height + CalculatorUtil.dpToPx(1.0F) < calendar.height) {
             if (point.y + dayView.height + dialogHeight >= calendar.height - 10) {

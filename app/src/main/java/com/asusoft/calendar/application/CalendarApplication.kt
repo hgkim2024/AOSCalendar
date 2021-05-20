@@ -85,16 +85,5 @@ class CalendarApplication: Application() {
 
         // 공유 레퍼런스 context 초기화
         PreferenceManager.setApplicationContext(this)
-        initPreference()
-    }
-
-
-    private fun initPreference() {
-
-        val selectedCalendarType = PreferenceManager.getInt(PreferenceKey.SELECTED_CALENDAR_TYPE)
-        if (selectedCalendarType == PreferenceManager.DEFAULT_VALUE_INT) {
-            PreferenceManager.setInt(PreferenceKey.SELECTED_CALENDAR_TYPE, 0)
-        }
-
     }
 }

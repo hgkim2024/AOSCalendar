@@ -20,6 +20,7 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.addClickEffect
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
@@ -75,11 +76,7 @@ class OneDayEventHolder(
                     checkBox.isChecked = false
                 }
 
-                val outValue = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-                view.background = AppCompatResources.getDrawable(context, outValue.resourceId)
-                view.isClickable = true
-                view.focusable = View.FOCUSABLE
+                view.addClickEffect()
 
                 checkBox.clicks()
                         .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)

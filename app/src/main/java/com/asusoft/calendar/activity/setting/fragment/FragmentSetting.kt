@@ -12,6 +12,7 @@ import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
+import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -42,10 +43,7 @@ class FragmentSetting: Fragment() {
 
         val list = ArrayList<Any>()
 
-        for (type in SideMenuType.values()) {
-            list.add(type)
-        }
-        list.removeAt(0)
+        list.add(TextItem("폰트 크기", true))
 
         adapter = RecyclerViewAdapter(this, list)
 
@@ -61,16 +59,17 @@ class FragmentSetting: Fragment() {
                             override fun onItemClick(view: View?, position: Int) {
                                 GlobalScope.async(Dispatchers.Main) {
                                     delay(CLICK_DELAY)
-                                    when(adapter.list[position]) {
-                                        SideMenuType.MONTH -> replaceFragment(
-                                                FragmentMonthSetting.newInstance(),
-                                                FragmentMonthSetting.toString()
-                                        )
-
-                                        SideMenuType.WEEK -> replaceFragment(
-                                                FragmentDaySetting.newInstance(),
-                                                FragmentDaySetting.toString()
-                                        )
+                                    when(val item = adapter.list[position]) {
+                                        is TextItem -> {
+                                            when(item.text) {
+                                                "폰트 크기" -> {
+                                                    replaceFragment(
+                                                            FragmentSettingFontSize.newInstance(),
+                                                            FragmentSettingFontSize.toString()
+                                                    )
+                                                }
+                                            }
+                                        }
 
                                         else -> {}
                                     }

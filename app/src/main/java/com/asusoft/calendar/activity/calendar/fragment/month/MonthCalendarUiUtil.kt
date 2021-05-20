@@ -4,18 +4,15 @@ import android.content.ClipDescription
 import android.content.Context
 import android.graphics.*
 import android.os.Build
-import android.text.TextUtils
 import android.util.Log
 import android.view.DragEvent
 import android.view.Gravity
 import android.view.View
-import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
@@ -31,7 +28,6 @@ import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
-import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -41,11 +37,18 @@ object MonthCalendarUiUtil {
     public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
 
-    public val FONT_SIZE: Float
-        get() = PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, PreferenceKey.MONTH_DEFAULT_FONT_SIZE.toInt()).toFloat()
+    private val HEADER_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.MONTH_CALENDAR_HEADER_FONT_SIZE, PreferenceKey.MONTH_CALENDAR_HEADER_DEFAULT_FONT_SIZE)
 
-    public val EVENT_HEIGHT
-        get() = CalculatorUtil.spToPx(FONT_SIZE + 3) + CalculatorUtil.dpToPx(10.0F)
+    public val DAY_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.MONTH_CALENDAR_DAY_FONT_SIZE, PreferenceKey.MONTH_CALENDAR_DAY_DEFAULT_FONT_SIZE)
+
+    public val ITEM_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.MONTH_CALENDAR_EVENT_FONT_SIZE, PreferenceKey.MONTH_CALENDAR_EVENT_DEFAULT_FONT_SIZE)
+
+    private val COUNTER_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.MONTH_CALENDAR_COUNTER_FONT_SIZE, PreferenceKey.MONTH_CALENDAR_COUNTER_DEFAULT_FONT_SIZE)
+
 
     public const val ALPHA = 0.4F
     public const val COMPLETE_ALPHA = 0.4F
@@ -59,13 +62,13 @@ object MonthCalendarUiUtil {
 
         todayView.text = dayView.text
         todayView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
-        todayView.textSize = FONT_SIZE
+        todayView.textSize = DAY_FONT_SIZE
         todayView.setTypeface(todayView.typeface, Typeface.BOLD)
         todayView.gravity = Gravity.CENTER_HORIZONTAL
 
         todayView.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.spToPx(FONT_SIZE + 5.0F),
-                CalculatorUtil.spToPx(FONT_SIZE + 5.0F)
+                CalculatorUtil.spToPx(DAY_FONT_SIZE + 5.0F),
+                CalculatorUtil.spToPx(DAY_FONT_SIZE + 5.0F)
         )
 
         val weekLayout = weekOfMonthItem.weekLayout
@@ -89,77 +92,6 @@ object MonthCalendarUiUtil {
         set.applyTo(weekLayout)
 
         return todayView
-    }
-
-    fun getEdgeEventView(
-            context: Context
-    ): ConstraintLayout {
-        val eventLayout = ConstraintLayout(context)
-        val edgeView = View(context)
-        val textView = TextView(context)
-        val checkBox = CheckBox(context)
-
-        eventLayout.id = View.generateViewId()
-        edgeView.id = View.generateViewId()
-        textView.id = View.generateViewId()
-        checkBox.id = View.generateViewId()
-
-        edgeView.tag = 0
-        textView.tag = 1
-        checkBox.tag = 2
-
-        eventLayout.addView(edgeView)
-        eventLayout.addView(textView)
-        eventLayout.addView(checkBox)
-
-        eventLayout.layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                EVENT_HEIGHT
-        )
-
-        edgeView.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.dpToPx(4.0F),
-                0
-        )
-
-        val startPadding = CalculatorUtil.dpToPx(3.0F)
-        textView.setPadding(startPadding, 0, startPadding, 0)
-        textView.textSize = FONT_SIZE + 3
-        textView.setSingleLine()
-        textView.ellipsize = TextUtils.TruncateAt.END
-
-        textView.layoutParams = ConstraintLayout.LayoutParams(
-                0,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-        )
-
-        textView.setTextColor(CalendarApplication.getColor(R.color.font))
-        textView.gravity = Gravity.CENTER_VERTICAL
-        textView.maxLines = 1
-
-        checkBox.layoutParams = ConstraintLayout.LayoutParams(
-                CalculatorUtil.dpToPx(35.0F),
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-        )
-
-        val set = ConstraintSet()
-        set.clone(eventLayout)
-
-        val topMargin = CalculatorUtil.dpToPx(2.0F)
-        val startMargin = CalculatorUtil.dpToPx(7.0F)
-
-        set.connect(edgeView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, topMargin)
-        set.connect(edgeView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, topMargin)
-        set.connect(edgeView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, startMargin)
-
-        set.connect(textView.id, ConstraintSet.START, edgeView.id, ConstraintSet.END)
-        set.connect(textView.id, ConstraintSet.END, checkBox.id, ConstraintSet.START)
-
-        set.connect(checkBox.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-
-        set.applyTo(eventLayout)
-
-        return eventLayout
     }
 
     private fun getOneWeekUI(
@@ -202,7 +134,7 @@ object MonthCalendarUiUtil {
             tv.tag = date.time
             tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor())
             tv.setBackgroundColor(CalendarApplication.getColor(R.color.background))
-            tv.textSize = FONT_SIZE
+            tv.textSize = DAY_FONT_SIZE
             tv.setTypeface(tv.typeface, Typeface.BOLD)
 
             if (isPopup) {
@@ -286,7 +218,7 @@ object MonthCalendarUiUtil {
 //        Logger.d("device: ${CalculatorUtil.dpToPx(683.0F)}")
 
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekOfMonthItem.TOP_MARGIN
-        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(ITEM_FONT_SIZE) + CalculatorUtil.dpToPx(7.5F))
 
 //        Logger.d("eventMaxCount: ${eventMaxCount}")
 
@@ -414,7 +346,7 @@ object MonthCalendarUiUtil {
 
                     countTextView.text = "+${item - eventMaxCount}"
                     countTextView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
-                    countTextView.textSize = FONT_SIZE - 1
+                    countTextView.textSize = COUNTER_FONT_SIZE
                     countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
                     countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
 
@@ -455,7 +387,7 @@ object MonthCalendarUiUtil {
 
         val row = getMonthRow(startOfMonthDate)
         val weekHeight = (CalculatorUtil.getMonthCalendarHeight() / row) - WeekOfMonthItem.TOP_MARGIN
-        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(FONT_SIZE - 1) + CalculatorUtil.dpToPx(7.5F))
+        val eventMaxCount = weekHeight / (CalculatorUtil.spToPx(ITEM_FONT_SIZE) + CalculatorUtil.dpToPx(7.5F))
 
         addEvent(
                 context,
@@ -587,7 +519,7 @@ object MonthCalendarUiUtil {
             tv.text = days[idx].getShortTitle()
             tv.setTextColor(days[idx].getFontColor())
 
-            tv.textSize = FONT_SIZE
+            tv.textSize = HEADER_FONT_SIZE
         }
 
         return weekHeaderLayout

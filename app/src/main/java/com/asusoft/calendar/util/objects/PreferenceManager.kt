@@ -144,9 +144,9 @@ object PreferenceManager {
      * @param key
      * @return
      */
-    fun getFloat(key: String?): Float {
+    fun getFloat(key: String?, defaultValue: Float = DEFAULT_VALUE_FLOAT): Float {
         val prefs = getPreferences()
-        return prefs.getFloat(key, DEFAULT_VALUE_FLOAT)
+        return prefs.getFloat(key, defaultValue)
     }
 
     /**

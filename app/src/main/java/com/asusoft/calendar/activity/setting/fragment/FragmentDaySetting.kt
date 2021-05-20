@@ -35,15 +35,15 @@ class FragmentDaySetting: Fragment() {
 
         val list = ArrayList<Any>()
 
-        list.add(
-                SeekBarItem(
-                        PreferenceKey.DAY_CALENDAR_FONT_SIZE,
-                        PreferenceManager.getInt(PreferenceKey.DAY_CALENDAR_FONT_SIZE, PreferenceKey.DAY_DEFAULT_FONT_SIZE.toInt()),
-                        "글자 크기",
-                        FragmentSetting.FONT_MIN_SIZE,
-                        FragmentSetting.FONT_MAX_SIZE
-                )
-        )
+//        list.add(
+//                SeekBarItem(
+//                        PreferenceKey.DAY_CALENDAR_HEADER_FONT_SIZE,
+//                        PreferenceManager.getFloat(PreferenceKey.DAY_CALENDAR_HEADER_FONT_SIZE, PreferenceKey.DAY_CALENDAR_HEADER_DEFAULT_FONT_SIZE).toInt(),
+//                        "글자 크기",
+//                        FragmentSetting.FONT_MIN_SIZE,
+//                        FragmentSetting.FONT_MAX_SIZE
+//                )
+//        )
 
         adapter = RecyclerViewAdapter(this, list)
 

@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.fragment.FragmentAddEvent
+import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.google.android.material.appbar.AppBarLayout
 
@@ -49,17 +50,7 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportFragmentManager.addOnBackStackChangedListener(this)
 
-        // remove shadow
-        val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
-        val stateListAnimator = StateListAnimator()
-        stateListAnimator.addState(
-                IntArray(0), ObjectAnimator.ofFloat(
-                appBarLayout,
-                "elevation",
-                0f
-        )
-        )
-        appBarLayout.stateListAnimator = stateListAnimator
+        removeActionBarShadow()
 
         if (savedInstanceState == null)
             supportFragmentManager

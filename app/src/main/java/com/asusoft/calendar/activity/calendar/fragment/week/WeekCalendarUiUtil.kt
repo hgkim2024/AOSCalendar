@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
-import android.graphics.Typeface
 import android.os.Build
 import android.util.Log
 import android.view.DragEvent
@@ -29,7 +28,8 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalendarUtil
-import com.orhanobut.logger.Logger
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,8 +37,13 @@ object WeekCalendarUiUtil {
 
     public const val WEEK = 7
     private const val WEIGHT_SUM = 100.0F
-    public const val FONT_SIZE: Float = 14.0F
     public const val COMPLETE_ALPHA = 0.4F
+
+    private val HEADER_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.WEEK_CALENDAR_HEADER_FONT_SIZE, PreferenceKey.WEEK_CALENDAR_HEADER_DEFAULT_FONT_SIZE)
+
+    public val ITEM_FONT_SIZE: Float
+        get() = PreferenceManager.getFloat(PreferenceKey.WEEK_CALENDAR_EVENT_FONT_SIZE, PreferenceKey.WEEK_CALENDAR_EVENT_DEFAULT_FONT_SIZE)
 
     fun getOneWeekUI(
             context: Context,
@@ -234,7 +239,7 @@ object WeekCalendarUiUtil {
             tv.text = days[idx].getShortTitle()
             tv.setTextColor(days[idx].getFontColor())
 
-            tv.textSize = FONT_SIZE
+            tv.textSize = HEADER_FONT_SIZE
         }
 
         return weekHeaderLayout

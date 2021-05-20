@@ -47,6 +47,8 @@ import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarHold
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
 import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchItem
+import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextHolder
+import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextItem
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
 import com.orhanobut.logger.Logger
@@ -108,6 +110,7 @@ class RecyclerViewAdapter(
                 return when(item) {
                     is SwitchItem -> CalendarSettingType.SWITCH.value
                     is SeekBarItem -> CalendarSettingType.SEEK_BAR.value
+                    is TextItem -> CalendarSettingType.TEXT.value
                     else -> CalendarSettingType.SWITCH.value
                 }
             }
@@ -165,7 +168,7 @@ class RecyclerViewAdapter(
             }
 
             ONE_DAY_EVENT -> {
-                val view = MonthCalendarUiUtil.getEdgeEventView(context)
+                val view = CalendarUtil.getEdgeEventView(context)
                 when(viewType) {
                     OneDayEventType.HOLIDAY.value -> OneDayHolidayHolder(typeObject, context, view, this)
                     else -> OneDayEventHolder(typeObject, context, view, this)
@@ -224,6 +227,12 @@ class RecyclerViewAdapter(
                         SeekBarHolder(context, view, this)
                     }
 
+                    CalendarSettingType.TEXT.value -> {
+                        val view = inflater.inflate(R.layout.holder_text, parent, false)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                        TextHolder(context, view, this)
+                    }
+
                     else -> {
                         val view = inflater.inflate(R.layout.holder_switch, parent, false)
                         SwitchHolder(context, view, this)
@@ -273,6 +282,7 @@ class RecyclerViewAdapter(
                 when(holder) {
                     is SwitchHolder -> holder.bind(position)
                     is SeekBarHolder -> holder.bind(position)
+                    is TextHolder -> holder.bind(position)
                 }
             }
             SPINNER -> (holder as SpinnerHolder).bind(position)

@@ -43,6 +43,7 @@ import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
@@ -116,17 +117,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         supportFragmentManager.addOnBackStackChangedListener(this)
         homeButtonIconChange()
 
-        // remove shadow
-        val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
-        val stateListAnimator = StateListAnimator()
-        stateListAnimator.addState(
-            IntArray(0), ObjectAnimator.ofFloat(
-                appBarLayout,
-                "elevation",
-                0f
-            )
-        )
-        appBarLayout.stateListAnimator = stateListAnimator
+        removeActionBarShadow()
 
         if (savedInstanceState == null) {
             changeRootFragment()
@@ -333,6 +324,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     fun setTitle(text: String) {
         val tv = findViewById<TextView>(R.id.action_bar_title)
+        tv.textSize = PreferenceManager.getFloat(PreferenceKey.CALENDAR_HEADER_FONT_SIZE, PreferenceKey.CALENDAR_HEADER_DEFAULT_FONT_SIZE)
         tv.text = text
     }
 

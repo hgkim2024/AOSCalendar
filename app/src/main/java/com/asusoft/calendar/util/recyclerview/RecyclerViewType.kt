@@ -12,6 +12,7 @@ import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSear
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.activity.setting.fragment.FragmentDaySetting
+import com.asusoft.calendar.activity.setting.fragment.FragmentSettingFontSize
 
 enum class RecyclerViewType(val value: Int) {
     ADD_EVENT(0),
@@ -28,13 +29,19 @@ enum class RecyclerViewType(val value: Int) {
         fun getType(typeObject: Any): RecyclerViewType {
             return when (typeObject) {
                 is ActivityAddEvent -> ADD_EVENT
-                is FragmentMonthPage, is FragmentWeekPage -> ONE_DAY_EVENT
+                is FragmentMonthPage,
+                is FragmentWeekPage -> ONE_DAY_EVENT
+
                 is DialogFragmentDaySelectCalendar -> SELECT_DAY
-                is ActivityCalendar, is FragmentSetting  -> SIDE_MENU
+                is ActivityCalendar -> SIDE_MENU
                 is ActivityAddPerson -> VISIT_PERSON
                 is FragmentRecentSearchTerms -> RECENT_SEARCH
                 is FragmentEventSearchResult -> EVENT_SEARCH_RESULT
-                is FragmentMonthSetting, is FragmentDaySetting -> CALENDAR_SETTING
+                is FragmentMonthSetting,
+                is FragmentDaySetting,
+                is FragmentSettingFontSize,
+                is FragmentSetting -> CALENDAR_SETTING
+
                 is DialogFragmentFilter -> SPINNER
                 else -> ADD_EVENT
             }

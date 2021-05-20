@@ -21,6 +21,9 @@ class SeekBarHolder (
         val title = view.findViewById<TextView>(R.id.title)
         title.text = item.title
 
+        val subtitle = view.findViewById<TextView>(R.id.subtitle)
+        subtitle.text = "(${item.value})"
+
         val seekBar = view.findViewById<SeekBar>(R.id.seek_bar)
         seekBar.min = item.min
         seekBar.max = item.max
@@ -31,7 +34,8 @@ class SeekBarHolder (
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 item.value = seekBar.progress
-                PreferenceManager.setInt(item.key, item.value)
+                subtitle.text = "(${item.value})"
+                PreferenceManager.setFloat(item.key, item.value.toFloat())
             }
 
         })

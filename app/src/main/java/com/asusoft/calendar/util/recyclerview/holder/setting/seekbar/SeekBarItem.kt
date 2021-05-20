@@ -5,5 +5,6 @@ data class SeekBarItem (
         var value: Int,
         var title: String,
         var min: Int,
-        var max: Int
+        var max: Int,
+        var defaultValue: Int
 )

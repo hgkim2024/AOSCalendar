@@ -12,6 +12,7 @@ import com.asusoft.calendar.activity.addEvent.activity.ActivityAddPerson
 import com.asusoft.calendar.activity.setting.fragment.FragmentSetting
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.google.android.material.appbar.AppBarLayout
 import java.util.HashMap
 
@@ -32,18 +33,7 @@ class ActivitySetting : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // remove shadow
-        val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar)
-        val stateListAnimator = StateListAnimator()
-        stateListAnimator.addState(
-                IntArray(0),
-                ObjectAnimator.ofFloat(
-                        appBarLayout,
-                        "elevation",
-                        0f
-                )
-        )
-        appBarLayout.stateListAnimator = stateListAnimator
+        removeActionBarShadow()
 
         if (savedInstanceState == null)
             supportFragmentManager

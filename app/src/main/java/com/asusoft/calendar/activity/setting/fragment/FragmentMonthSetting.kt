@@ -37,23 +37,23 @@ class FragmentMonthSetting: Fragment() {
 
         val list = ArrayList<Any>()
 
-        list.add(
-                SwitchItem(
-                        PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP,
-                        PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT),
-                        "이벤트 길게 눌러 이동 사용"
-                )
-        )
-
-        list.add(
-                SeekBarItem(
-                        PreferenceKey.MONTH_CALENDAR_FONT_SIZE,
-                        PreferenceManager.getInt(PreferenceKey.MONTH_CALENDAR_FONT_SIZE, PreferenceKey.MONTH_DEFAULT_FONT_SIZE.toInt()),
-                        "글자 크기",
-                        FragmentSetting.FONT_MIN_SIZE,
-                        FragmentSetting.FONT_MAX_SIZE
-                )
-        )
+//        list.add(
+//                SwitchItem(
+//                        PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP,
+//                        PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT),
+//                        "이벤트 길게 눌러 이동 사용"
+//                )
+//        )
+//
+//        list.add(
+//                SeekBarItem(
+//                        PreferenceKey.MONTH_CALENDAR_DAY_FONT_SIZE,
+//                        PreferenceManager.getFloat(PreferenceKey.MONTH_CALENDAR_DAY_FONT_SIZE, PreferenceKey.MONTH_CALENDAR_DAY_DEFAULT_FONT_SIZE).toInt(),
+//                        "글자 크기",
+//                        FragmentSetting.FONT_MIN_SIZE,
+//                        FragmentSetting.FONT_MAX_SIZE
+//                )
+//        )
 
         adapter = RecyclerViewAdapter(this, list)
 

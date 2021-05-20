@@ -20,18 +20,12 @@ import com.asusoft.calendar.activity.calendar.fragment.week.WeekCalendarUiUtil
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.endOfWeek
-import com.asusoft.calendar.util.eventbus.GlobalBus
-import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.*
-import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.startOfWeek
-import com.asusoft.calendar.util.toStringDay
 import com.asusoft.calendar.util.weekOfDay
 import com.jakewharton.rxbinding4.view.clicks
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 class WeekItem(
@@ -75,7 +69,7 @@ class WeekItem(
         val tv = eventView.findViewById<TextView>(R.id.tv)
         
         eventView.tag = key.toString()
-        tv.textSize = WeekCalendarUiUtil.FONT_SIZE
+        tv.textSize = WeekCalendarUiUtil.ITEM_FONT_SIZE
         tv.text = name
 //        tv.ellipsize = TextUtils.TruncateAt.MARQUEE
 
