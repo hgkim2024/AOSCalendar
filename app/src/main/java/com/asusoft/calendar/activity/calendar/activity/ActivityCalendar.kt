@@ -44,6 +44,7 @@ import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
+import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
@@ -80,8 +81,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // TODO: - 추후에 가로모드 지원 옵션 만들기
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setOrientation()
 
         GlobalBus.register(this)
 //        Logger.d("toolbar height: ${toolbar.height}")
@@ -326,6 +326,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         val tv = findViewById<TextView>(R.id.action_bar_title)
         tv.textSize = PreferenceManager.getFloat(PreferenceKey.CALENDAR_HEADER_FONT_SIZE, PreferenceKey.CALENDAR_HEADER_DEFAULT_FONT_SIZE)
         tv.text = text
+
+        setOrientation()
     }
 
     fun resultPop() {

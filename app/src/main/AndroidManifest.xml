@@ -12,15 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.setting.activity.ActivitySetting"></activity>
-        <activity android:name=".activity.addEvent.activity.ActivityAddPerson" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admod_app_id" />
 
-        <activity android:name=".activity.addEvent.activity.ActivityAddEvent" />
-        <activity android:name=".activity.calendar.activity.ActivityCalendar">
+        <activity
+            android:name=".activity.setting.activity.ActivitySetting"/>
+        <activity
+            android:name=".activity.addEvent.activity.ActivityAddPerson"/>
+
+        <activity
+            android:name=".activity.addEvent.activity.ActivityAddEvent"/>
+
+        <activity
+            android:name=".activity.calendar.activity.ActivityCalendar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

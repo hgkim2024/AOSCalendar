@@ -22,8 +22,7 @@ enum class RecyclerViewType(val value: Int) {
     VISIT_PERSON(4),
     RECENT_SEARCH(5),
     EVENT_SEARCH_RESULT(6),
-    CALENDAR_SETTING(7),
-    SPINNER(8);
+    CALENDAR_SETTING(7);
 
     companion object {
         fun getType(typeObject: Any): RecyclerViewType {
@@ -40,9 +39,8 @@ enum class RecyclerViewType(val value: Int) {
                 is FragmentMonthSetting,
                 is FragmentDaySetting,
                 is FragmentSettingFontSize,
-                is FragmentSetting -> CALENDAR_SETTING
-
-                is DialogFragmentFilter -> SPINNER
+                is FragmentSetting,
+                is DialogFragmentFilter-> CALENDAR_SETTING
                 else -> ADD_EVENT
             }
         }

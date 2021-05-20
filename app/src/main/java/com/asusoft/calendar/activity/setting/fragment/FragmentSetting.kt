@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.SideMenuType
+import com.asusoft.calendar.activity.calendar.dialog.filter.enums.SearchFilterType
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
+import com.asusoft.calendar.util.recyclerview.holder.search.spinner.SpinnerItem
 import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,9 +26,6 @@ import java.util.*
 class FragmentSetting: Fragment() {
 
     companion object {
-        const val FONT_MIN_SIZE = 8
-        const val FONT_MAX_SIZE = 18
-
         fun newInstance(): FragmentSetting {
             return FragmentSetting()
         }
@@ -44,6 +45,17 @@ class FragmentSetting: Fragment() {
         val list = ArrayList<Any>()
 
         list.add(TextItem("폰트 크기", true))
+
+        val orientationList = ArrayList<String>()
+        orientationList.addAll(arrayOf("세로 고정", "자동"))
+        list.add(
+                SpinnerItem(
+                        "화면 방향",
+                        PreferenceManager.getInt(PreferenceKey.CALENDAR_ORIENTATION, PreferenceKey.CALENDAR_DEFAULT_ORIENTATION),
+                        orientationList,
+                        PreferenceKey.CALENDAR_ORIENTATION
+                )
+        )
 
         adapter = RecyclerViewAdapter(this, list)
 

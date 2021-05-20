@@ -2,6 +2,7 @@ package com.asusoft.calendar.activity.addEvent.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
+import android.app.Application
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
@@ -13,8 +14,8 @@ import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.fragment.FragmentAddEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
+import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.objects.CalendarUtil
-import com.google.android.material.appbar.AppBarLayout
 
 
 class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
@@ -35,8 +36,7 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
-        // TODO: - 추후에 가로모드 지원 옵션 만들기
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setOrientation()
 
         key = intent.getLongExtra("key", -1L)
 
@@ -67,6 +67,11 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     override fun onBackStackChanged() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(supportFragmentManager.backStackEntryCount > 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setOrientation()
     }
 
     override fun finish() {

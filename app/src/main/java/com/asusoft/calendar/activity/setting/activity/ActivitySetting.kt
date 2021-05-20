@@ -2,6 +2,7 @@ package com.asusoft.calendar.activity.setting.activity
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -13,6 +14,7 @@ import com.asusoft.calendar.activity.setting.fragment.FragmentSetting
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
+import com.asusoft.calendar.util.extension.setOrientation
 import com.google.android.material.appbar.AppBarLayout
 import java.util.HashMap
 
@@ -27,6 +29,8 @@ class ActivitySetting : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
+
+        setOrientation()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -44,6 +48,11 @@ class ActivitySetting : AppCompatActivity() {
                             FragmentSetting.toString()
                     )
                     .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setOrientation()
     }
 
     override fun finish() {

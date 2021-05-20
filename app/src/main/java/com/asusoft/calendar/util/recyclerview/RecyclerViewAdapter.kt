@@ -42,6 +42,7 @@ import com.asusoft.calendar.util.recyclerview.holder.search.eventsearch.EventSea
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.spinner.SpinnerHolder
+import com.asusoft.calendar.util.recyclerview.holder.search.spinner.SpinnerItem
 import com.asusoft.calendar.util.recyclerview.holder.setting.CalendarSettingType
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
@@ -111,6 +112,7 @@ class RecyclerViewAdapter(
                     is SwitchItem -> CalendarSettingType.SWITCH.value
                     is SeekBarItem -> CalendarSettingType.SEEK_BAR.value
                     is TextItem -> CalendarSettingType.TEXT.value
+                    is SpinnerItem -> CalendarSettingType.SPINNER.value
                     else -> CalendarSettingType.SWITCH.value
                 }
             }
@@ -233,16 +235,16 @@ class RecyclerViewAdapter(
                         TextHolder(context, view, this)
                     }
 
+                    CalendarSettingType.SPINNER.value -> {
+                        val view = inflater.inflate(R.layout.holder_spinner, parent, false)
+                        SpinnerHolder(context, view, this)
+                    }
+
                     else -> {
                         val view = inflater.inflate(R.layout.holder_switch, parent, false)
                         SwitchHolder(context, view, this)
                     }
                 }
-            }
-
-            SPINNER -> {
-                val view = inflater.inflate(R.layout.holder_spinner, parent, false)
-                SpinnerHolder(context, view, this)
             }
         }
     }
@@ -283,9 +285,9 @@ class RecyclerViewAdapter(
                     is SwitchHolder -> holder.bind(position)
                     is SeekBarHolder -> holder.bind(position)
                     is TextHolder -> holder.bind(position)
+                    is SpinnerHolder -> holder.bind(position)
                 }
             }
-            SPINNER -> (holder as SpinnerHolder).bind(position)
         }
     }
 

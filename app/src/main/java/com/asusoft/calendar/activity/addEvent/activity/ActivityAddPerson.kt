@@ -23,6 +23,7 @@ import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
+import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.google.android.material.appbar.AppBarLayout
@@ -47,10 +48,8 @@ class ActivityAddPerson : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setOrientation()
         setContentView(R.layout.activity_add_persion)
-
-        // TODO: - 추후에 가로모드 지원 옵션 만들기
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val key = intent.getLongExtra("key", -1L)
         val visitList =
@@ -99,6 +98,11 @@ class ActivityAddPerson : AppCompatActivity() {
         tvEmpty = findViewById<TextView>(R.id.tv_empty)
         isEmpty()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setOrientation()
     }
 
     private fun isEmpty() {
