@@ -4,8 +4,6 @@ import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarAddEventHolder
-import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayHolidayHolder
 import com.orhanobut.logger.Logger
 
@@ -37,8 +35,7 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             direction: Int
     ) {
         when(viewHolder) {
-            is OneDayHolidayHolder,
-            is DayCalendarAddEventHolder -> return
+            is OneDayHolidayHolder-> return
         }
 
         adapter.onItemDismiss(viewHolder.adapterPosition)
@@ -58,8 +55,7 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             isCurrentlyActive: Boolean
     ) {
         when(viewHolder) {
-            is OneDayHolidayHolder,
-            is DayCalendarAddEventHolder -> return
+            is OneDayHolidayHolder -> return
         }
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {

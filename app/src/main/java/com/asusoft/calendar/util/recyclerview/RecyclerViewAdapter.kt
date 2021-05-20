@@ -17,8 +17,6 @@ import com.asusoft.calendar.util.objects.CalendarUtil.setLeftCornerRadiusDrawabl
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
-import com.asusoft.calendar.util.eventbus.GlobalBus
-import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
@@ -38,12 +36,6 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.Sta
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitHolder
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.addperson.PersonHolder
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarAddEventHolder
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarBodyHolder
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarBodyItem
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.header.DayCalendarHeaderHolder
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.body.DayCalendarType.*
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayEventType
 import com.asusoft.calendar.util.recyclerview.holder.calendar.eventpopup.OneDayHolidayHolder
 import com.asusoft.calendar.util.recyclerview.holder.search.eventsearch.EventSearchHolder
@@ -97,13 +89,6 @@ class RecyclerViewAdapter(
                 return when(item) {
                     is String -> OneDayEventType.HOLIDAY.value
                     else -> OneDayEventType.EVENT.value
-                }
-            }
-
-            DAY_CALENDAR_BODY -> {
-                return when(item) {
-                    is Date -> DayCalendarType.ADD_EVENT.value
-                    else -> CHECK_BOX.value
                 }
             }
 
@@ -192,25 +177,6 @@ class RecyclerViewAdapter(
                 SelectDayHolder(typeObject, context, view, this)
             }
 
-            DAY_CALENDAR_HEADER -> {
-                val view = inflater.inflate(R.layout.holder_day_event_header, parent, false)
-                DayCalendarHeaderHolder(typeObject, context, view, this)
-            }
-
-            DAY_CALENDAR_BODY -> {
-                return when(viewType) {
-                    DayCalendarType.ADD_EVENT.value -> {
-                        val view = inflater.inflate(R.layout.holder_add_event, parent, false)
-                        DayCalendarAddEventHolder(context, view, this)
-                    }
-
-                    else -> {
-                        val view = inflater.inflate(R.layout.holder_day_event, parent, false)
-                        DayCalendarBodyHolder(context, view, this)
-                    }
-                }
-            }
-
             SIDE_MENU -> {
                 when(viewType) {
                     SideMenuType.TOP.value -> {
@@ -292,13 +258,6 @@ class RecyclerViewAdapter(
                 }
             }
             SELECT_DAY -> (holder as SelectDayHolder).bind(position)
-            DAY_CALENDAR_HEADER -> (holder as DayCalendarHeaderHolder).bind(position)
-            DAY_CALENDAR_BODY -> {
-                when(holder) {
-                    is DayCalendarAddEventHolder -> holder.bind(position)
-                    is DayCalendarBodyHolder -> holder.bind(position)
-                }
-            }
 
             SIDE_MENU -> {
                 when(holder) {
@@ -362,26 +321,6 @@ class RecyclerViewAdapter(
 
     override fun onItemDismiss(position: Int) {
         when(type) {
-            DAY_CALENDAR_BODY -> {
-                when(list[position]) {
-                    is DayCalendarBodyItem -> {
-                        val item = list.removeAt(position)
-                        val dayItem = (item as DayCalendarBodyItem)
-                        when(val event = dayItem.event) {
-                            is CopyEventDay -> {
-                                event.delete()
-                                if (event.startTime != event.endTime) {
-                                    val event = HashMapEvent(HashMap())
-                                    event.map[DayCalendarBodyHolder.toString()] = DayCalendarBodyHolder.toString()
-                                    GlobalBus.post(event)
-                                } else {
-                                    notifyItemRemoved(position)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
             VISIT_PERSON -> {
                 list.removeAt(position)

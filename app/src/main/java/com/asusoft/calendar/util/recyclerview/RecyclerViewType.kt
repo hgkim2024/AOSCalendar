@@ -7,26 +7,22 @@ import com.asusoft.calendar.activity.addEvent.dialog.DialogFragmentDaySelectCale
 import com.asusoft.calendar.activity.calendar.dialog.filter.DialogFragmentFilter
 import com.asusoft.calendar.activity.setting.fragment.FragmentMonthSetting
 import com.asusoft.calendar.activity.setting.fragment.FragmentSetting
-import com.asusoft.calendar.activity.calendar.fragment.day.FragmentDayCalendar
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentRecentSearchTerms
 import com.asusoft.calendar.activity.calendar.fragment.search.FragmentEventSearchResult
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.activity.setting.fragment.FragmentDaySetting
-import com.asusoft.calendar.util.recyclerview.holder.calendar.dayevent.header.DayCalendarHeaderHolder
 
 enum class RecyclerViewType(val value: Int) {
     ADD_EVENT(0),
     ONE_DAY_EVENT(1),
     SELECT_DAY(2),
-    DAY_CALENDAR_HEADER(3),
-    DAY_CALENDAR_BODY(4),
-    SIDE_MENU(5),
-    VISIT_PERSON(6),
-    RECENT_SEARCH(7),
-    EVENT_SEARCH_RESULT(8),
-    CALENDAR_SETTING(9),
-    SPINNER(10);
+    SIDE_MENU(3),
+    VISIT_PERSON(4),
+    RECENT_SEARCH(5),
+    EVENT_SEARCH_RESULT(6),
+    CALENDAR_SETTING(7),
+    SPINNER(8);
 
     companion object {
         fun getType(typeObject: Any): RecyclerViewType {
@@ -34,8 +30,6 @@ enum class RecyclerViewType(val value: Int) {
                 is ActivityAddEvent -> ADD_EVENT
                 is FragmentMonthPage, is FragmentWeekPage -> ONE_DAY_EVENT
                 is DialogFragmentDaySelectCalendar -> SELECT_DAY
-                is FragmentDayCalendar -> DAY_CALENDAR_HEADER
-                is DayCalendarHeaderHolder -> DAY_CALENDAR_BODY
                 is ActivityCalendar, is FragmentSetting  -> SIDE_MENU
                 is ActivityAddPerson -> VISIT_PERSON
                 is FragmentRecentSearchTerms -> RECENT_SEARCH
