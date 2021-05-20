@@ -32,7 +32,14 @@ fun Activity.setOrientation() {
     val orientation = PreferenceManager.getInt(PreferenceKey.CALENDAR_ORIENTATION, PreferenceKey.CALENDAR_DEFAULT_ORIENTATION)
 
     when(orientation) {
-        0 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        0 ->
+            if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+
+        1 ->
+            if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+            }
     }
 }
