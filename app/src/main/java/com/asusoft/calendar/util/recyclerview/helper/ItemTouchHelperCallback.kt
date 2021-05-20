@@ -26,7 +26,7 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.onItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+        adapter.onItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 
@@ -38,7 +38,7 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter) : ItemTouchHe
             is OneDayHolidayHolder-> return
         }
 
-        adapter.onItemDismiss(viewHolder.adapterPosition)
+        adapter.onItemDismiss(viewHolder.bindingAdapterPosition)
     }
 
     override fun getMoveThreshold(viewHolder: RecyclerView.ViewHolder): Float {
