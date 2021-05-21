@@ -150,6 +150,9 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         val searchView = searchMenuItem.actionView as SearchView
         this.searchView = searchView
 
+        val searchIcon = searchView.findViewById<ImageView?>(R.id.search_button)
+        searchIcon.setColorFilter(CalendarApplication.getColor(R.color.font))
+
         val tv = searchView.findViewById<EditText?>(R.id.search_src_text)
         tv?.setBackgroundColor(CalendarApplication.getColor(R.color.lightSeparator))
         tv?.hint = "이벤트 검색"
@@ -160,6 +163,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         underLine?.setBackgroundColor(Color.TRANSPARENT)
 
         val closeButton = searchView.findViewById<ImageView>(R.id.search_close_btn)
+        closeButton.setColorFilter(CalendarApplication.getColor(R.color.font))
         closeButton.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
