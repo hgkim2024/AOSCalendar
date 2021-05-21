@@ -7,6 +7,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.*
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmList
@@ -297,7 +298,7 @@ open class RealmEventDay: RealmObject() {
 
         if (color != null) {
             if (color == 0) {
-                this.color = CalendarApplication.getColor(R.color.colorAccent)
+                this.color = ThemeUtil.instance.colorAccent
             } else {
                 this.color = color
             }

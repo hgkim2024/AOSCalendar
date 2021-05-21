@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.toStringDay
 
@@ -19,9 +20,11 @@ class StartDayHolder(
             val item = adapter.list[position] as StartDayItem
 
             val title = view.findViewById<TextView>(R.id.tv_title)
+            title.setTextColor(ThemeUtil.instance.font)
             title.text = item.title
 
             val subtitle = view.findViewById<TextView>(R.id.tv_subtitle)
+            subtitle.setTextColor(ThemeUtil.instance.font)
             subtitle.text = item.date.toStringDay()
         }
     }

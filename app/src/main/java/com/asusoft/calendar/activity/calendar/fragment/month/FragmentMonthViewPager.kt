@@ -16,6 +16,7 @@ import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMon
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
@@ -91,6 +92,7 @@ class FragmentMonthViewPager: Fragment() {
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
         todayLayout.background.alpha = 230
         todayLayout.visibility = View.INVISIBLE
+        todayLayout.setTextColor(ThemeUtil.instance.font)
 
         todayLayout.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)

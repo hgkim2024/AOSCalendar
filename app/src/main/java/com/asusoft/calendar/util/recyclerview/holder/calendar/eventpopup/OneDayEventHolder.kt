@@ -22,6 +22,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addClickEffect
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.startOfMonth
 import com.asusoft.calendar.util.startOfWeek
@@ -67,12 +68,12 @@ class OneDayEventHolder(
                 if (item.isComplete) {
                     edgeView.alpha = MonthCalendarUiUtil.COMPLETE_ALPHA
                     textView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                    textView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
+                    textView.setTextColor(ThemeUtil.instance.lightFont)
                     checkBox.isChecked = true
                 } else {
                     edgeView.alpha = 1.0F
                     textView.paintFlags = 0
-                    textView.setTextColor(CalendarApplication.getColor(R.color.font))
+                    textView.setTextColor(ThemeUtil.instance.font)
                     checkBox.isChecked = false
                 }
 

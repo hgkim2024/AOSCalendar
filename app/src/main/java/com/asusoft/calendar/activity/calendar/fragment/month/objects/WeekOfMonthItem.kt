@@ -26,6 +26,7 @@ import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceKey.DRAG_AND_DROP_DEFAULT
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.endOfWeek
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.startOfWeek
 import com.asusoft.calendar.util.weekOfDay
 import java.util.*
@@ -88,7 +89,7 @@ class WeekOfMonthItem(
             eventViewList[idx]?.set(order, eventView)
         }
 
-        eventView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+        eventView.setTextColor(ThemeUtil.instance.invertFont)
 
         if (!isHoliday) {
             if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) {

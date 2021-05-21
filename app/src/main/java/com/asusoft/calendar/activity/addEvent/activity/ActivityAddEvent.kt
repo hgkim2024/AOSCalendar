@@ -7,15 +7,18 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.fragment.FragmentAddEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 
 
 class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
@@ -37,6 +40,12 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         setContentView(R.layout.activity_add_event)
 
         setOrientation()
+
+        val rootLayout = findViewById<CoordinatorLayout>(R.id.root_layout)
+        rootLayout.setBackgroundColor(ThemeUtil.instance.background)
+
+        val fragment = findViewById<RelativeLayout>(R.id.fragment)
+        fragment.setBackgroundColor(ThemeUtil.instance.background)
 
         key = intent.getLongExtra("key", -1L)
 

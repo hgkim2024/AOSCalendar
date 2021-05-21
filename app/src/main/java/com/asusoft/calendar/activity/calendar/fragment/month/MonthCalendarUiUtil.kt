@@ -28,6 +28,7 @@ import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalculatorUtil
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
+import com.asusoft.calendar.util.objects.ThemeUtil
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -61,7 +62,7 @@ object MonthCalendarUiUtil {
         todayView.setBackgroundResource(R.drawable.today_corner_radius)
 
         todayView.text = dayView.text
-        todayView.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+        todayView.setTextColor(ThemeUtil.instance.invertFont)
         todayView.textSize = DAY_FONT_SIZE
         todayView.setTypeface(todayView.typeface, Typeface.BOLD)
         todayView.gravity = Gravity.CENTER_HORIZONTAL
@@ -133,7 +134,7 @@ object MonthCalendarUiUtil {
             tv.text = date.calendarDay.toString()
             tv.tag = date.time
             tv.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor())
-            tv.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+            tv.setBackgroundColor(ThemeUtil.instance.background)
             tv.textSize = DAY_FONT_SIZE
             tv.setTypeface(tv.typeface, Typeface.BOLD)
 
@@ -295,7 +296,7 @@ object MonthCalendarUiUtil {
                 val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
                 val key = dateString.toLong()
                 if (holidayMap[key] != null) {
-                    weekOfMonthItem.dayViewList[index].setTextColor(CalendarApplication.getColor(R.color.holiday))
+                    weekOfMonthItem.dayViewList[index].setTextColor(ThemeUtil.instance.holiday)
 
                     val name = holidayList.first { it.date == dateString }.name
                     weekOfMonthItem.addEventUI(
@@ -305,7 +306,7 @@ object MonthCalendarUiUtil {
                         date.time,
                         date.time,
                         0,
-                        CalendarApplication.getColor(R.color.holiday),
+                        ThemeUtil.instance.holiday,
                         isComplete = false,
                         isHoliday = true
                     )
@@ -345,7 +346,7 @@ object MonthCalendarUiUtil {
                     countTextView.id = View.generateViewId()
 
                     countTextView.text = "+${item - eventMaxCount}"
-                    countTextView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
+                    countTextView.setTextColor(ThemeUtil.instance.lightFont)
                     countTextView.textSize = COUNTER_FONT_SIZE
                     countTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
                     countTextView.setTypeface(countTextView.typeface, Typeface.BOLD)
@@ -468,7 +469,7 @@ object MonthCalendarUiUtil {
                         if (dayView.alpha != ALPHA) {
                             val date = startDate.getNextDay(i)
                             if (selectedStartDate < date && date < selectedEndDate) {
-                                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.selectDay))
+                                dayView.setBackgroundColor(ThemeUtil.instance.today)
                             } else if (selectedStartDate == date && selectedEndDate != date) {
                                 dayView.setBackgroundResource(R.drawable.corner_radius_left)
                             } else if (selectedEndDate == date && selectedStartDate != date) {
@@ -553,7 +554,7 @@ object MonthCalendarUiUtil {
 
             DragEvent.ACTION_DRAG_ENTERED -> {
 
-                val backgroundColor = CalendarApplication.getColor(R.color.separator)
+                val backgroundColor = ThemeUtil.instance.separator
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     v.background.colorFilter = BlendModeColorFilter(backgroundColor, BlendMode.SRC_IN)
                 } else {

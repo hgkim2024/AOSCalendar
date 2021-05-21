@@ -4,11 +4,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.util.objects.ThemeUtil
 
 class EditTitleItem(
         var context: String,
         val hint: String,
-        var color: Int = CalendarApplication.getColor(R.color.colorAccent)
+        var color: Int = ThemeUtil.instance.colorAccent
 ) {
     var textWatcher: TextWatcher? = null
 

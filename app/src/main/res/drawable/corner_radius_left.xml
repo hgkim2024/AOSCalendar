@@ -6,7 +6,7 @@
             <corners
                 android:bottomLeftRadius="200dp"
                 android:topLeftRadius="200dp"/>
-            <solid android:color="@color/selectDay" />
+            <solid android:color="@color/today" />
         </shape>
     </item>
 </selector>

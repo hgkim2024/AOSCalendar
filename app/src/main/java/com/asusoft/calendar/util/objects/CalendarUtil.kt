@@ -444,7 +444,7 @@ object CalendarUtil {
                 ConstraintLayout.LayoutParams.MATCH_PARENT
         )
 
-        textView.setTextColor(CalendarApplication.getColor(R.color.font))
+        textView.setTextColor(ThemeUtil.instance.font)
         textView.gravity = Gravity.CENTER_VERTICAL
         textView.maxLines = 1
 

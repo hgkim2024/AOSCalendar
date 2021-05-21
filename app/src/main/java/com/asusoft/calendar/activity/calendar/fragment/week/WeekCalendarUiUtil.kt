@@ -30,6 +30,7 @@ import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
+import com.asusoft.calendar.util.objects.ThemeUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -71,7 +72,7 @@ object WeekCalendarUiUtil {
         emptyView.id = View.generateViewId()
         emptyView.tag = "tv_empty"
         emptyView.text = "등록된 이벤트가 없습니다."
-        emptyView.setTextColor(CalendarApplication.getColor(R.color.lightFont))
+        emptyView.setTextColor(ThemeUtil.instance.lightFont)
 
         weekLayout.layoutParams = FrameLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -92,7 +93,7 @@ object WeekCalendarUiUtil {
             }
 
             vw.tag = date.time
-            vw.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+            vw.setBackgroundColor(ThemeUtil.instance.background)
 
             vw.layoutParams = ConstraintLayout.LayoutParams(
                     0,
@@ -174,7 +175,7 @@ object WeekCalendarUiUtil {
                             date.time,
                             date.time,
                             0,
-                            CalendarApplication.getColor(R.color.holiday),
+                        ThemeUtil.instance.holiday,
                             isComplete = false,
                             isHoliday = true
                     )
@@ -298,7 +299,7 @@ object WeekCalendarUiUtil {
 
             DragEvent.ACTION_DRAG_ENTERED -> {
 
-                val backgroundColor = CalendarApplication.getColor(R.color.separator)
+                val backgroundColor = ThemeUtil.instance.separator
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     v.background.colorFilter = BlendModeColorFilter(backgroundColor, BlendMode.SRC_IN)
                 } else {

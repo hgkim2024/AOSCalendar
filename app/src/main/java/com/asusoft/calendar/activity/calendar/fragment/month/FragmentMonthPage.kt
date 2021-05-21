@@ -28,6 +28,7 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.getBoundsLocation
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -244,7 +245,7 @@ class FragmentMonthPage: Fragment() {
         preventDoubleClickFlag = false
 
         if (prevClickDayView != null) {
-            prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+            prevClickDayView!!.setBackgroundColor(ThemeUtil.instance.background)
         }
 
         if (prevDayEventView != null) {
@@ -364,7 +365,7 @@ class FragmentMonthPage: Fragment() {
 
     private fun removeDayEventView() {
         if (prevClickDayView != null) {
-            prevClickDayView!!.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+            prevClickDayView!!.setBackgroundColor(ThemeUtil.instance.background)
             prevClickDayView = null
         }
 
@@ -379,7 +380,7 @@ class FragmentMonthPage: Fragment() {
             dayView: View,
             idx: Int
     ) {
-        dayView.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+        dayView.setBackgroundColor(ThemeUtil.instance.separator)
         prevClickDayView = dayView
 
         val selectedDate = weekOfMonthItem.weekDate.getNextDay(idx)

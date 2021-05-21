@@ -18,6 +18,7 @@ import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.jakewharton.rxbinding4.view.clicks
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -202,9 +203,9 @@ class FragmentWeekViewPager: Fragment() {
             tv.text = "${weekTypes[idx].getShortTitle()}\n(${currentDate.calendarDay})"
 
             if (today == currentDate) {
-                val color = CalendarApplication.getColor(R.color.today)
+                val color = ThemeUtil.instance.today
                 CalendarUtil.setCornerRadiusDrawable(tv, color, 5.0F)
-                tv.setTextColor(CalendarApplication.getColor(R.color.invertFont))
+                tv.setTextColor(ThemeUtil.instance.invertFont)
             } else {
                 tv.setBackgroundColor(Color.TRANSPARENT)
                 tv.setTextColor(days[idx].getFontColor())

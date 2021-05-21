@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class OneDayHolidayHolder(
@@ -34,7 +35,7 @@ class OneDayHolidayHolder(
         when (item) {
             is String -> {
                 textView.text = item
-                edgeView.setBackgroundColor(CalendarApplication.getColor(R.color.holiday))
+                edgeView.setBackgroundColor(ThemeUtil.instance.holiday)
                 checkBox.visibility = View.INVISIBLE
             }
         }

@@ -15,6 +15,7 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -78,7 +79,7 @@ class SelectDayHolder(
 
                 dayView.text = date.calendarDay.toString()
                 dayView.setTextColor(WeekOfDayType.fromInt(date.weekOfDay).getFontColor())
-                dayView.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+                dayView.setBackgroundColor(ThemeUtil.instance.background)
 
                 if (date.calendarMonth == monthDate.calendarMonth) {
                     dayView.alpha = 1.0F
@@ -102,7 +103,7 @@ class SelectDayHolder(
                     val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
                     val key = dateString.toLong()
                     if (holidayMap[key] != null) {
-                        dayView.setTextColor(CalendarApplication.getColor(R.color.holiday))
+                        dayView.setTextColor(ThemeUtil.instance.holiday)
                     }
                 }
             }

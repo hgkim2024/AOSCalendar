@@ -14,7 +14,6 @@
         android:text="완료 여부"
         android:layout_marginStart="20dp"
         android:textAlignment="textStart"
-        android:textColor="@color/font"
         android:textSize="16sp"
         android:maxLines="1"
         app:layout_constraintTop_toTopOf="parent"

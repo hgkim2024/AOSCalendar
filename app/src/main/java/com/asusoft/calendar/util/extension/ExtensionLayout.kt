@@ -9,6 +9,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.objects.CalculatorUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -41,7 +42,7 @@ fun ConstraintLayout.addBottomSeparator(margin: Float, color: Int? = null, heigh
     val separator = View(context)
 
     if(color == null) {
-        separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+        separator.setBackgroundColor(ThemeUtil.instance.separator)
     } else {
         separator.setBackgroundColor(color)
     }
@@ -71,7 +72,7 @@ fun ConstraintLayout.addTopSeparator(margin: Float, color: Int? = null, height: 
     val separator = View(context)
 
     if(color == null) {
-        separator.setBackgroundColor(CalendarApplication.getColor(R.color.separator))
+        separator.setBackgroundColor(ThemeUtil.instance.separator)
     } else {
         separator.setBackgroundColor(color)
     }

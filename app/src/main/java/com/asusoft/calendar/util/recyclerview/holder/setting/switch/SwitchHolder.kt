@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.objects.PreferenceManager
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class SwitchHolder (
@@ -20,6 +21,7 @@ class SwitchHolder (
 
         val title = view.findViewById<TextView>(R.id.title)
         title.text = item.title
+        title.setTextColor(ThemeUtil.instance.font)
 
         val switch = view.findViewById<SwitchCompat>(R.id.switch_button)
 

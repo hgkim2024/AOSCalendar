@@ -12,6 +12,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -50,7 +51,7 @@ class EditTextHolder(
 
             val ivColor = view.findViewById<View>(R.id.vw_color)
             if (item.color == 0) {
-                ivColor.setBackgroundColor(CalendarApplication.getColor(R.color.colorAccent))
+                ivColor.setBackgroundColor(ThemeUtil.instance.colorAccent)
             } else {
                 ivColor.setBackgroundColor(item.color)
             }

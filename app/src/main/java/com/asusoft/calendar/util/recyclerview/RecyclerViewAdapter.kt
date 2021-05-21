@@ -19,6 +19,7 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.*
 import com.asusoft.calendar.util.recyclerview.RecyclerViewType.ADD_EVENT
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
@@ -212,8 +213,8 @@ class RecyclerViewAdapter(
                 val view = inflater.inflate(R.layout.holder_event_search_result, parent, false)
                 val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
                 val edge = view.findViewById<View>(R.id.edge)
-                setCornerRadiusDrawable(rootLayout, CalendarApplication.getColor(R.color.background))
-                setLeftCornerRadiusDrawable(edge, CalendarApplication.getColor(R.color.colorAccent))
+                setCornerRadiusDrawable(rootLayout, ThemeUtil.instance.background)
+                setLeftCornerRadiusDrawable(edge, ThemeUtil.instance.colorAccent)
                 EventSearchHolder(context, view, this)
             }
 

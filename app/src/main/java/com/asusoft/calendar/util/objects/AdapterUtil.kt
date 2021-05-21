@@ -42,12 +42,14 @@ class AdapterUtil {
                         parent
                     ) as TextView
 
-                    view.setTextColor(CalendarApplication.getColor(R.color.font))
+                    view.setTextColor(ThemeUtil.instance.font)
 
                     if (position == spinner.selectedItemPosition){
-                        view.setBackgroundColor(CalendarApplication.getColor(R.color.lightSeparator))
+                        view.setBackgroundColor(ThemeUtil.instance.colorAccent)
+                        view.background.alpha = 0x4D
                     } else {
-                        view.setBackgroundColor(CalendarApplication.getColor(R.color.background))
+                        view.setBackgroundColor(ThemeUtil.instance.background)
+                        view.background.alpha = 0xFF
                     }
 
                     view.textAlignment = View.TEXT_ALIGNMENT_CENTER

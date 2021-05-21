@@ -45,6 +45,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.search.recentsearch.RecentSearchTermsHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
@@ -151,7 +152,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         this.searchView = searchView
 
         val searchIcon = searchView.findViewById<ImageView?>(R.id.search_button)
-        searchIcon.setColorFilter(CalendarApplication.getColor(R.color.font))
+        searchIcon.setColorFilter(ThemeUtil.instance.font)
 
         val tv = searchView.findViewById<EditText?>(R.id.search_src_text)
         tv?.setBackgroundColor(CalendarApplication.getColor(R.color.lightSeparator))
@@ -163,7 +164,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         underLine?.setBackgroundColor(Color.TRANSPARENT)
 
         val closeButton = searchView.findViewById<ImageView>(R.id.search_close_btn)
-        closeButton.setColorFilter(CalendarApplication.getColor(R.color.font))
+        closeButton.setColorFilter(ThemeUtil.instance.font)
         closeButton.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -318,7 +319,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             CalendarApplication.getDrawable(R.drawable.ic_baseline_menu_24)
         }
 
-        drawable?.setTint(CalendarApplication.getColor(R.color.font))
+        drawable?.setTint(ThemeUtil.instance.font)
         supportActionBar?.setHomeAsUpIndicator(drawable)
     }
 
