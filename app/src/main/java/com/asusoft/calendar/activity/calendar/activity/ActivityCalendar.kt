@@ -239,6 +239,14 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         return true
     }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 1) {
+            super.onBackPressed()
+        } else {
+            finish()
+        }
+    }
+
     override fun onBackStackChanged() {
         homeButtonIconChange()
     }
