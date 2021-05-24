@@ -1,6 +1,9 @@
 package com.asusoft.calendar.util.holiday
 
 import android.icu.util.ChineseCalendar
+import com.asusoft.calendar.util.getNextDay
+import com.asusoft.calendar.util.stringToDate_yyyyMMdd
+import com.asusoft.calendar.util.toString_yyyyMMdd
 import com.orhanobut.logger.Logger
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -113,7 +116,11 @@ object LunarCalendar {
         addHolidaysItem(yyyy, "1225", "크리스마스")
 
         // 음력 휴일
-        val prev_seol = (lunarToSolar(yyyy + "0101").toInt() - 1).toString()
+//        val prev_seol = (lunarToSolar(yyyy + "0101").toInt() - 1).toString()
+        var prev_seol_date = Date().stringToDate_yyyyMMdd(lunarToSolar(yyyy + "0101"))
+        prev_seol_date = prev_seol_date.getNextDay(-1)
+        val prev_seol = prev_seol_date.toString_yyyyMMdd()
+
         addHolidaysItem(yyyy, prev_seol.substring(4), "설날 연휴")
         addHolidaysItem(yyyy, solarDays(yyyy, "0101"), "설날")
         addHolidaysItem(yyyy, solarDays(yyyy, "0102"), "설날 연휴")

@@ -290,3 +290,13 @@ fun Date.stringToDate(dateString: String): Date {
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     return sdf.parse(dateString)
 }
+
+fun Date.stringToDate_yyyyMMdd(dateString: String): Date {
+    val sdf = SimpleDateFormat("yyyyMMdd")
+    return sdf.parse(dateString)
+}
+
+fun Date.toString_yyyyMMdd(): String {
+    val sdf = SimpleDateFormat("yyyyMMdd")
+    return sdf.format(this)
+}
