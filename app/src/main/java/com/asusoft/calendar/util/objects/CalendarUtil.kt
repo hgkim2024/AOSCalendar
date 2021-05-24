@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
-import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
@@ -76,8 +75,11 @@ object CalendarUtil {
             if (holidayMap.isNotEmpty()) {
                 val holidayList = LunarCalendar.holidayArray("${date.calendarYear}")
                 if (holidayMap[dateString.toLong()] != null) {
-                    val name = holidayList.first { it.date == dateString }.name
-                    eventList.add(name)
+                    for (item in holidayList) {
+                        if (item.date == dateString) {
+                            eventList.add(item.name)
+                        }
+                    }
                 }
             }
         }
@@ -158,8 +160,25 @@ object CalendarUtil {
 
 //                Logger.d("holiday: ${item.date}, ${item.name}, weekDay: ${weekDate.toStringDay()}")
 
-                orderMap[item.date.toLong()] = 0
-                dayCheckList[0][weekOfDay] = true
+                var index = 0
+                while(true) {
+                    if (dayCheckList[index][weekOfDay]) {
+                        index++
+
+                        if (dayCheckList.size <= index) {
+                            dayCheckList.add(arrayOf(false, false, false, false, false, false, false))
+                        }
+                    } else {
+                        var key = item.date.toLong()
+                        for (idx in 0 until index) {
+                            key *= 100L
+                        }
+
+                        orderMap[key] = index
+                        dayCheckList[index][weekOfDay] = true
+                        break
+                    }
+                }
             }
         }
 

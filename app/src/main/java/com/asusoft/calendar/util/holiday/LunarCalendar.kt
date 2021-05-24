@@ -23,6 +23,7 @@ object LunarCalendar {
     private fun lunarToSolar(yyyymmdd: String?): String {
         val cc = ChineseCalendar()
         val cal = Calendar.getInstance()
+        val calendar = KoreanLunarCalendar.getInstance()
 
         if (yyyymmdd == null) return ""
 
@@ -50,7 +51,20 @@ object LunarCalendar {
         ret.append(String.format("%04d", y))
         ret.append(String.format("%02d", m))
         ret.append(String.format("%02d", d))
-        return ret.toString()
+
+        return if (date.substring(0, 4).toInt() in 1391..2050) {
+
+            calendar.setLunarDate(
+                    date.substring(0, 4).toInt(),
+                    date.substring(4, 6).toInt(),
+                    date.substring(6).toInt(),
+                    true
+            )
+
+            calendar.solarIsoFormat
+        } else {
+            ret.toString()
+        }
     }
 
     /**

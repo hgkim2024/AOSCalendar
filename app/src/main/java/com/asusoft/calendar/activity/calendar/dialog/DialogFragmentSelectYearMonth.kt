@@ -79,7 +79,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
         monthPicker = view.findViewById<NumberPicker>(R.id.month_picker)
 
         yearPicker.minValue = 1960
-        yearPicker.maxValue = 2100
+        yearPicker.maxValue = 2050
         yearPicker.value = date.calendarYear
 
         monthPicker.minValue = 1

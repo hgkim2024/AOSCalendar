@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
@@ -287,29 +286,36 @@ object MonthCalendarUiUtil {
         val oneDayList = eventDayList.filter { it.startTime == it.endTime }
         val orderMap = getEventOrderList(weekOfMonthItem.weekDate, multiDayList, oneDayList, eventMaxCount)
 
-        val holidayMap = orderMap.filter { it.key <= 1231 }
+        val holidayMap = orderMap.filter { it.key <= 1231 || (it.key in 10100..123100) }
         if (holidayMap.isNotEmpty()) {
             val holidayList = LunarCalendar.holidayArray("${weekOfMonthItem.weekDate.calendarYear}")
             for (index in weekOfMonthItem.dayViewList.indices) {
                 val date = weekOfMonthItem.weekDate.getNextDay(index)
 
                 val dateString = String.format("%02d", date.calendarMonth) + String.format("%02d", date.calendarDay)
-                val key = dateString.toLong()
-                if (holidayMap[key] != null) {
-                    weekOfMonthItem.dayViewList[index].setTextColor(ThemeUtil.instance.holiday)
+                var key = dateString.toLong()
 
-                    val name = holidayList.first { it.date == dateString }.name
+                val toDayHolidayList = holidayList.filter { it.date == dateString }
+
+                for (index in toDayHolidayList.indices) {
+                    if (date.time < key) break
+                    if (holidayMap[key] == null) break
+
+                    weekOfMonthItem.dayViewList[index].setTextColor(ThemeUtil.instance.holiday)
+                    val name = toDayHolidayList[index].name
                     weekOfMonthItem.addEventUI(
-                        context,
-                        dateString.toLong(),
-                        name,
-                        date.time,
-                        date.time,
-                        0,
-                        ThemeUtil.instance.holiday,
-                        isComplete = false,
-                        isHoliday = true
+                            context,
+                            dateString.toLong(),
+                            name,
+                            date.time,
+                            date.time,
+                            holidayMap[key]!!,
+                            ThemeUtil.instance.holiday,
+                            isComplete = false,
+                            isHoliday = true
                     )
+
+                    key *= 100
                 }
             }
         }
