@@ -1,6 +1,8 @@
 package com.asusoft.calendar.util.recyclerview.holder.search.eventsearch
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.toStringDay
 import java.util.*
@@ -31,8 +34,10 @@ class EventSearchHolder (
 
         val title = view.findViewById<TextView>(R.id.title)
         title.text = item.name
+        title.setTextColor(ThemeUtil.instance.font)
 
         val tvTime = view.findViewById<TextView>(R.id.tv_time)
+        tvTime.setTextColor(ThemeUtil.instance.font)
         if (item.startTime == item.endTime) {
             tvTime.text = Date(item.startTime).toStringDay()
         } else {
@@ -48,12 +53,17 @@ class EventSearchHolder (
             val tvSubVisit = view.findViewById<TextView>(R.id.tv_sub_visit)
             val ivPerson = view.findViewById<ImageView>(R.id.iv_person)
 
+            tvVisit.setTextColor(ThemeUtil.instance.font)
+            tvSubVisit.setTextColor(ThemeUtil.instance.font)
+            ivPerson.colorFilter = PorterDuffColorFilter(ThemeUtil.instance.font, PorterDuff.Mode.SRC_IN)
+
             tvVisit.text = "초대받을 사람"
             tvSubVisit.text = item.visitList.size.toString()
             ivPerson.visibility = View.VISIBLE
         }
 
         val tvMemo = view.findViewById<TextView>(R.id.tv_memo)
+        tvMemo.setTextColor(ThemeUtil.instance.font)
         if (item.memo == "") {
             tvMemo.visibility = View.GONE
         } else {

@@ -6,6 +6,8 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import com.asusoft.calendar.R
@@ -15,6 +17,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.google.android.material.appbar.AppBarLayout
 import java.util.HashMap
 
@@ -38,6 +41,12 @@ class ActivitySetting : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         removeActionBarShadow()
+
+        val title = findViewById<TextView>(R.id.action_bar_title)
+        title.setTextColor(ThemeUtil.instance.font)
+
+        val fragmentLayout = findViewById<RelativeLayout>(R.id.fragment)
+        fragmentLayout.setBackgroundColor(ThemeUtil.instance.background)
 
         if (savedInstanceState == null)
             supportFragmentManager

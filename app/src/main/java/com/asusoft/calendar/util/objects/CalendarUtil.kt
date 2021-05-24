@@ -3,6 +3,8 @@ package com.asusoft.calendar.util.objects
 import android.content.Context
 import android.content.Intent
 import android.graphics.Point
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.view.Gravity
@@ -308,14 +310,24 @@ object CalendarUtil {
         v.background = shape
     }
 
-    fun setLeftCornerRadiusDrawable(v: View, backgroundColor: Int) {
+    fun setLeftCornerRadiusDrawable(v: View, backgroundColor: Int, r: Float = 2.0F) {
         val shape = GradientDrawable()
         shape.shape = GradientDrawable.RECTANGLE
-        val r = CalculatorUtil.dpToPx(2.0F).toFloat()
+        val r = CalculatorUtil.dpToPx(r).toFloat()
         shape.cornerRadii = floatArrayOf(r, r, 0F, 0F, 0F, 0F, r, r)
         shape.setColor(backgroundColor)
         v.background = shape
     }
+
+    fun setRightCornerRadiusDrawable(v: View, backgroundColor: Int, r: Float = 2.0F) {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        val r = CalculatorUtil.dpToPx(r).toFloat()
+        shape.cornerRadii = floatArrayOf(0F, 0F, r, r, r, r, 0F, 0F)
+        shape.setColor(backgroundColor)
+        v.background = shape
+    }
+
 
     fun calendarRefresh(isRemoveDayEventView: Boolean = false) {
         val event = HashMapEvent(java.util.HashMap())
@@ -341,6 +353,12 @@ object CalendarUtil {
         val title = view.findViewById<TextView>(R.id.title)
         val emptyTitle = view.findViewById<TextView>(R.id.tv_empty)
         val addButton = view.findViewById<ImageButton>(R.id.add_button)
+        val separator = view.findViewById<View>(R.id.bottom_separator_top_layout)
+
+        eventLayout.setBackgroundColor(ThemeUtil.instance.background)
+        title.setTextColor(ThemeUtil.instance.font)
+        addButton.colorFilter = PorterDuffColorFilter(ThemeUtil.instance.colorAccent, PorterDuff.Mode.SRC_IN)
+        separator.setBackgroundColor(ThemeUtil.instance.separator)
 
         calendar.addView(eventLayout)
 

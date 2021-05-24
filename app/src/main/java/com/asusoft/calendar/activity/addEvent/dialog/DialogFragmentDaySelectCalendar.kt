@@ -20,6 +20,7 @@ import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil.WEEK
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayHolder
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayItem
@@ -107,6 +108,15 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
             clipToOutline= true
         }
 
+        val backgroundLayout = view.findViewById<ConstraintLayout>(R.id.background_layout)
+        backgroundLayout.setBackgroundColor(ThemeUtil.instance.background)
+
+        val headerLayout = view.findViewById<ConstraintLayout>(R.id.header_layout)
+        headerLayout.setBackgroundColor(ThemeUtil.instance.colorAccent)
+
+        val tvHeader = view.findViewById<TextView>(R.id.tv_header)
+        tvHeader.setTextColor(ThemeUtil.instance.invertFont)
+
         val weekHeader = view.findViewById<ConstraintLayout>(R.id.week_header)
         weekHeader.addView(MonthCalendarUiUtil.getWeekHeader(context, true))
 
@@ -160,7 +170,9 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         })
 
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
-        val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
+
+        confirmBtn.setBackgroundColor(ThemeUtil.instance.colorAccent)
+        confirmBtn.setTextColor(ThemeUtil.instance.invertFont)
 
         confirmBtn.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -181,12 +193,20 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                 dismiss()
             }
 
+        val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
+
+        cancelBtn.setBackgroundColor(ThemeUtil.instance.background)
+        cancelBtn.setTextColor(ThemeUtil.instance.colorAccent)
+
         cancelBtn.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 dismiss()
             }
+
+        val topSeparator = view.findViewById<View>(R.id.top_separator)
+        topSeparator.setBackgroundColor(ThemeUtil.instance.colorAccent)
 
         return view
     }

@@ -1,11 +1,13 @@
 package com.asusoft.calendar.activity.addEvent.fragment
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getSystemService
@@ -226,6 +228,8 @@ class FragmentAddEvent: Fragment() {
         )
 
         val cancelBtn = view.findViewById<Button>(R.id.cancel_btn)
+        cancelBtn.setBackgroundColor(Color.TRANSPARENT)
+        cancelBtn.setTextColor(ThemeUtil.instance.colorAccent)
         cancelBtn.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -234,6 +238,8 @@ class FragmentAddEvent: Fragment() {
                 }
 
         val confirmBtn = view.findViewById<Button>(R.id.confirm_btn)
+        confirmBtn.setBackgroundColor(Color.TRANSPARENT)
+        confirmBtn.setTextColor(ThemeUtil.instance.colorAccent)
         confirmBtn.clicks()
                 .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())

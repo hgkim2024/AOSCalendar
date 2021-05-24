@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class PersonHolder(
@@ -20,6 +21,7 @@ class PersonHolder(
         if (item !is CopyVisitPerson) return
 
         val tv = view.findViewById<TextView>(R.id.title)
+        tv.setTextColor(ThemeUtil.instance.font)
         tv.text = item.name
     }
 

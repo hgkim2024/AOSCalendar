@@ -24,6 +24,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import com.google.android.material.appbar.AppBarLayout
@@ -95,6 +96,8 @@ class ActivityAddPerson : AppCompatActivity() {
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
 
+        val title = findViewById<TextView>(R.id.action_bar_title)
+        title.setTextColor(ThemeUtil.instance.font)
         tvEmpty = findViewById<TextView>(R.id.tv_empty)
         isEmpty()
 
@@ -106,6 +109,7 @@ class ActivityAddPerson : AppCompatActivity() {
     }
 
     private fun isEmpty() {
+        tvEmpty.setTextColor(ThemeUtil.instance.lightFont)
         if (adapter.list.isEmpty()) {
             tvEmpty.visibility = View.VISIBLE
             tvEmpty.text = "우측 하단 버튼 클릭으로 추가할 수 있습니다."

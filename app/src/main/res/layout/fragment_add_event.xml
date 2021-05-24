@@ -38,10 +38,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            android:background="@android:color/transparent"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:textColor="@color/colorAccent"
             android:text="취소"/>
 
         <Button
@@ -49,10 +47,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            android:background="@android:color/transparent"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:textColor="@color/colorAccent"
             android:text="저장"/>
 
     </LinearLayout>

@@ -27,6 +27,7 @@ class AdapterUtil {
                     ) as TextView
 
                     view.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    view.setTextColor(ThemeUtil.instance.font)
 
                     return view
                 }

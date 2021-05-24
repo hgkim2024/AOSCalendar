@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.extension.addClickEffect
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class TextHolder (
@@ -19,6 +20,7 @@ class TextHolder (
 
         val title = view.findViewById<TextView>(R.id.text)
         title.text = item.text
+        title.setTextColor(ThemeUtil.instance.font)
 
         if (item.isClickable) {
             view.addClickEffect()

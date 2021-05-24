@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
@@ -34,8 +35,15 @@ class SelectDayHolder(
 
 //        Logger.d("SelectDayHolder date: ${item.date.toStringMonth()}")
 
+        val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
+        rootLayout.setBackgroundColor(ThemeUtil.instance.background)
+
         val header = view.findViewById<TextView>(R.id.tv_header)
         header.text = item.date.toStringMonth()
+        header.setTextColor(ThemeUtil.instance.lightFont)
+
+        val separator = view.findViewById<View>(R.id.separator)
+        separator.setBackgroundColor(ThemeUtil.instance.separator)
 
         val monthDate = item.date.startOfMonth
         val startDate = monthDate.startOfWeek

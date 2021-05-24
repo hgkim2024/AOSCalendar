@@ -16,6 +16,7 @@ import com.asusoft.calendar.activity.calendar.dialog.DialogFragmentSelectYearMon
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.objects.ThemeUtil
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -90,6 +91,7 @@ class FragmentMonthViewPager: Fragment() {
         weekHeader.addView(MonthCalendarUiUtil.getWeekHeader(context))
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
+        CalendarUtil.setCornerRadiusDrawable(todayLayout, ThemeUtil.instance.background, 200.0F)
         todayLayout.background.alpha = 230
         todayLayout.visibility = View.INVISIBLE
         todayLayout.setTextColor(ThemeUtil.instance.font)

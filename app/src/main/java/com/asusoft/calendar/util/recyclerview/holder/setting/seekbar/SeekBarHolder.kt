@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.util.objects.PreferenceManager
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class SeekBarHolder (
@@ -20,9 +21,11 @@ class SeekBarHolder (
 
         val title = view.findViewById<TextView>(R.id.title)
         title.text = item.title
+        title.setTextColor(ThemeUtil.instance.font)
 
         val subtitle = view.findViewById<TextView>(R.id.subtitle)
         subtitle.text = "(${item.value})"
+        subtitle.setTextColor(ThemeUtil.instance.lightFont)
 
         val seekBar = view.findViewById<SeekBar>(R.id.seek_bar)
         seekBar.min = item.min

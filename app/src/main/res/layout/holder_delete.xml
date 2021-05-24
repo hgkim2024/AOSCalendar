@@ -8,11 +8,9 @@
         android:id="@+id/delete_button"
         android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:tint="@color/colorAccent"
         android:src="@drawable/ic_baseline_delete_24"
-        android:layout_margin="5dp"
+        android:layout_margin="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -1,6 +1,8 @@
 package com.asusoft.calendar.util.recyclerview.holder.sidemenu
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,6 +13,7 @@ import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -29,9 +32,11 @@ class CalendarTypeHolder (
 
         val iv = view.findViewById<ImageView>(R.id.iv_icon)
         iv.setImageDrawable(item.getIcon())
+        iv.colorFilter = PorterDuffColorFilter(ThemeUtil.instance.font, PorterDuff.Mode.SRC_IN)
 
         val tv = view.findViewById<TextView>(R.id.title)
         tv.text = item.getTitle()
+        tv.setTextColor(ThemeUtil.instance.font)
 
         view.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)

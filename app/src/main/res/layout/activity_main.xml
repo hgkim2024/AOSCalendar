@@ -30,7 +30,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="@color/font"
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:textSize="18sp"
@@ -44,7 +43,6 @@
             android:id="@+id/fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <!--    <TextView-->

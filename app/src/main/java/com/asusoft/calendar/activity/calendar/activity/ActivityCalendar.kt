@@ -15,6 +15,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -88,6 +89,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 //        Logger.d("toolbar height: ${toolbar.height}")
 
         val tv = findViewById<TextView>(R.id.action_bar_title)
+        tv.setTextColor(ThemeUtil.instance.font)
+
         tv.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -119,6 +122,9 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         homeButtonIconChange()
 
         removeActionBarShadow()
+
+        val fragmentLayout = findViewById<RelativeLayout>(R.id.fragment)
+        fragmentLayout.setBackgroundColor(ThemeUtil.instance.background)
 
         if (savedInstanceState == null) {
             changeRootFragment()

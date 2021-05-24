@@ -94,6 +94,8 @@ class FragmentWeekViewPager: Fragment() {
         viewPager = view.findViewById(R.id.week_calendar)
 
         todayLayout = view.findViewById<TextView>(R.id.tv_today)
+        CalendarUtil.setCornerRadiusDrawable(todayLayout, ThemeUtil.instance.background, 200.0F)
+        todayLayout.setTextColor(ThemeUtil.instance.font)
         todayLayout.background.alpha = 230
         todayLayout.visibility = View.INVISIBLE
 

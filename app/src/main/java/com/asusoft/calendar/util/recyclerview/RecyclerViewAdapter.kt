@@ -214,7 +214,8 @@ class RecyclerViewAdapter(
                 val rootLayout = view.findViewById<ConstraintLayout>(R.id.root_layout)
                 val edge = view.findViewById<View>(R.id.edge)
                 setCornerRadiusDrawable(rootLayout, ThemeUtil.instance.background)
-                setLeftCornerRadiusDrawable(edge, ThemeUtil.instance.colorAccent)
+                // TODO: - 둥근 정도 조절 하기
+                setLeftCornerRadiusDrawable(edge, ThemeUtil.instance.colorAccent, 6.0F)
                 EventSearchHolder(context, view, this)
             }
 

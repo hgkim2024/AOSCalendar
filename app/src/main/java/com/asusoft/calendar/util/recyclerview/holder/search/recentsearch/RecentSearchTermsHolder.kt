@@ -9,6 +9,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -28,6 +29,7 @@ class RecentSearchTermsHolder(
         val item = adapter.list[position] as? CopyRecentSearchTerms ?: return
 
         val tv = view.findViewById<TextView>(R.id.title)
+        tv.setTextColor(ThemeUtil.instance.font)
         tv.text = item.name
 
         view.clicks()

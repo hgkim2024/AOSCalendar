@@ -32,7 +32,7 @@
     </style>
 
     <style name="AppTheme.NumberPicker" parent="AppTheme">
-        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/separator</item>
     </style>
 
 <!--    <style name="LightTheme" parent="AppTheme">-->

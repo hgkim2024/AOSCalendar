@@ -11,7 +11,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="텍스트"
-        android:textColor="@color/font"
         android:textSize="16sp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"

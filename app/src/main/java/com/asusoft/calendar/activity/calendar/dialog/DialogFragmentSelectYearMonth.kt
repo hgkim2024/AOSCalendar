@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import com.asusoft.calendar.R
@@ -18,7 +20,10 @@ import com.asusoft.calendar.util.calendarMonth
 import com.asusoft.calendar.util.calendarYear
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.extension.setDividerColor
 import com.asusoft.calendar.util.getToday
+import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
@@ -75,8 +80,24 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
             clipToOutline= true
         }
 
+        val backgroundLayout = view.findViewById<ConstraintLayout>(R.id.background_layout)
+        backgroundLayout.setBackgroundColor(ThemeUtil.instance.background)
+
+        val headerLayout = view.findViewById<ConstraintLayout>(R.id.header_layout)
+        headerLayout.setBackgroundColor(ThemeUtil.instance.colorAccent)
+
+        val tvHeader = view.findViewById<TextView>(R.id.tv_header)
+        tvHeader.setTextColor(ThemeUtil.instance.invertFont)
+
         yearPicker = view.findViewById<NumberPicker>(R.id.year_picker)
+//        yearPicker.setDividerColor(ThemeUtil.instance.colorAccent)
         monthPicker = view.findViewById<NumberPicker>(R.id.month_picker)
+//        monthPicker.setDividerColor(ThemeUtil.instance.colorAccent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            yearPicker.textColor = ThemeUtil.instance.font
+            monthPicker.textColor = ThemeUtil.instance.font
+        }
 
         yearPicker.minValue = 1960
         yearPicker.maxValue = 2050
@@ -87,7 +108,9 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
         monthPicker.value = date.calendarMonth
 
         val confirmBtn = view.findViewById<TextView>(R.id.confirm_button)
-        val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
+
+        confirmBtn.setBackgroundColor(ThemeUtil.instance.colorAccent)
+        confirmBtn.setTextColor(ThemeUtil.instance.invertFont)
 
         confirmBtn.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -110,12 +133,20 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
                 dismiss()
             }
 
+        val cancelBtn = view.findViewById<TextView>(R.id.cancel_button)
+
+        cancelBtn.setBackgroundColor(ThemeUtil.instance.background)
+        cancelBtn.setTextColor(ThemeUtil.instance.colorAccent)
+
         cancelBtn.clicks()
             .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 dismiss()
             }
+
+        val topSeparator = view.findViewById<View>(R.id.top_separator)
+        topSeparator.setBackgroundColor(ThemeUtil.instance.colorAccent)
 
         return view
     }

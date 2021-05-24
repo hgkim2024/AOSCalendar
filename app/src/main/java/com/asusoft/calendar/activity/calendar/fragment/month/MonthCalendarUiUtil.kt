@@ -24,10 +24,7 @@ import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
-import com.asusoft.calendar.util.objects.CalculatorUtil
-import com.asusoft.calendar.util.objects.PreferenceKey
-import com.asusoft.calendar.util.objects.PreferenceManager
-import com.asusoft.calendar.util.objects.ThemeUtil
+import com.asusoft.calendar.util.objects.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -58,7 +55,7 @@ object MonthCalendarUiUtil {
 
         val todayView = TextView(context)
         todayView.id = View.generateViewId()
-        todayView.setBackgroundResource(R.drawable.today_corner_radius)
+        CalendarUtil.setCornerRadiusDrawable(todayView, ThemeUtil.instance.today, 200.0F)
 
         todayView.text = dayView.text
         todayView.setTextColor(ThemeUtil.instance.invertFont)
@@ -444,7 +441,7 @@ object MonthCalendarUiUtil {
                             val dayView = dayViewList[i]
 
                             if (date.time == selectedStartDate.time) {
-                                dayView.setBackgroundResource(R.drawable.today_corner_radius)
+                                CalendarUtil.setCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             }
                         }
                     }
@@ -477,11 +474,11 @@ object MonthCalendarUiUtil {
                             if (selectedStartDate < date && date < selectedEndDate) {
                                 dayView.setBackgroundColor(ThemeUtil.instance.today)
                             } else if (selectedStartDate == date && selectedEndDate != date) {
-                                dayView.setBackgroundResource(R.drawable.corner_radius_left)
+                                CalendarUtil.setLeftCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             } else if (selectedEndDate == date && selectedStartDate != date) {
-                                dayView.setBackgroundResource(R.drawable.corner_radius_right)
+                                CalendarUtil.setRightCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             } else if (selectedEndDate == selectedStartDate && selectedStartDate == date) {
-                                dayView.setBackgroundResource(R.drawable.today_corner_radius)
+                                CalendarUtil.setCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             }
                         }
                     }

@@ -44,6 +44,9 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         val rootLayout = findViewById<CoordinatorLayout>(R.id.root_layout)
         rootLayout.setBackgroundColor(ThemeUtil.instance.background)
 
+        val title = findViewById<TextView>(R.id.action_bar_title)
+        title.setTextColor(ThemeUtil.instance.font)
+
         val fragment = findViewById<RelativeLayout>(R.id.fragment)
         fragment.setBackgroundColor(ThemeUtil.instance.background)
 

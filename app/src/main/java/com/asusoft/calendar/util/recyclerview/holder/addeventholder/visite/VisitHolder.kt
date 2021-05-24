@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 
 class VisitHolder(
@@ -20,10 +21,13 @@ class VisitHolder(
 
             val title = view.findViewById<TextView>(R.id.tv_title)
             title.text = item.title
+            title.setTextColor(ThemeUtil.instance.font)
 
             val subtitle = view.findViewById<TextView>(R.id.tv_subtitle)
+            subtitle.setTextColor(ThemeUtil.instance.font)
 
             val ivPerson = view.findViewById<ImageButton>(R.id.iv_person)
+            ivPerson.setColorFilter(ThemeUtil.instance.font)
             if (item.count > 0) {
                 ivPerson.visibility = View.VISIBLE
                 subtitle.text = item.count.toString()

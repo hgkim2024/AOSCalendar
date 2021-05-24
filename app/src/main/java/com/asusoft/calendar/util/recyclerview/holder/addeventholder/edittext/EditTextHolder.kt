@@ -12,6 +12,7 @@ import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.ExtendedEditText
+import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.jakewharton.rxbinding4.view.clicks
@@ -32,13 +33,9 @@ class EditTextHolder(
             val tvEdit = view.findViewById<ExtendedEditText>(R.id.tv_edit)
             tvEdit.hint = item.hint
             tvEdit.clearTextChangedListeners()
+            tvEdit.setTextColor(ThemeUtil.instance.font)
 
             val colorLayout = view.findViewById<ConstraintLayout>(R.id.color_layout)
-
-            colorLayout.apply {
-                measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                clipToOutline= true
-            }
 
             colorLayout.clicks()
                     .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
@@ -49,11 +46,10 @@ class EditTextHolder(
                         GlobalBus.post(event)
                     }
 
-            val ivColor = view.findViewById<View>(R.id.vw_color)
             if (item.color == 0) {
-                ivColor.setBackgroundColor(ThemeUtil.instance.colorAccent)
+                CalendarUtil.setCornerRadiusDrawable(colorLayout, ThemeUtil.instance.colorAccent, 200.0F)
             } else {
-                ivColor.setBackgroundColor(item.color)
+                CalendarUtil.setCornerRadiusDrawable(colorLayout, item.color, 200.0F)
             }
 
             tvEdit.setText(item.context)
