@@ -24,6 +24,7 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.objects.AdUtil
 import com.asusoft.calendar.util.objects.AlertUtil
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter.Companion.CLICK_DELAY
@@ -106,7 +107,7 @@ class FragmentAddEvent: Fragment() {
         var isComplete = false
         var visitCount = 0
         var memo: String? = null
-        var color = 0
+        var color = ThemeUtil.instance.colorAccent
 
         if (key != -1L) {
             isEdit = true

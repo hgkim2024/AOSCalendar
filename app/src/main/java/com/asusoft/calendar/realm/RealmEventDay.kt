@@ -297,11 +297,7 @@ open class RealmEventDay: RealmObject() {
 //        Logger.d("update isComplete: ${this.isComplete}")
 
         if (color != null) {
-            if (color == 0) {
-                this.color = ThemeUtil.instance.colorAccent
-            } else {
-                this.color = color
-            }
+            this.color = color
         }
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")

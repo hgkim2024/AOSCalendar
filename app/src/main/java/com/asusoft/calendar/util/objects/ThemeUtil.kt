@@ -6,16 +6,17 @@ import com.asusoft.calendar.realm.copy.CopyTheme
 object ThemeUtil {
 
     val instance: CopyTheme
-        get() {
-            var theme = RealmTheme.select()
 
-            if (theme == null) {
-                RealmTheme().insert()
-                theme = RealmTheme.select()!!
-            }
+    init {
+        var theme = RealmTheme.selectOne()
 
-            return theme.getCopy()
+        if (theme == null) {
+            RealmTheme().insert()
+            theme = RealmTheme.selectOne()!!
         }
+
+        instance = theme.getCopy()
+    }
 
 
 }

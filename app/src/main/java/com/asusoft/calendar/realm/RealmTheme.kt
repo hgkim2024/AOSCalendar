@@ -3,6 +3,7 @@ package com.asusoft.calendar.realm
 import android.graphics.Color
 import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.copy.CopyTheme
+import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -27,25 +28,23 @@ open class RealmTheme: RealmObject()  {
     var today: Int = Color.parseColor("#00b07b")
 
     companion object {
-        fun select(key: Long = 0): RealmTheme? {
+        fun selectOne(key: Long = 0): RealmTheme? {
+            Logger.d("RealmTheme selectOne")
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
-            return if (key == 0L) {
-                val item = realm.where(RealmTheme::class.java)
-                    .findFirst()
-                realm.commitTransaction()
-
-                item
+            val item =  if (key == 0L) {
+                realm.where(RealmTheme::class.java)
+                        .findFirst()
 
             } else {
-                val item = realm.where(RealmTheme::class.java)
-                    .equalTo("key", key)
-                    .findFirst()
-                realm.commitTransaction()
-
-                item
+                realm.where(RealmTheme::class.java)
+                        .equalTo("key", key)
+                        .findFirst()
             }
+
+            realm.commitTransaction()
+            return item
         }
     }
 
