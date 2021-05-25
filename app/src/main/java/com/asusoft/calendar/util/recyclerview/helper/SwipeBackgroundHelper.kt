@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.asusoft.calendar.R
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.orhanobut.logger.Logger
 import kotlin.math.abs
 
@@ -35,10 +36,10 @@ class SwipeBackgroundHelper {
             val context = viewItem.context
             var icon = ContextCompat.getDrawable(context, iconResId)!!
             icon = DrawableCompat.wrap(icon).mutate()
-            icon.colorFilter = PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+            icon.colorFilter = PorterDuffColorFilter(ThemeUtil.instance.background, PorterDuff.Mode.SRC_IN)
 //            val backgroundColor = getBackgroundColor(R.color.holidayBackground, R.color.lightFont, dX, viewItem)
-            val backgroundColor = getBackgroundColor(R.color.background, R.color.background, dX, viewItem)
-            return DrawCommand(icon, backgroundColor)
+//            val backgroundColor = getBackgroundColor(R.color.background, R.color.background, dX, viewItem)
+            return DrawCommand(icon, ThemeUtil.instance.background)
         }
 
         private fun getBackgroundColor(firstColor: Int, secondColor: Int, dX: Float, viewItem: View): Int {
