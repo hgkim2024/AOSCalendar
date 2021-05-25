@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.activity.calendar.SideMenuType
-import com.asusoft.calendar.activity.calendar.dialog.filter.enums.SearchFilterType
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener

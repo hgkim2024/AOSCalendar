@@ -5,6 +5,7 @@ import android.animation.StateListAnimator
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -153,6 +154,13 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_side, menu)
+
+        val states = arrayOf(intArrayOf(android.R.attr.state_enabled))
+        val colors = intArrayOf(ThemeUtil.instance.font)
+
+        val filterItem = menu.findItem(R.id.filter)
+        filterItem.iconTintList = ColorStateList(states, colors)
+
         val searchMenuItem = menu.findItem(R.id.action_search)
         val searchView = searchMenuItem.actionView as SearchView
         this.searchView = searchView

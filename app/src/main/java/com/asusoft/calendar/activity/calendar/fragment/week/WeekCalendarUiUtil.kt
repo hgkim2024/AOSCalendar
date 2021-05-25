@@ -2,6 +2,7 @@ package com.asusoft.calendar.activity.calendar.fragment.week
 
 import android.content.ClipDescription
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
@@ -11,10 +12,7 @@ import android.view.DragEvent
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.asusoft.calendar.R
@@ -209,7 +207,18 @@ object WeekCalendarUiUtil {
 
     fun getOneDayView(context: Context): View {
         val inflater = LayoutInflater.from(context)
-        return inflater.inflate(R.layout.view_event_of_the_week, null, false)
+
+        val view = inflater.inflate(R.layout.view_event_of_the_week, null, false)
+
+        val tv = view.findViewById<TextView>(R.id.tv)
+        tv.setTextColor(ThemeUtil.instance.invertFont)
+
+        val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
+        val states = arrayOf(intArrayOf(android.R.attr.state_enabled))
+        val colors = intArrayOf(ThemeUtil.instance.invertFont)
+        checkBox.buttonTintList = ColorStateList(states, colors)
+
+        return view
     }
 
     fun getWeekHeader(context: Context): View {

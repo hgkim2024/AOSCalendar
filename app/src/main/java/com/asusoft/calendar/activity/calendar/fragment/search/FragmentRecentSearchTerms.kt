@@ -16,6 +16,7 @@ import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.util.enums.RecentSearchTermsType
 import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
 import org.greenrobot.eventbus.Subscribe
@@ -45,6 +46,7 @@ class FragmentRecentSearchTerms: Fragment() {
         recyclerView.adapter = adapter
 
         tvEmpty = view.findViewById<TextView>(R.id.tv_empty)
+        tvEmpty.setTextColor(ThemeUtil.instance.lightFont)
         isEmpty()
 
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)

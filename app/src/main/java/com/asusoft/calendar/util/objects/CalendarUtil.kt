@@ -375,6 +375,7 @@ object CalendarUtil {
                 }
 
         if (eventList.isEmpty()) {
+            emptyTitle.setTextColor(ThemeUtil.instance.lightFont)
             emptyTitle.visibility = View.VISIBLE
             emptyTitle.textSize = DAY_HEADER_FONT_SIZE - 1.0F
             emptyTitle.isClickable = true

@@ -5,8 +5,6 @@
     <item android:id="@+id/filter"
         android:title="filter"
         android:icon="@drawable/ic_baseline_filter_alt_24"
-        android:iconTint="@color/font"
-        app:iconTint="@color/font"
         app:showAsAction="always"/>
 
     <item android:id="@+id/action_search"

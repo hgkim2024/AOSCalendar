@@ -8,10 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
-import com.asusoft.calendar.util.objects.PreferenceKey
-import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
-import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem
 import java.util.ArrayList
 
 class FragmentDaySetting: Fragment() {

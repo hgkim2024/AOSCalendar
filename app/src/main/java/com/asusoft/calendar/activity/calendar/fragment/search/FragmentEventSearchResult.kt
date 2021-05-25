@@ -12,6 +12,7 @@ import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.realm.copy.CopyEventDay
+import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.orhanobut.logger.Logger
@@ -72,6 +73,7 @@ class FragmentEventSearchResult: Fragment() {
         )
 
         tvEmpty = view.findViewById<TextView>(R.id.tv_empty)
+        tvEmpty.setTextColor(ThemeUtil.instance.lightFont)
         isEmpty()
 
         return view

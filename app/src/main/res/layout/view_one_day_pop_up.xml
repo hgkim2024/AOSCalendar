@@ -57,7 +57,6 @@
         android:id="@+id/tv_empty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:textColor="@color/lightFont"
         android:text="이 날은 이벤트 없음"
         android:textSize="14sp"
         android:clickable="false"
