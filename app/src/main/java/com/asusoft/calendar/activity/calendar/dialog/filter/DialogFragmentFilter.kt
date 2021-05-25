@@ -163,7 +163,7 @@ class DialogFragmentFilter: DialogFragment() {
         display.getSize(size)
         val params: WindowManager.LayoutParams = dialog?.window?.attributes ?: return
 
-        val maxWidth = CalculatorUtil.dpToPx(330.0F)
+        val maxWidth = CalculatorUtil.dpToPx(300.0F)
         params.width = (size.x * 0.9).toInt()
         if (params.width > maxWidth) {
             params.width = maxWidth
