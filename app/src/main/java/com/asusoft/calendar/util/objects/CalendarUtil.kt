@@ -374,20 +374,23 @@ object CalendarUtil {
                     selectedDayDate(fragment, context, date)
                 }
 
-        if (eventList.isEmpty()) {
-            emptyTitle.setTextColor(ThemeUtil.instance.lightFont)
-            emptyTitle.visibility = View.VISIBLE
-            emptyTitle.textSize = DAY_HEADER_FONT_SIZE - 1.0F
-            emptyTitle.isClickable = true
-            emptyTitle.setSingleLine()
-            emptyTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+        emptyTitle.setTextColor(ThemeUtil.instance.lightFont)
+        emptyTitle.textSize = DAY_HEADER_FONT_SIZE - 1.0F
+        emptyTitle.isClickable = true
+        emptyTitle.setSingleLine()
+        emptyTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
 
-            emptyTitle.clicks()
-                    .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        selectedDayDate(fragment, context, date)
-                    }
+        emptyTitle.clicks()
+                .throttleFirst(CalendarApplication.THROTTLE, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    selectedDayDate(fragment, context, date)
+                }
+
+        if (eventList.isEmpty()) {
+            emptyTitle.visibility = View.VISIBLE
+        } else {
+            emptyTitle.visibility = View.INVISIBLE
         }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
