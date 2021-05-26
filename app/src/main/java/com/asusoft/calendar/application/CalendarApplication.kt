@@ -82,8 +82,5 @@ class CalendarApplication: Application() {
 
         // 공유 레퍼런스 context 초기화
         PreferenceManager.setApplicationContext(this)
-
-        // TODO: - 지우기
-        EventBackupAndRestoreUtil.backupEvent()
     }
 }

@@ -300,3 +300,8 @@ fun Date.toString_yyyyMMdd(): String {
     val sdf = SimpleDateFormat("yyyyMMdd")
     return sdf.format(this)
 }
+
+fun Date.toString_yyyyMMdd_HHmmss(): String {
+    val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
+    return sdf.format(this)
+}

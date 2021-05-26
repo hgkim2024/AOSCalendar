@@ -4,6 +4,7 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.DateFilterType
 import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
 import com.asusoft.calendar.application.CalendarApplication
+import com.asusoft.calendar.realm.copy.CopyBackupEventDays
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyVisitPerson
 import com.asusoft.calendar.util.*
@@ -139,7 +140,7 @@ open class RealmEventDay: RealmObject() {
             return item
         }
 
-        fun selectAll(): List<CopyEventDay> {
+        fun selectAll(): CopyBackupEventDays {
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
@@ -148,15 +149,13 @@ open class RealmEventDay: RealmObject() {
 
             realm.commitTransaction()
 
-            val list = ArrayList<CopyEventDay>()
+            val backupEvents = CopyBackupEventDays(ArrayList())
 
             for (item in items) {
-                list.add(
-                    item.getCopy(true)
-                )
+                backupEvents.items.add(item.getCopy(true))
             }
 
-            return list
+            return backupEvents
         }
 
         fun addAll(items: List<CopyEventDay>) {
