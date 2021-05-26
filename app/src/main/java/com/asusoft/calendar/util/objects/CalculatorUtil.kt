@@ -84,4 +84,13 @@ object CalculatorUtil {
     fun getMonthCalendarHeight(): Int {
         return getActivityHeight() - dpToPx(30.0F)
     }
+
+    fun jsonConverter(json: String): String {
+        var convertJson = json
+        while(json.substring(convertJson.length -4, convertJson.length) == "null") {
+            convertJson = convertJson.substring(0, convertJson.length - 4)
+        }
+
+        return convertJson
+    }
 }

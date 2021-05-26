@@ -3,7 +3,6 @@ package com.asusoft.calendar.util.objects
 import android.content.Context
 import android.widget.Toast
 import com.asusoft.calendar.realm.RealmEventDay
-import com.asusoft.calendar.realm.copy.CopyBackupEventDays
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -12,7 +11,6 @@ import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import java.util.*
 
 
 object EventBackupAndRestoreUtil {
@@ -27,16 +25,13 @@ object EventBackupAndRestoreUtil {
 
     fun restoreEvent(json: String, context: Context) {
         try {
-            var convertJson = json
-
-            while(json.substring(convertJson.length -4, convertJson.length) == "null") {
-                convertJson = convertJson.substring(0, convertJson.length - 4)
-            }
+            val convertJson = CalculatorUtil.jsonConverter(json)
 
             val gson = Gson()
-            val backupEventDays = gson.fromJson(convertJson, CopyBackupEventDays::class.java)
+            val itemType = object : TypeToken<List<CopyEventDay>>() {}.type
+            val items = gson.fromJson(convertJson, itemType) as List<CopyEventDay>
 
-            for (item in backupEventDays.items) {
+            for (item in items) {
                 item.insert()
             }
 
