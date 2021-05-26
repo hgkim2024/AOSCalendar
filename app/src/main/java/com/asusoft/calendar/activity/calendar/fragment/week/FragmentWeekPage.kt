@@ -201,7 +201,7 @@ class FragmentWeekPage: Fragment() {
         }
 
         GlobalScope.async {
-            delay(CalendarUtil.ANIMATION_DURATION + 50L)
+            delay(CalendarUtil.ANIMATION_DURATION + 100L)
             preventDoubleClickFlag = true
         }
     }
@@ -213,7 +213,7 @@ class FragmentWeekPage: Fragment() {
             xPosition: Int
     ) {
         if (prevDayEventView != null) {
-            val view = prevDayEventView!!
+            var view = prevDayEventView
             prevDayEventView = null
 
             val animationSet = CalendarUtil.getHideOneDayEventLayoutAnimationSet(
@@ -226,9 +226,8 @@ class FragmentWeekPage: Fragment() {
                 override fun onAnimationRepeat(animation: Animation?) {}
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    GlobalScope.async(Dispatchers.Main) {
-                        view.removeFromSuperView()
-                    }
+                    view?.removeFromSuperView()
+                    view = null
 
                     if (prevClickDayView == dayView) return
 
@@ -241,7 +240,7 @@ class FragmentWeekPage: Fragment() {
                 }
             })
 
-            view.startAnimation(animationSet)
+            view?.startAnimation(animationSet)
         }
     }
 

@@ -263,7 +263,7 @@ class FragmentMonthPage: Fragment() {
         }
 
         GlobalScope.async {
-            delay(CalendarUtil.ANIMATION_DURATION + 50L)
+            delay(CalendarUtil.ANIMATION_DURATION + 100L)
             preventDoubleClickFlag = true
         }
     }
@@ -334,7 +334,7 @@ class FragmentMonthPage: Fragment() {
             idx: Int
     ) {
         if (prevDayEventView != null) {
-            val view = prevDayEventView!!
+            var view = prevDayEventView
             prevDayEventView = null
 
             val animationSet = CalendarUtil.getHideOneDayEventLayoutAnimationSet(
@@ -347,7 +347,8 @@ class FragmentMonthPage: Fragment() {
                 override fun onAnimationRepeat(animation: Animation?) {}
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    view.removeFromSuperView()
+                    view?.removeFromSuperView()
+                    view = null
 
                     if (prevClickDayView == dayView) return
 
@@ -359,7 +360,7 @@ class FragmentMonthPage: Fragment() {
                 }
             })
 
-            view.startAnimation(animationSet)
+            view?.startAnimation(animationSet)
         }
     }
 
