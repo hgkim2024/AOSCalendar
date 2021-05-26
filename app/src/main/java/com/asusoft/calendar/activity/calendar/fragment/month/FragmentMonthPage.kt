@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
 import com.asusoft.calendar.realm.RealmEventDay
@@ -508,7 +507,7 @@ class FragmentMonthPage: Fragment() {
 //                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
 //                    Logger.d("key: ${Date(key).toStringDay()}")
 
-                    val event = RealmEventDay.select(key)
+                    val event = RealmEventDay.selectOne(key)
                     if (event != null) {
                         dragInitFlag = true
 

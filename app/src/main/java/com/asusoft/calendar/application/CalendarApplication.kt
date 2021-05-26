@@ -6,10 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
-import com.asusoft.calendar.util.objects.AdUtil
-import com.asusoft.calendar.util.objects.CalculatorUtil
-import com.asusoft.calendar.util.objects.PreferenceKey
-import com.asusoft.calendar.util.objects.PreferenceManager
+import com.asusoft.calendar.util.objects.*
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -85,5 +82,8 @@ class CalendarApplication: Application() {
 
         // 공유 레퍼런스 context 초기화
         PreferenceManager.setApplicationContext(this)
+
+        // TODO: - 지우기
+        EventBackupAndRestoreUtil.backupEvent()
     }
 }

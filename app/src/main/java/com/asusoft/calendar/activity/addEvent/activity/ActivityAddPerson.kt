@@ -1,11 +1,8 @@
 package com.asusoft.calendar.activity.addEvent.activity
 
-import android.animation.ObjectAnimator
-import android.animation.StateListAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -27,7 +24,6 @@ import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -55,7 +51,7 @@ class ActivityAddPerson : AppCompatActivity() {
         val key = intent.getLongExtra("key", -1L)
         val visitList =
                 if (key != -1L) {
-                    val item = RealmEventDay.select(key)
+                    val item = RealmEventDay.selectOne(key)
 
                     if (item == null) {
                         finish()

@@ -16,7 +16,6 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.addEvent.activity.ActivityAddEvent
 import com.asusoft.calendar.activity.calendar.activity.ActivityCalendar
 import com.asusoft.calendar.activity.calendar.fragment.week.objects.WeekItem
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.*
 import com.asusoft.calendar.util.eventbus.GlobalBus
@@ -436,7 +435,7 @@ class FragmentWeekPage: Fragment() {
 //                    Logger.d("Drag end Date: ${Date(endTime).toStringDay()}")
 //                    Logger.d("key: ${Date(key).toStringDay()}")
 
-                        val event = RealmEventDay.select(key)
+                        val event = RealmEventDay.selectOne(key)
                         if (event != null) {
                             dragInitFlag = true
 

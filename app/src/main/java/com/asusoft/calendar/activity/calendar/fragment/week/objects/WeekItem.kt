@@ -17,7 +17,6 @@ import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.week.WeekCalendarUiUtil
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmEventDay
 import com.asusoft.calendar.util.endOfWeek
 import com.asusoft.calendar.util.objects.*
@@ -92,7 +91,7 @@ class WeekItem(
                 .subscribe {
 //                    Logger.d("checkbox: ${checkbox.isChecked}")
 
-                    val event = RealmEventDay.select(key)
+                    val event = RealmEventDay.selectOne(key)
                     event?.update(
                             name,
                             startTime,

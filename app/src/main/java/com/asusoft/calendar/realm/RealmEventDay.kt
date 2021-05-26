@@ -126,7 +126,7 @@ open class RealmEventDay: RealmObject() {
             return copyList
         }
 
-        fun select(key: Long): RealmEventDay? {
+        fun selectOne(key: Long): RealmEventDay? {
             val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
             realm.beginTransaction()
 
@@ -137,6 +137,33 @@ open class RealmEventDay: RealmObject() {
             realm.commitTransaction()
 
             return item
+        }
+
+        fun selectAll(): List<CopyEventDay> {
+            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+            realm.beginTransaction()
+
+            val items = realm.where(RealmEventDay::class.java)
+                .findAll()
+
+            realm.commitTransaction()
+
+            val list = ArrayList<CopyEventDay>()
+
+            for (item in items) {
+                list.add(
+                    item.getCopy(true)
+                )
+            }
+
+            return list
+        }
+
+        fun addAll(items: List<CopyEventDay>) {
+            // TODO: - 프로그래스 바 띄우기
+            for (item in items) {
+                item.insert()
+            }
         }
 
 //        fun selectCopyList(name: String): ArrayList<CopyEventDay> {
@@ -247,6 +274,19 @@ open class RealmEventDay: RealmObject() {
         return copyVisitList
     }
 
+    fun updateKey(key: Long) {
+        if (key == 0L) return
+
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+
+        realm.beginTransaction()
+
+        this.key = key
+
+        realm.commitTransaction()
+        realm.refresh()
+    }
+
     fun update(
         name: String,
         startTime: Long,
@@ -254,7 +294,8 @@ open class RealmEventDay: RealmObject() {
         isComplete: Boolean,
         visitList: ArrayList<CopyVisitPerson>? = null,
         memo: String? = null,
-        color: Int? = null
+        color: Int? = null,
+        order: Double? = null
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -298,6 +339,10 @@ open class RealmEventDay: RealmObject() {
 
         if (color != null) {
             this.color = color
+        }
+
+        if (order != null) {
+            this.order = order
         }
 
 //        Logger.d("RealmEventOneDay update, name: ${name}, startTime: ${Date(startTime).toStringDay()}, endTime: ${Date(endTime).toStringDay()}")

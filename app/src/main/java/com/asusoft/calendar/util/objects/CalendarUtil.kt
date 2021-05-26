@@ -413,7 +413,7 @@ object CalendarUtil {
                                     delay(RecyclerViewAdapter.CLICK_DELAY)
                                     val item = adapter.list[position] as? CopyEventDay
                                     if (item != null) {
-                                        val event = RealmEventDay.select(item.key)
+                                        val event = RealmEventDay.selectOne(item.key)
                                         if (event != null) {
                                             val intent = Intent(context, ActivityAddEvent::class.java)
                                             intent.putExtra("key", item.key)

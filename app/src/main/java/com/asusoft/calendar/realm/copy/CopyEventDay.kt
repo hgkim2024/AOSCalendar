@@ -1,6 +1,7 @@
 package com.asusoft.calendar.realm.copy
 
 import com.asusoft.calendar.realm.RealmEventDay
+import com.asusoft.calendar.util.startOfDay
 
 class CopyEventDay(
         val key: Long,
@@ -14,9 +15,25 @@ class CopyEventDay(
         var order: Double
 ) {
 
+    fun insert() {
+        val item = RealmEventDay()
+        item.updateKey(key)
+        item.update(
+            name,
+            startTime,
+            endTime,
+            isComplete,
+            visitList,
+            memo,
+            color,
+            order
+        )
+        item.insert()
+    }
+
     fun updateIsCompete(isComplete: Boolean) {
         this.isComplete = isComplete
-        val item = RealmEventDay.select(key)
+        val item = RealmEventDay.selectOne(key)
         item?.update(
                 name,
                 startTime,
@@ -27,7 +44,7 @@ class CopyEventDay(
 
     fun updateName(name: String) {
         this.name = name
-        val item = RealmEventDay.select(key)
+        val item = RealmEventDay.selectOne(key)
         item?.update(
                 name,
                 startTime,
@@ -38,12 +55,12 @@ class CopyEventDay(
 
     fun updateOrder(order: Double) {
         this.order = order
-        val item = RealmEventDay.select(key)
+        val item = RealmEventDay.selectOne(key)
         item?.updateOrder(order)
     }
 
     fun delete() {
-        val item = RealmEventDay.select(key)
+        val item = RealmEventDay.selectOne(key)
         item?.delete()
     }
 }

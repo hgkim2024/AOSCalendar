@@ -1,10 +1,12 @@
 package com.asusoft.calendar.activity.calendar.activity
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -21,6 +23,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -68,7 +72,9 @@ import java.util.concurrent.TimeUnit
 
 class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
-    companion object;
+    companion object {
+        const val REQUEST_CODE: Int = 1
+    }
 
     private var monthDate = Date().getToday()
     private var weekDate = Date().getToday()
@@ -144,6 +150,8 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(baseContext)
+
+        checkPermission()
     }
 
     override fun onDestroy() {
@@ -435,6 +443,52 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             val imm: InputMethodManager? = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(focusView.windowToken, 0)
             focusView.clearFocus()
+        }
+    }
+
+    // 권한 요청
+    private fun checkPermission() {
+        if (
+//            ContextCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            ) == PackageManager.PERMISSION_DENIED
+//
+//            || ContextCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//            ) == PackageManager.PERMISSION_DENIED
+
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.INTERNET
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.INTERNET
+            ), REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_CODE -> {
+                permissions.forEachIndexed { i, s ->
+                    val grantResult = grantResults[i]
+                    if (
+//                        s == Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                        || s == Manifest.permission.READ_EXTERNAL_STORAGE
+                        s == Manifest.permission.INTERNET
+                    ) {
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            checkPermission()
+                        }
+                    }
+                }
+            }
         }
     }
 

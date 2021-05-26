@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.asusoft.calendar">
 
+    <!-- 인터넷 권한 -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 파일 권한 -->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
 
     <application
         android:name=".application.CalendarApplication"

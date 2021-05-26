@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -114,7 +112,7 @@ class FragmentAddEvent: Fragment() {
         if (key != -1L) {
             isEdit = true
 
-            val copyItem = RealmEventDay.select(key)?.getCopy(isVisitList = true)
+            val copyItem = RealmEventDay.selectOne(key)?.getCopy(isVisitList = true)
             if (copyItem == null) {
                 activity?.finish()
                 return null
@@ -317,7 +315,7 @@ class FragmentAddEvent: Fragment() {
         }
 
         if(isEdit) {
-            val event = RealmEventDay.select(key)
+            val event = RealmEventDay.selectOne(key)
             event?.update(
                     titleItem.context,
                     startDayItem.date.startOfDay.time,
@@ -343,7 +341,7 @@ class FragmentAddEvent: Fragment() {
     }
 
     private fun removeEvent(key: Long) {
-        val event = RealmEventDay.select(key)
+        val event = RealmEventDay.selectOne(key)
         if (event != null) {
             event.delete()
             (activity as? ActivityAddEvent)?.refreshFlag = true
