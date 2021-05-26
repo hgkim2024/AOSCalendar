@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1063529012332",
+    "project_id": "clean-feat-302106",
+    "storage_bucket": "clean-feat-302106.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063529012332:android:c7edf54619185513810c49",
+        "android_client_info": {
+          "package_name": "com.asusoft.calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063529012332-cjndoe4p60jbdg8f2qu06robldv2hi8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.asusoft.calendar",
+            "certificate_hash": "36a0463e294d883d556813eecd0bead7fddf2195"
+          }
+        },
+        {
+          "client_id": "1063529012332-tt1fs6sebmkntkl1bpljs8qo7i9m5v2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsuKH3A25lBnShlPEsDl9rW0psjNmCep4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063529012332-tt1fs6sebmkntkl1bpljs8qo7i9m5v2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
