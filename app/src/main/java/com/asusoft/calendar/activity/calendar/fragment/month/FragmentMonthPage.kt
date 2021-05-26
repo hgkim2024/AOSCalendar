@@ -263,7 +263,7 @@ class FragmentMonthPage: Fragment() {
         }
 
         GlobalScope.async {
-            delay(CalendarUtil.ANIMATION_DURATION + 100L)
+            delay(CalendarUtil.ANIMATION_DURATION * 2)
             preventDoubleClickFlag = true
         }
     }
