@@ -19,9 +19,12 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
+import com.asusoft.calendar.util.objects.AlertUtil
 import com.asusoft.calendar.util.objects.EventBackupAndRestoreUtil
+import com.asusoft.calendar.util.objects.PreferenceManager.context
 import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.toString_yyyyMMdd_HHmmss
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.FileOutputStream
@@ -42,7 +45,16 @@ class ActivitySetting : AppCompatActivity() {
     ) { activityResult ->
         if (activityResult.resultCode == Activity.RESULT_OK) {
             activityResult.data?.data.also { uri ->
+                // TODO: - 현재 alert 뛰울 시 크래시 발생 - 원인 파악 후 수정할 것
+                Logger.d("requestReadFileActivity")
                 readRestoreFile(uri)
+//                AlertUtil.alertOkAndCancel(
+//                    context,
+//                    "동일한 이벤트의 경우 덮어쓰게 됩니다. 복원하시겠습니까?",
+//                    getString(R.string.ok)
+//                ) { _, _ ->
+//                    readRestoreFile(uri)
+//                }
             }
         }
     }
