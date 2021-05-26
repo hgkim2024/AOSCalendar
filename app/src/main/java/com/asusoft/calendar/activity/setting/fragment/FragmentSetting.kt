@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.setting.activity.ActivitySetting
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.RecyclerItemClickListener
@@ -42,7 +43,11 @@ class FragmentSetting: Fragment() {
 
         val list = ArrayList<Any>()
 
-        list.add(TextItem("폰트 크기", true))
+        val fontString = "폰트 크기"
+        val backupString = "백업 파일 만들기"
+        val restoreString = "복원 파일 가져오기"
+
+        list.add(TextItem(fontString, true))
 
         val orientationList = ArrayList<String>()
         orientationList.addAll(arrayOf("세로 고정", "자동"))
@@ -54,6 +59,9 @@ class FragmentSetting: Fragment() {
                         PreferenceKey.CALENDAR_ORIENTATION
                 )
         )
+
+        list.add(TextItem(backupString, true))
+        list.add(TextItem(restoreString, true))
 
         adapter = RecyclerViewAdapter(this, list)
 
@@ -72,11 +80,25 @@ class FragmentSetting: Fragment() {
                                     when(val item = adapter.list[position]) {
                                         is TextItem -> {
                                             when(item.text) {
-                                                "폰트 크기" -> {
+                                                fontString -> {
                                                     replaceFragment(
                                                             FragmentSettingFontSize.newInstance(),
                                                             FragmentSettingFontSize.toString()
                                                     )
+                                                }
+
+                                                backupString -> {
+                                                    val activity = activity
+                                                    if (activity is ActivitySetting) {
+                                                        activity.createBackupFile()
+                                                    }
+                                                }
+
+                                                restoreString -> {
+                                                    val activity = activity
+                                                    if (activity is ActivitySetting) {
+                                                        activity.openRestoreFile()
+                                                    }
                                                 }
                                             }
                                         }

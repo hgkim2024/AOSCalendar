@@ -115,7 +115,7 @@ class ActivitySetting : AppCompatActivity() {
         return super.onOptionsItemSelected(menuItem)
     }
 
-    private fun openRestoreFile() {
+    fun openRestoreFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
@@ -124,7 +124,7 @@ class ActivitySetting : AppCompatActivity() {
         requestReadFileActivity.launch(intent)
     }
 
-    private fun createBackupFile() {
+    fun createBackupFile() {
         val fileName = "AsuCalendar_${Date().toString_yyyyMMdd_HHmmss()}"+ ".txt"
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)

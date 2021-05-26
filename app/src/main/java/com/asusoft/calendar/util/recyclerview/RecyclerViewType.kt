@@ -36,11 +36,13 @@ enum class RecyclerViewType(val value: Int) {
                 is ActivityAddPerson -> VISIT_PERSON
                 is FragmentRecentSearchTerms -> RECENT_SEARCH
                 is FragmentEventSearchResult -> EVENT_SEARCH_RESULT
+
                 is FragmentMonthSetting,
                 is FragmentDaySetting,
                 is FragmentSettingFontSize,
                 is FragmentSetting,
                 is DialogFragmentFilter-> CALENDAR_SETTING
+
                 else -> ADD_EVENT
             }
         }

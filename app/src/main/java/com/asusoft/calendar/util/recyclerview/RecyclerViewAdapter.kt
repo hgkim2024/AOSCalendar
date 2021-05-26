@@ -239,6 +239,7 @@ class RecyclerViewAdapter(
 
                     CalendarSettingType.SPINNER.value -> {
                         val view = inflater.inflate(R.layout.holder_spinner, parent, false)
+                        view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
                         SpinnerHolder(context, view, this)
                     }
 
