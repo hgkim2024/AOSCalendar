@@ -73,7 +73,7 @@ class FragmentMonthPage: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         val time = args.getLong("time")
         initFlag = args.getBoolean("initFlag", false)
 
@@ -90,7 +90,7 @@ class FragmentMonthPage: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val inflater = LayoutInflater.from(context)
         page = inflater.inflate(R.layout.fragment_constraint_layout, null, false)
 
@@ -103,7 +103,7 @@ class FragmentMonthPage: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val context = context!!
+        val context = requireContext()
 
         setActionBarTitle()
         setAsyncPageUI(context)
@@ -398,7 +398,7 @@ class FragmentMonthPage: Fragment() {
     private fun refreshPage() {
         if (monthItem == null) return
 
-        val context = context!!
+        val context = requireContext()
         for (weekItem in monthItem!!.weekOfMonthItemList) {
 
             MonthCalendarUiUtil.refreshWeek(
@@ -433,7 +433,7 @@ class FragmentMonthPage: Fragment() {
 
         if (weekOfMonthItem == null) return
 
-        val context = context!!
+        val context = requireContext()
         MonthCalendarUiUtil.refreshWeek(context, weekOfMonthItem, date)
 
         val startDate = weekOfMonthItem.weekDate.startOfWeek
@@ -465,7 +465,7 @@ class FragmentMonthPage: Fragment() {
 
         val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
         if (monthViewPager != null) {
-            setAsyncPageUI(context!!)
+            setAsyncPageUI(requireContext())
         }
 
         val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUiUtil.toString(), null)

@@ -55,7 +55,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         val dateTime = args.getLong("date") as Long
         if (dateTime != 0L) {
             date = Date(dateTime)
@@ -64,7 +64,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = context!!
+        val context = requireContext()
 
         val view = inflater.inflate(R.layout.dialog_year_month_picker, container, false)
 

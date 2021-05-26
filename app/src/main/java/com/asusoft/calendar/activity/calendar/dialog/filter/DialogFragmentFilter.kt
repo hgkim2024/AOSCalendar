@@ -49,13 +49,13 @@ class DialogFragmentFilter: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         searchType = args.getInt("searchType", 0)
         periodType = args.getInt("periodType", 0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = context!!
+        val context = requireContext()
         val view = inflater.inflate(R.layout.dialog_recyclerview, container, false)
 
         if (dialog != null && dialog?.window != null) {

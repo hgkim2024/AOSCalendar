@@ -67,7 +67,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         val selectedStartTime = args.getLong("selectedStartDate") as Long
         if (selectedStartTime != 0L) {
             selectedStartDate = Date(selectedStartTime)
@@ -92,7 +92,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = context!!
+        val context = requireContext()
 
         val view = inflater.inflate(R.layout.dialog_select_day, container, false)
 

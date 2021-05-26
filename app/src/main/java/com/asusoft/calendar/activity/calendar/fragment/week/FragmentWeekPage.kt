@@ -70,7 +70,7 @@ class FragmentWeekPage: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
 
         val time = args.getLong("time")
         initFlag = args.getBoolean("initFlag", false)
@@ -89,7 +89,7 @@ class FragmentWeekPage: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = this.context!!
+        val context = this.requireContext()
 
         page = inflater.inflate(R.layout.fragment_constraint_layout, null, false)
 
@@ -102,7 +102,7 @@ class FragmentWeekPage: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val context = context!!
+        val context = requireContext()
 
         setActionBarTitle()
         setAsyncPageUI(context)
@@ -166,7 +166,7 @@ class FragmentWeekPage: Fragment() {
         if (weekItem == null) return
         if (weekCalendar == null) return
 
-        WeekCalendarUiUtil.refreshPage(context!!, weekItem!!, prevDayEventView)
+        WeekCalendarUiUtil.refreshPage(requireContext(), weekItem!!, prevDayEventView)
         isEmptyViewShow()
     }
 
@@ -360,7 +360,7 @@ class FragmentWeekPage: Fragment() {
     public fun onEvent(event: HashMapEvent) {
         val weekViewPager = event.map.getOrDefault(FragmentWeekViewPager.toString(), null)
         if (weekViewPager != null) {
-            setAsyncPageUI(context!!)
+            setAsyncPageUI(requireContext())
         }
 
         val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)

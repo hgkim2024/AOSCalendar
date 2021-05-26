@@ -90,14 +90,14 @@ class FragmentAddEvent: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         key = args.getLong("key")
         startDate = Date(args.getLong("startDate", 0L))
         endDate = Date(args.getLong("endDate", 0L))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val view = inflater.inflate(R.layout.fragment_add_event, container, false)
 
         GlobalBus.register(this)
@@ -352,7 +352,7 @@ class FragmentAddEvent: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val context = context!!
+        val context = requireContext()
         val deleteHolder = event.map.getOrDefault(DeleteHolder.toString(), null)
         if (deleteHolder != null) {
             val key = event.map["key"] as Long

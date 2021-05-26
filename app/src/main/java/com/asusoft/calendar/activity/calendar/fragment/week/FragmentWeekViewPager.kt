@@ -61,7 +61,7 @@ class FragmentWeekViewPager: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         val dateTime = args.getLong("date") as Long
         if (dateTime != 0L) {
             date = Date(dateTime)
@@ -79,7 +79,7 @@ class FragmentWeekViewPager: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = context!!
+        val context = requireContext()
         val view = inflater.inflate(R.layout.fragment_week_view_pager, container, false)
 
         val headerLayout: ConstraintLayout = view.findViewById(R.id.week_header)

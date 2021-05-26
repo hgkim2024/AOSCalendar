@@ -58,7 +58,7 @@ class FragmentMonthViewPager: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments!!
+        val args = requireArguments()
         val dateTime = args.getLong("date") as Long
         if (dateTime != 0L) {
             date = Date(dateTime)
@@ -82,7 +82,7 @@ class FragmentMonthViewPager: Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val view = inflater.inflate(R.layout.fragment_view_pager, container, false)
 
         viewPager = view.findViewById(R.id.calendar)

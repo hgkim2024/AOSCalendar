@@ -87,7 +87,7 @@ class ActivitySetting : AppCompatActivity() {
                     )
                     .commit()
 //        createBackupFile()
-        openRestoreFile()
+//        openRestoreFile()
     }
 
     override fun onResume() {

@@ -27,7 +27,7 @@ class FragmentMonthSetting: Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         val list = ArrayList<Any>()

@@ -43,10 +43,10 @@ class FragmentEventSearchResult: Fragment() {
     private var position = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
-        val args = arguments!!
+        val args = requireArguments()
         searchText = args.getString("searchText", "")
         val list = getList(searchText)
         adapter = RecyclerViewAdapter(this, list as ArrayList<Any>)

@@ -35,7 +35,7 @@ class FragmentRecentSearchTerms: Fragment() {
     lateinit var tvEmpty: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val context = this.context!!
+        val context = this.requireContext()
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         val list = RealmRecentSearchTerms.selectCopyAllList(RecentSearchTermsType.EVENT.value)
