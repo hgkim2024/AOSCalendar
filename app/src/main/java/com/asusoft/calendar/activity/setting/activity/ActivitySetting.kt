@@ -40,36 +40,6 @@ class ActivitySetting : AppCompatActivity() {
         }
     }
 
-    private val requestReadFileActivity: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { activityResult ->
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            activityResult.data?.data.also { uri ->
-                // TODO: - 현재 alert 뛰울 시 크래시 발생 - 원인 파악 후 수정할 것
-                Logger.d("requestReadFileActivity")
-                readRestoreFile(uri)
-//                AlertUtil.alertOkAndCancel(
-//                    context,
-//                    "동일한 이벤트의 경우 덮어쓰게 됩니다. 복원하시겠습니까?",
-//                    getString(R.string.ok)
-//                ) { _, _ ->
-//                    readRestoreFile(uri)
-//                }
-            }
-        }
-    }
-
-    private val requestWriteFileActivity: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { activityResult ->
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            activityResult.data?.data.also { uri ->
-                writeBackupFile(uri)
-            }
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
@@ -98,8 +68,6 @@ class ActivitySetting : AppCompatActivity() {
                             FragmentSetting.toString()
                     )
                     .commit()
-//        createBackupFile()
-//        openRestoreFile()
     }
 
     override fun onResume() {
@@ -126,66 +94,4 @@ class ActivitySetting : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(menuItem)
     }
-
-    fun openRestoreFile() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-        }
-
-        requestReadFileActivity.launch(intent)
-    }
-
-    fun createBackupFile() {
-        val fileName = "AsuCalendar_${Date().toString_yyyyMMdd_HHmmss()}"+ ".txt"
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            putExtra(Intent.EXTRA_TITLE, fileName)
-        }
-
-        requestWriteFileActivity.launch(intent)
-    }
-
-    private fun readRestoreFile(uri: Uri?) {
-        if (uri == null) return
-
-        val input: InputStream? = contentResolver.openInputStream(uri)
-        val r = BufferedReader(InputStreamReader(input))
-
-        var json = ""
-
-        if (input != null) {
-            while(true) {
-                try {
-                    val line = r.readLine()
-                    json += line
-                    Log.d("Asu", line)
-                } catch (e: Exception) {
-                    break
-                }
-            }
-
-            EventBackupAndRestoreUtil.restoreEvent(json, baseContext)
-        }
-    }
-
-    private fun writeBackupFile(uri: Uri?) {
-        if (uri == null) return
-        val text = EventBackupAndRestoreUtil.backupEvent()
-
-        GlobalScope.async (Dispatchers.IO) {
-            contentResolver.openFileDescriptor(uri, "w").use {
-                FileOutputStream(it!!.fileDescriptor).use { outStream ->
-                    val data = text.toByteArray(Charsets.UTF_8)
-                    outStream.write(data)
-                    outStream.close()
-                }
-            }
-            withContext(Dispatchers.Main) {
-                Toast.makeText(applicationContext, "Done writing an image", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
 }
