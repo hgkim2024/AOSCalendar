@@ -206,7 +206,7 @@ class FragmentAddEvent: Fragment() {
                                                             selectDayList[0].date,
                                                             selectDayList[1].date.startOfDay
                                                     )
-                                                    .show(fragmentManager!!, DialogFragmentDaySelectCalendar.toString())
+                                                    .show(requireActivity().supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
                                         }
 
                                         is VisitItem -> {
@@ -434,7 +434,7 @@ class FragmentAddEvent: Fragment() {
                                     }
                                 }
                             })
-                    .show(fragmentManager!!)
+                    .show(requireActivity().supportFragmentManager)
         }
     }
 
