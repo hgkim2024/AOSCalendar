@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.setting.activity.ActivitySetting
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextItem
 import java.util.ArrayList
@@ -85,4 +86,8 @@ class FragmentSettingFontSize: Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as? ActivitySetting)?.setTitle("폰트 크기")
+    }
 }

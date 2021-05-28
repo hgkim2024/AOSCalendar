@@ -109,11 +109,17 @@ class RecyclerViewAdapter(
             }
 
             CALENDAR_SETTING -> {
-                return when(item) {
+                return when (item) {
                     is SwitchItem -> CalendarSettingType.SWITCH.value
                     is SeekBarItem -> CalendarSettingType.SEEK_BAR.value
                     is TextItem -> CalendarSettingType.TEXT.value
-                    is SpinnerItem -> CalendarSettingType.SPINNER.value
+                    is SpinnerItem -> {
+                        if (item.separator) {
+                            CalendarSettingType.SPINNER.value
+                        } else {
+                            CalendarSettingType.SPINNER_NO_SEPARATOR.value
+                        }
+                    }
                     else -> CalendarSettingType.SWITCH.value
                 }
             }
@@ -240,6 +246,11 @@ class RecyclerViewAdapter(
                     CalendarSettingType.SPINNER.value -> {
                         val view = inflater.inflate(R.layout.holder_spinner, parent, false)
                         view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                        SpinnerHolder(context, view, this)
+                    }
+
+                    CalendarSettingType.SPINNER_NO_SEPARATOR.value -> {
+                        val view = inflater.inflate(R.layout.holder_spinner, parent, false)
                         SpinnerHolder(context, view, this)
                     }
 

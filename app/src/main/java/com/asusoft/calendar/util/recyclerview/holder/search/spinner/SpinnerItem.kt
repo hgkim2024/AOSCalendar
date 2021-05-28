@@ -8,7 +8,8 @@ class SpinnerItem(
     val title: String,
     var selectItemPosition: Int,
     val itemList: ArrayList<String>,
-    val key: String? = null
+    val key: String? = null,
+    val separator: Boolean = false
 ) {
     var onItemSelectedListener: AdapterView.OnItemSelectedListener
 

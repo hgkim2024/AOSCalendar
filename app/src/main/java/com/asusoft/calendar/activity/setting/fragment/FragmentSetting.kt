@@ -95,7 +95,8 @@ class FragmentSetting: Fragment() {
                         "화면 방향",
                         PreferenceManager.getInt(PreferenceKey.CALENDAR_ORIENTATION, PreferenceKey.CALENDAR_DEFAULT_ORIENTATION),
                         orientationList,
-                        PreferenceKey.CALENDAR_ORIENTATION
+                        PreferenceKey.CALENDAR_ORIENTATION,
+                        true
                 )
         )
 
@@ -147,6 +148,11 @@ class FragmentSetting: Fragment() {
         )
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as? ActivitySetting)?.setTitle("설정")
     }
 
     fun replaceFragment(instance: Fragment, tag: String) {

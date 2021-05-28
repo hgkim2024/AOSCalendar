@@ -10,5 +10,6 @@ data class CopyTheme(
     var font: Int,
     var lightFont: Int,
     var invertFont: Int,
-    var today: Int
+    var today: Int,
+    var eventFontColor: Int
 )

@@ -18,6 +18,8 @@ import com.asusoft.calendar.activity.addEvent.fragment.FragmentAddEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
 import com.asusoft.calendar.util.objects.CalendarUtil
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.objects.ThemeUtil
 
 
@@ -58,6 +60,7 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(ThemeUtil.instance.background)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportFragmentManager.addOnBackStackChangedListener(this)
@@ -104,6 +107,7 @@ class ActivityAddEvent: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
     fun setTitle(text: String) {
         val tv = findViewById<TextView>(R.id.action_bar_title)
+        PreferenceManager.getFloat(PreferenceKey.CALENDAR_HEADER_FONT_SIZE, PreferenceKey.CALENDAR_HEADER_DEFAULT_FONT_SIZE)
         tv.text = text
     }
 }

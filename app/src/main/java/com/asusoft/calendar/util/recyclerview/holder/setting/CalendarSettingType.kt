@@ -4,5 +4,6 @@ enum class CalendarSettingType(val value: Int) {
     SWITCH(0),
     SEEK_BAR(1),
     TEXT(2),
-    SPINNER(3);
+    SPINNER(3),
+    SPINNER_NO_SEPARATOR(4);
 }

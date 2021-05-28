@@ -89,7 +89,7 @@ class WeekOfMonthItem(
             eventViewList[idx]?.set(order, eventView)
         }
 
-        eventView.setTextColor(ThemeUtil.instance.invertFont)
+        eventView.setTextColor(ThemeUtil.instance.eventFontColor)
 
         if (!isHoliday) {
             if (PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT)) {

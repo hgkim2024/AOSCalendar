@@ -122,6 +122,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
         drawerLayout = findViewById(R.id.drawer_layout)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(ThemeUtil.instance.background)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -150,6 +151,7 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(baseContext)
+        recyclerView.setBackgroundColor(ThemeUtil.instance.background)
 
         checkPermission()
     }

@@ -21,6 +21,8 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
+import com.asusoft.calendar.util.objects.PreferenceKey
+import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import com.asusoft.calendar.util.recyclerview.helper.ItemTouchHelperCallback
@@ -64,6 +66,7 @@ class ActivityAddPerson : AppCompatActivity() {
                 }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(ThemeUtil.instance.background)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -93,6 +96,7 @@ class ActivityAddPerson : AppCompatActivity() {
         touchHelper.attachToRecyclerView(recyclerView)
 
         val title = findViewById<TextView>(R.id.action_bar_title)
+        title.textSize = PreferenceManager.getFloat(PreferenceKey.CALENDAR_HEADER_FONT_SIZE, PreferenceKey.CALENDAR_HEADER_DEFAULT_FONT_SIZE)
         title.setTextColor(ThemeUtil.instance.font)
         tvEmpty = findViewById<TextView>(R.id.tv_empty)
         isEmpty()

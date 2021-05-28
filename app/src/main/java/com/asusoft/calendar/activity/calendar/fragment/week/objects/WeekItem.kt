@@ -76,7 +76,7 @@ class WeekItem(
             eventViewList[idx]?.set(order, eventView)
         }
 
-        tv.setTextColor(ThemeUtil.instance.invertFont)
+        tv.setTextColor(ThemeUtil.instance.eventFontColor)
 
         val checkbox = eventView.findViewById<CheckBox>(R.id.checkbox)
         checkbox.isChecked = isComplete

@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="초대할 사람 추가"
-            android:textStyle="bold"
             android:textAlignment="center"
             android:textSize="18sp"
             android:background="@android:color/transparent" />

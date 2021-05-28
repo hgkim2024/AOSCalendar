@@ -19,10 +19,8 @@ import com.asusoft.calendar.util.eventbus.GlobalBus
 import com.asusoft.calendar.util.eventbus.HashMapEvent
 import com.asusoft.calendar.util.extension.removeActionBarShadow
 import com.asusoft.calendar.util.extension.setOrientation
-import com.asusoft.calendar.util.objects.AlertUtil
-import com.asusoft.calendar.util.objects.EventBackupAndRestoreUtil
+import com.asusoft.calendar.util.objects.*
 import com.asusoft.calendar.util.objects.PreferenceManager.context
-import com.asusoft.calendar.util.objects.ThemeUtil
 import com.asusoft.calendar.util.toString_yyyyMMdd_HHmmss
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.*
@@ -47,6 +45,7 @@ class ActivitySetting : AppCompatActivity() {
         setOrientation()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(ThemeUtil.instance.background)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -93,5 +92,11 @@ class ActivitySetting : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(menuItem)
+    }
+
+    fun setTitle(text: String) {
+        val tv = findViewById<TextView>(R.id.action_bar_title)
+        PreferenceManager.getFloat(PreferenceKey.CALENDAR_HEADER_FONT_SIZE, PreferenceKey.CALENDAR_HEADER_DEFAULT_FONT_SIZE)
+        tv.text = text
     }
 }

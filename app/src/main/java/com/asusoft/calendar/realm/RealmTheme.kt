@@ -26,6 +26,7 @@ open class RealmTheme: RealmObject()  {
     var invertFont: Int = Color.parseColor("#FAFAFA")
 
     var today: Int = Color.parseColor("#00b07b")
+    var eventFontColor = Color.parseColor("#FAFAFA")
 
     companion object {
         fun selectOne(key: Long = 0): RealmTheme? {
@@ -59,7 +60,8 @@ open class RealmTheme: RealmObject()  {
             font,
             lightFont,
             invertFont,
-            today
+            today,
+                eventFontColor
         )
     }
 
