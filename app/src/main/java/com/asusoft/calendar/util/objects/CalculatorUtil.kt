@@ -87,8 +87,13 @@ object CalculatorUtil {
 
     fun jsonConverter(json: String): String {
         var convertJson = json
-        while(json.substring(convertJson.length -4, convertJson.length) == "null") {
-            convertJson = convertJson.substring(0, convertJson.length - 4)
+
+        if (convertJson.length >= 8) {
+            while (json.substring(convertJson.length - 4, convertJson.length) == "null") {
+                if (convertJson.length < 8) break
+
+                convertJson = convertJson.substring(0, convertJson.length - 4)
+            }
         }
 
         return convertJson

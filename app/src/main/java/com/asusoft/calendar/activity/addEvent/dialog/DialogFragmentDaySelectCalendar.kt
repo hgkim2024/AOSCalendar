@@ -26,6 +26,7 @@ import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDa
 import com.asusoft.calendar.util.recyclerview.holder.calendar.selectday.SelectDayItem
 import com.asusoft.calendar.util.recyclerview.helper.StartSnapHelper
 import com.jakewharton.rxbinding4.view.clicks
+import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -249,6 +250,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
+        // TODO: - 시작날짜와 종료날짜를 각각 설정해서 하는 경우에 오류 발생 - 해당경우에도 동작하도록 수정할 것
         val selectDayHolder = event.map.getOrDefault(SelectDayHolder.toString(), null)
         if (selectDayHolder != null) {
             val date = event.map["date"] as Date
@@ -267,6 +269,9 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                     selectedEndDate = selectedStartDate
                     selectedStartDate = date
                 }
+
+                Logger.d("start date: ${selectedStartDate?.toStringDay()}")
+                Logger.d("end date: ${selectedEndDate?.toStringDay()}")
                 selectedIsStart = true
             }
 
