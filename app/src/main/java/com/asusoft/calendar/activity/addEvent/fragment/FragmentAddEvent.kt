@@ -37,10 +37,12 @@ import com.asusoft.calendar.util.recyclerview.holder.addeventholder.memo.MemoIte
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.startday.StartDayItem
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.visite.VisitItem
 import com.asusoft.calendar.util.startOfDay
+import com.asusoft.calendar.util.toStringDay
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jakewharton.rxbinding4.view.clicks
+import com.orhanobut.logger.Logger
 import dev.sasikanth.colorsheet.ColorSheet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
@@ -191,7 +193,7 @@ class FragmentAddEvent: Fragment() {
                             override fun onItemClick(view: View?, position: Int) {
                                 GlobalScope.async(Dispatchers.Main) {
                                     delay(CLICK_DELAY)
-                                    when (adapter.list[position]) {
+                                    when (val adapterItem = adapter.list[position]) {
                                         is StartDayItem -> {
                                             val selectDayList = ArrayList<StartDayItem>()
 
@@ -204,7 +206,8 @@ class FragmentAddEvent: Fragment() {
                                             DialogFragmentDaySelectCalendar
                                                     .newInstance(
                                                             selectDayList[0].date,
-                                                            selectDayList[1].date.startOfDay
+                                                            selectDayList[1].date.startOfDay,
+                                                            adapterItem.title == "시작 날짜"
                                                     )
                                                     .show(requireActivity().supportFragmentManager, DialogFragmentDaySelectCalendar.toString())
                                         }
@@ -370,8 +373,6 @@ class FragmentAddEvent: Fragment() {
             val selectedStartDate = event.map["selectedStartDate"] as? Date
             val selectedEndDate = event.map["selectedEndDate"] as? Date
 
-//            Logger.d("selectedStartDate: ${selectedStartDate?.toStringDay()}")
-//            Logger.d("selectedEndDate: ${selectedEndDate?.toStringDay()}")
 
             val selectDayList = ArrayList<StartDayItem>()
 
@@ -383,10 +384,12 @@ class FragmentAddEvent: Fragment() {
 
             if (selectedStartDate != null) {
                 selectDayList[0].date = selectedStartDate
+//                Logger.d("selectedStartDate: ${selectedStartDate.toStringDay()}")
             }
 
             if (selectedEndDate != null) {
                 selectDayList[1].date = selectedEndDate
+//                Logger.d("selectedEndDate: ${selectedEndDate.toStringDay()}")
             }
 
             adapter.notifyDataSetChanged()

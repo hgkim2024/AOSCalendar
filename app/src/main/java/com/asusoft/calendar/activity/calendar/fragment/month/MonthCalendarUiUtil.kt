@@ -25,6 +25,7 @@ import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.*
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

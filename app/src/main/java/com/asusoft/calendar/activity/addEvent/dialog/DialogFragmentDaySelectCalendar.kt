@@ -41,7 +41,8 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
         fun newInstance(
                 selectedStartDate: Date? = null,
-                selectedEndDate: Date? = null
+                selectedEndDate: Date? = null,
+                isStart: Boolean = true
         ): DialogFragmentDaySelectCalendar {
             val f = DialogFragmentDaySelectCalendar()
 
@@ -54,6 +55,8 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                 args.putLong("selectedEndDate", selectedEndDate.time)
             }
 
+            args.putBoolean("isStart", isStart)
+
             f.arguments = args
             return f
         }
@@ -64,6 +67,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     var selectedStartDate: Date? = null
     var selectedEndDate: Date? = null
     private var selectedIsStart: Boolean = true
+    private var isStart: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +82,8 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
         if (selectedEndTime != 0L) {
             selectedEndDate = Date(selectedEndTime)
         }
+
+        isStart = args.getBoolean("isStart")
     }
 
     override fun onStart() {
@@ -182,12 +188,22 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                 val event = HashMapEvent(HashMap())
                 event.map[DialogFragmentDaySelectCalendar.toString()] = DialogFragmentDaySelectCalendar.toString()
 
-                if (selectedStartDate != null) {
-                    event.map["selectedStartDate"] = selectedStartDate!!
-                }
+                if (isStart) {
+                    if (selectedStartDate != null) {
+                        event.map["selectedStartDate"] = selectedStartDate!!
+                    }
 
-                if (selectedEndDate != null) {
-                    event.map["selectedEndDate"] = selectedEndDate!!
+                    if (selectedEndDate != null) {
+                        event.map["selectedEndDate"] = selectedEndDate!!
+                    }
+                } else {
+                    if (selectedStartDate != null) {
+                        event.map["selectedEndDate"] = selectedStartDate!!
+                    }
+
+                    if (selectedEndDate != null) {
+                        event.map["selectedStartDate"] = selectedEndDate!!
+                    }
                 }
 
                 GlobalBus.post(event)
@@ -227,7 +243,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        val windowManager = activity!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
@@ -250,31 +266,35 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        // TODO: - 시작날짜와 종료날짜를 각각 설정해서 하는 경우에 오류 발생 - 해당경우에도 동작하도록 수정할 것
         val selectDayHolder = event.map.getOrDefault(SelectDayHolder.toString(), null)
         if (selectDayHolder != null) {
             val date = event.map["date"] as Date
 
-//            Logger.d("selectDayHolder received date: ${date.toStringDay()}")
+//            Logger.d("selectDayHolder received date: ${date.toStringDay()}, isStart: ${isStart}")
 
             if (selectedIsStart) {
+                selectedStartDate = null
+                selectedEndDate = null
+
                 selectedStartDate = date
                 selectedIsStart = false
-                selectedEndDate = null
             } else {
                 if (date == selectedStartDate) return
                 selectedEndDate = date
 
-                if (date < selectedStartDate) {
-                    selectedEndDate = selectedStartDate
-                    selectedStartDate = date
-                }
-
-                Logger.d("start date: ${selectedStartDate?.toStringDay()}")
-                Logger.d("end date: ${selectedEndDate?.toStringDay()}")
                 selectedIsStart = true
+
+                if (selectedStartDate != null && selectedEndDate != null) {
+                    if (selectedStartDate!! < selectedEndDate) {
+                        val date = selectedStartDate
+                        selectedStartDate = selectedEndDate
+                        selectedEndDate = date
+                    }
+                }
             }
 
+//            Logger.d("start date: ${selectedStartDate?.toStringDay()}")
+//            Logger.d("end date: ${selectedEndDate?.toStringDay()}")
             adapter.notifyDataSetChanged()
         }
     }
