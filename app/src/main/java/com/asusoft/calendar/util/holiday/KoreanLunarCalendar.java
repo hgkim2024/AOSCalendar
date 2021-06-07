@@ -411,6 +411,12 @@ public class KoreanLunarCalendar {
         return isoStr;
     }
 
+    public String getMMddFormat() {
+        String isoStr = String.format("%02d/%02d", solarMonth, solarDay);
+
+        return isoStr;
+    }
+
     public int getLunarYear() {
         return lunarYear;
     }
