@@ -497,10 +497,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
         val map = event.map
-        val sideMenuItemHolder = map.getOrDefault(CalendarTypeHolder.toString(), null)
+        val sideMenuItemHolder = map[CalendarTypeHolder.toString()]
         if (sideMenuItemHolder != null) {
-            map.getOrDefault(ActivityCalendar.toString(), null) ?: return
-            val type = map.getOrDefault("type", null) as? SideMenuType
+            map[ActivityCalendar.toString()] ?: return
+            val type = map["type"] as? SideMenuType
 
             if (type != null) {
                 curFragmentIdx = when(type) {
@@ -518,23 +518,23 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             return
         }
 
-        val recentSearchTermsHolder = map.getOrDefault(RecentSearchTermsHolder.toString(), null)
+        val recentSearchTermsHolder = map[RecentSearchTermsHolder.toString()]
         if (recentSearchTermsHolder != null) {
-            val s = map.getOrDefault("name", null) as? String
+            val s = map["name"] as? String
             if (s != null) {
                 showEventSearchResult(s)
             }
             return
         }
 
-        val sideMenuTopHolder = map.getOrDefault(SideMenuTopHolder.toString(), null)
+        val sideMenuTopHolder = map[SideMenuTopHolder.toString()]
         if (sideMenuTopHolder != null) {
             val intent = Intent(baseContext, ActivitySetting::class.java)
             startActivity(intent)
             return
         }
 
-        val activitySetting = map.getOrDefault(ActivitySetting.toString(), null)
+        val activitySetting = map[ActivitySetting.toString()]
         if (activitySetting != null) {
             GlobalScope.async(Dispatchers.Main) {
                 delay(300)
@@ -543,10 +543,10 @@ class ActivityCalendar: AppCompatActivity(), FragmentManager.OnBackStackChangedL
             return
         }
 
-        val dialogFragmentFilter = map.getOrDefault(DialogFragmentFilter.toString(), null)
+        val dialogFragmentFilter = map[DialogFragmentFilter.toString()]
         if (dialogFragmentFilter != null) {
-            val search = map.getOrDefault(SearchFilterType.SEARCH.getTitle(), null) as? Int
-            val period = map.getOrDefault(SearchFilterType.PERIOD.getTitle(), null) as? Int
+            val search = map[SearchFilterType.SEARCH.getTitle()] as? Int
+            val period = map[SearchFilterType.PERIOD.getTitle()] as? Int
 
             if (search != null
                     && period != null) {

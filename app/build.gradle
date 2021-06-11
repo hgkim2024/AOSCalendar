@@ -13,13 +13,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.asusoft.calendar"
         minSdkVersion 26
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     // 리사이클러 뷰
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // 코루틴
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
@@ -74,7 +74,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
 
     // AdMob
-    implementation 'com.google.android.gms:play-services-ads:20.1.0'
+    implementation 'com.google.android.gms:play-services-ads:20.2.0'
 
     // Log
     implementation 'com.orhanobut:logger:2.2.0'
@@ -91,4 +91,7 @@ dependencies {
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // circular color picker
+    implementation 'com.github.dhaval2404:colorpicker:2.0'
 }

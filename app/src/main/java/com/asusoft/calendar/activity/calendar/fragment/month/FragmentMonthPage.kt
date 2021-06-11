@@ -453,26 +453,26 @@ class FragmentMonthPage: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        val addEventActivity = event.map[ActivityAddEvent.toStringActivity()]
         if (addEventActivity != null) {
             refreshPage()
 
-            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            val removeDayEventView = event.map["removeDayEventView"]
             if (removeDayEventView != null) {
                 removeDayEventView()
             }
         }
 
-        val monthViewPager = event.map.getOrDefault(FragmentMonthViewPager.toString(), null)
+        val monthViewPager = event.map[FragmentMonthViewPager.toString()]
         if (monthViewPager != null) {
             setAsyncPageUI(requireContext())
         }
 
-        val monthCalendarUIUtil = event.map.getOrDefault(MonthCalendarUiUtil.toString(), null)
+        val monthCalendarUIUtil = event.map[MonthCalendarUiUtil.toString()]
         if (monthCalendarUIUtil != null) {
             if (dragInitFlag) return
 
-            val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+            val startTime = event.map["startDragDate"] as? Long
             if (startTime != null) {
 
                 val startDate = Date(startTime)
@@ -484,13 +484,13 @@ class FragmentMonthPage: Fragment() {
                 }
             }
 
-            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            val removeDayEventView = event.map["removeDayEventView"]
             if (removeDayEventView != null) {
                 removeDayEventView()
             }
 
-            val endTime = event.map.getOrDefault("endDragDate", null) as? Long
-            val key = event.map.getOrDefault("key", null) as? Long
+            val endTime = event.map["endDragDate"] as? Long
+            val key = event.map["key"] as? Long
 
             if (endTime != null
                     && key != null

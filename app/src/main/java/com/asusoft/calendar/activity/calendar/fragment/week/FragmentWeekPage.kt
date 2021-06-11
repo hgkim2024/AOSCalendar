@@ -358,26 +358,26 @@ class FragmentWeekPage: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val weekViewPager = event.map.getOrDefault(FragmentWeekViewPager.toString(), null)
+        val weekViewPager = event.map[FragmentWeekViewPager.toString()]
         if (weekViewPager != null) {
             setAsyncPageUI(requireContext())
         }
 
-        val addEventActivity = event.map.getOrDefault(ActivityAddEvent.toStringActivity(), null)
+        val addEventActivity = event.map[ActivityAddEvent.toStringActivity()]
         if (addEventActivity != null) {
             refreshPage()
 
-            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            val removeDayEventView = event.map["removeDayEventView"]
             if (removeDayEventView != null) {
                 removeDayEventView()
             }
         }
 
-        val weekCalendarUiUtil = event.map.getOrDefault(WeekCalendarUiUtil.toString(), null)
+        val weekCalendarUiUtil = event.map[WeekCalendarUiUtil.toString()]
         if (weekCalendarUiUtil != null) {
             if (dragInitFlag) return
 
-            val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+            val startTime = event.map["startDragDate"] as? Long
             if (startTime != null) {
 
                 val startDate = Date(startTime)
@@ -389,18 +389,18 @@ class FragmentWeekPage: Fragment() {
                 }
             }
 
-            val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+            val removeDayEventView = event.map["removeDayEventView"]
             if (removeDayEventView != null) {
                 removeDayEventView()
             }
 
 
 
-            val weekCalendarUiUtil = event.map.getOrDefault(WeekCalendarUiUtil.toString(), null)
+            val weekCalendarUiUtil = event.map[WeekCalendarUiUtil.toString()]
             if (weekCalendarUiUtil != null) {
                 if (dragInitFlag) return
 
-                val startTime = event.map.getOrDefault("startDragDate", null) as? Long
+                val startTime = event.map["startDragDate"] as? Long
                 if (startTime != null) {
 
                     val startDate = Date(startTime)
@@ -412,13 +412,13 @@ class FragmentWeekPage: Fragment() {
                     }
                 }
 
-                val removeDayEventView = event.map.getOrDefault("removeDayEventView", null)
+                val removeDayEventView = event.map["removeDayEventView"]
                 if (removeDayEventView != null) {
                     removeDayEventView()
                 }
 
-                val endTime = event.map.getOrDefault("endDragDate", null) as? Long
-                val key = event.map.getOrDefault("key", null) as? Long
+                val endTime = event.map["endDragDate"] as? Long
+                val key = event.map["key"] as? Long
 
                 if (endTime != null
                         && key != null

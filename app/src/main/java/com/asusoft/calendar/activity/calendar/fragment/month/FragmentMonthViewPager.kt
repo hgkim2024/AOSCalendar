@@ -233,7 +233,7 @@ class FragmentMonthViewPager: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val dialogFragmentSelectYearMonth = event.map.getOrDefault(DialogFragmentSelectYearMonth.toString(), null)
+        val dialogFragmentSelectYearMonth = event.map[DialogFragmentSelectYearMonth.toString()]
         if (dialogFragmentSelectYearMonth != null) {
             val date = event.map["date"] as Date
             movePage(date)

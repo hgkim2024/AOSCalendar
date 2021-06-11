@@ -256,13 +256,13 @@ class FragmentWeekViewPager: Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val fragmentWeekPage = event.map.getOrDefault(FragmentWeekPage.toString(), null)
+        val fragmentWeekPage = event.map[FragmentWeekPage.toString()]
         if (fragmentWeekPage != null) {
             val date = event.map["date"] as Date
             setHeaderText(date)
         }
 
-        val activityCalendar = event.map.getOrDefault(ActivityCalendar.toString(), null)
+        val activityCalendar = event.map[ActivityCalendar.toString()]
         if (activityCalendar != null) {
             val date = event.map["date"] as? Date
             if (date != null) {

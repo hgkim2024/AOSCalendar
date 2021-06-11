@@ -356,7 +356,7 @@ class FragmentAddEvent: Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
         val context = requireContext()
-        val deleteHolder = event.map.getOrDefault(DeleteHolder.toString(), null)
+        val deleteHolder = event.map[DeleteHolder.toString()]
         if (deleteHolder != null) {
             val key = event.map["key"] as Long
             AlertUtil.alertOkAndCancel(
@@ -368,7 +368,7 @@ class FragmentAddEvent: Fragment() {
             }
         }
 
-        val dialogFragmentDaySelectCalendar = event.map.getOrDefault(DialogFragmentDaySelectCalendar.toString(), null)
+        val dialogFragmentDaySelectCalendar = event.map[DialogFragmentDaySelectCalendar.toString()]
         if (dialogFragmentDaySelectCalendar != null) {
             val selectedStartDate = event.map["selectedStartDate"] as? Date
             val selectedEndDate = event.map["selectedEndDate"] as? Date
@@ -416,7 +416,7 @@ class FragmentAddEvent: Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-        val activityAddPerson = event.map.getOrDefault(ActivityAddPerson.toString(), null)
+        val activityAddPerson = event.map[ActivityAddPerson.toString()]
         if (activityAddPerson != null) {
             val list = event.map["list"] as ArrayList<CopyVisitPerson>
             visitList = list
@@ -432,7 +432,7 @@ class FragmentAddEvent: Fragment() {
 
         }
 
-        val editTextHolder = event.map.getOrDefault(EditTextHolder.toString(), null)
+        val editTextHolder = event.map[EditTextHolder.toString()]
         if (editTextHolder != null) {
             val colors = resources.getIntArray(R.array.colors)
             val colorSheet = ColorSheet()

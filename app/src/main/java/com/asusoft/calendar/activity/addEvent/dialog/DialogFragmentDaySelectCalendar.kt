@@ -266,7 +266,7 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(event: HashMapEvent) {
-        val selectDayHolder = event.map.getOrDefault(SelectDayHolder.toString(), null)
+        val selectDayHolder = event.map[SelectDayHolder.toString()]
         if (selectDayHolder != null) {
             val date = event.map["date"] as Date
 
