@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.setting.fragment
+package com.asusoft.calendar.activity.setting.fragment.Theme
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
+import com.asusoft.calendar.activity.setting.activity.ActivitySetting
+import com.asusoft.calendar.realm.RealmTheme
 import com.asusoft.calendar.util.recyclerview.RecyclerViewAdapter
 import java.util.ArrayList
 
-class FragmentDaySetting: Fragment() {
-
+class FragmentSettingTheme: Fragment() {
+    
     companion object {
-        fun newInstance(): FragmentDaySetting {
-            return FragmentDaySetting()
+        fun newInstance(): FragmentSettingTheme {
+            return FragmentSettingTheme()
         }
     }
 
@@ -23,24 +25,18 @@ class FragmentDaySetting: Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val context = this.requireContext()
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         val list = ArrayList<Any>()
-
-//        list.add(
-//                SeekBarItem(
-//                        PreferenceKey.DAY_CALENDAR_HEADER_FONT_SIZE,
-//                        PreferenceManager.getFloat(PreferenceKey.DAY_CALENDAR_HEADER_FONT_SIZE, PreferenceKey.DAY_CALENDAR_HEADER_DEFAULT_FONT_SIZE).toInt(),
-//                        "글자 크기",
-//                        FragmentSetting.FONT_MIN_SIZE,
-//                        FragmentSetting.FONT_MAX_SIZE
-//                )
-//        )
+        val items = RealmTheme.selectAllCopy()
+        for (item in items) {
+            list.add(item)
+        }
 
         adapter = RecyclerViewAdapter(this, list)
 
@@ -51,4 +47,9 @@ class FragmentDaySetting: Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as? ActivitySetting)?.setTitle("테마")
+    }
+    
 }

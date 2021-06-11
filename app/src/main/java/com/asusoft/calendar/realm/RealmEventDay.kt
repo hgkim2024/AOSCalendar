@@ -35,7 +35,7 @@ open class RealmEventDay: RealmObject() {
 
     var color: Int = 0
 
-    var order: Double = System.currentTimeMillis().toDouble()
+    var order: Long = System.currentTimeMillis()
 
     companion object {
         fun selectOneWeek(date: Date): List<RealmEventDay> {
@@ -290,7 +290,7 @@ open class RealmEventDay: RealmObject() {
         visitList: ArrayList<CopyVisitPerson>? = null,
         memo: String? = null,
         color: Int? = null,
-        order: Double? = null
+        order: Long? = null
     ) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
@@ -345,7 +345,7 @@ open class RealmEventDay: RealmObject() {
         realm.refresh()
     }
 
-    fun updateOrder(order: Double) {
+    fun updateOrder(order: Long) {
         val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
 
         realm.beginTransaction()

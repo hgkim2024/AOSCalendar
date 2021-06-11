@@ -1,7 +1,11 @@
 package com.asusoft.calendar.realm.copy
 
-data class CopyTheme(
+import com.asusoft.calendar.realm.RealmTheme
+
+class CopyTheme(
     var key: Long,
+    var name: String,
+    var order: Long,
     var colorAccent: Int,
     var holiday: Int,
     var saturday: Int,
@@ -12,4 +16,10 @@ data class CopyTheme(
     var invertFont: Int,
     var today: Int,
     var eventFontColor: Int
-)
+) {
+    fun updateOrder(order: Long) {
+        this.order = order
+        val item = RealmTheme.selectOne(key)
+        item?.updateOrder(order)
+    }
+}

@@ -12,7 +12,7 @@ class CopyEventDay(
         var visitList: ArrayList<CopyVisitPerson>,
         var memo: String,
         var color: Int,
-        var order: Double
+        var order: Long
 ) {
 
     fun insert() {
@@ -53,7 +53,7 @@ class CopyEventDay(
         )
     }
 
-    fun updateOrder(order: Double) {
+    fun updateOrder(order: Long) {
         this.order = order
         val item = RealmEventDay.selectOne(key)
         item?.updateOrder(order)

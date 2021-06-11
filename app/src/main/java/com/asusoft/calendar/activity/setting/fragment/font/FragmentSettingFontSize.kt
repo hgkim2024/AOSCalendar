@@ -1,4 +1,4 @@
-package com.asusoft.calendar.activity.setting.fragment
+package com.asusoft.calendar.activity.setting.fragment.font
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -76,6 +76,14 @@ class FragmentSettingFontSize: Fragment() {
         )
         list.add(SettingFontSizeType.DAY_HEADER.getSeekBarItem())
         list.add(SettingFontSizeType.DAY_ITEM.getSeekBarItem())
+
+        //        list.add(
+//                SwitchItem(
+//                        PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP,
+//                        PreferenceManager.getBoolean(PreferenceKey.MONTH_CALENDAR_DRAG_AND_DROP, DRAG_AND_DROP_DEFAULT),
+//                        "이벤트 길게 눌러 이동 사용"
+//                )
+//        )
 
         adapter = RecyclerViewAdapter(this, list)
 

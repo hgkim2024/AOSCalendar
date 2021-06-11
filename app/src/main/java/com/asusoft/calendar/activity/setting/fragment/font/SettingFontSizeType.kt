@@ -1,6 +1,5 @@
-package com.asusoft.calendar.activity.setting.fragment
+package com.asusoft.calendar.activity.setting.fragment.font
 
-import com.asusoft.calendar.activity.calendar.dialog.filter.enums.StringFilterType
 import com.asusoft.calendar.util.objects.PreferenceKey
 import com.asusoft.calendar.util.objects.PreferenceManager
 import com.asusoft.calendar.util.recyclerview.holder.setting.seekbar.SeekBarItem

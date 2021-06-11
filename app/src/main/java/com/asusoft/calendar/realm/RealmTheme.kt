@@ -13,6 +13,9 @@ open class RealmTheme: RealmObject()  {
     @PrimaryKey
     var key: Long = System.currentTimeMillis()
 
+    var name: String = "기본 테마"
+    var order: Long = System.currentTimeMillis()
+
     var colorAccent: Int = Color.parseColor("#4179F0")
 
     var holiday: Int = Color.parseColor("#dc143c")
@@ -36,22 +39,44 @@ open class RealmTheme: RealmObject()  {
 
             val item =  if (key == 0L) {
                 realm.where(RealmTheme::class.java)
-                        .findFirst()
+                    .sort("key")
+                    .findFirst()
 
             } else {
                 realm.where(RealmTheme::class.java)
-                        .equalTo("key", key)
-                        .findFirst()
+                    .equalTo("key", key)
+                    .findFirst()
             }
 
             realm.commitTransaction()
             return item
+        }
+
+        fun selectAllCopy(): List<CopyTheme> {
+            val copyItems = ArrayList<CopyTheme>()
+
+            val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+            realm.beginTransaction()
+
+            val items = realm.where(RealmTheme::class.java)
+                .sort("order")
+                .findAll()
+
+            realm.commitTransaction()
+
+            for (item in items) {
+                copyItems.add(item.getCopy())
+            }
+
+            return copyItems
         }
     }
 
     fun getCopy(): CopyTheme {
         return CopyTheme(
             key,
+            name,
+            order,
             colorAccent,
             holiday,
             saturday,
@@ -61,8 +86,17 @@ open class RealmTheme: RealmObject()  {
             lightFont,
             invertFont,
             today,
-                eventFontColor
+            eventFontColor
         )
+    }
+
+    fun updateOrder(order: Long) {
+        val realm = Realm.getInstance(CalendarApplication.getRealmConfig())
+
+        realm.beginTransaction()
+        this.order = order
+        realm.commitTransaction()
+        realm.refresh()
     }
 
     fun insert() {

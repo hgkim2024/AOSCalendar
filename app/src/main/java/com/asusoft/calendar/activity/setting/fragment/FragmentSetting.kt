@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.setting.activity.ActivitySetting
+import com.asusoft.calendar.activity.setting.fragment.Theme.FragmentSettingTheme
+import com.asusoft.calendar.activity.setting.fragment.font.FragmentSettingFontSize
 import com.asusoft.calendar.util.objects.AlertUtil
 import com.asusoft.calendar.util.objects.EventBackupAndRestoreUtil
 import com.asusoft.calendar.util.objects.PreferenceKey
@@ -83,6 +85,7 @@ class FragmentSetting: Fragment() {
         val list = ArrayList<Any>()
 
         val fontString = "폰트 크기"
+        val themeString = "테마"
         val backupString = "백업 파일 만들기"
         val restoreString = "복원 파일 가져오기"
 
@@ -100,6 +103,7 @@ class FragmentSetting: Fragment() {
                 )
         )
 
+        list.add(TextItem(themeString, true))
         list.add(TextItem(backupString, true))
         list.add(TextItem(restoreString, true))
 
@@ -120,20 +124,19 @@ class FragmentSetting: Fragment() {
                                     when(val item = adapter.list[position]) {
                                         is TextItem -> {
                                             when(item.text) {
-                                                fontString -> {
-                                                    replaceFragment(
-                                                            FragmentSettingFontSize.newInstance(),
-                                                            FragmentSettingFontSize.toString()
-                                                    )
-                                                }
 
-                                                backupString -> {
-                                                    createBackupFile()
-                                                }
+                                                fontString -> replaceFragment(
+                                                    FragmentSettingFontSize.newInstance(),
+                                                    FragmentSettingFontSize.toString()
+                                                )
+                                                
+                                                themeString -> replaceFragment(
+                                                    FragmentSettingTheme.newInstance(),
+                                                    FragmentSettingTheme.toString()
+                                                )
 
-                                                restoreString -> {
-                                                    openRestoreFile()
-                                                }
+                                                backupString -> createBackupFile()
+                                                restoreString -> openRestoreFile()
                                             }
                                         }
 

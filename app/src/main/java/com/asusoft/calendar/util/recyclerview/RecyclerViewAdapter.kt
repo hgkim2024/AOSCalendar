@@ -8,15 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.SideMenuType
 import com.asusoft.calendar.activity.calendar.fragment.month.FragmentMonthPage
-import com.asusoft.calendar.application.CalendarApplication
 import com.asusoft.calendar.realm.RealmRecentSearchTerms
 import com.asusoft.calendar.realm.copy.CopyEventDay
 import com.asusoft.calendar.realm.copy.CopyRecentSearchTerms
 import com.asusoft.calendar.util.objects.CalendarUtil.setCornerRadiusDrawable
 import com.asusoft.calendar.util.objects.CalendarUtil.setLeftCornerRadiusDrawable
 import com.asusoft.calendar.util.recyclerview.holder.addeventholder.AddEventType.*
-import com.asusoft.calendar.activity.calendar.fragment.month.MonthCalendarUiUtil
 import com.asusoft.calendar.activity.calendar.fragment.week.FragmentWeekPage
+import com.asusoft.calendar.realm.copy.CopyTheme
 import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.objects.CalendarUtil
 import com.asusoft.calendar.util.objects.ThemeUtil
@@ -51,10 +50,9 @@ import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.switch.SwitchItem
 import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextHolder
 import com.asusoft.calendar.util.recyclerview.holder.setting.text.TextItem
+import com.asusoft.calendar.util.recyclerview.holder.setting.theme.ThemeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.CalendarTypeHolder
 import com.asusoft.calendar.util.recyclerview.holder.sidemenu.SideMenuTopHolder
-import com.orhanobut.logger.Logger
-import java.util.*
 import kotlin.collections.ArrayList
 
 class RecyclerViewAdapter(
@@ -260,6 +258,12 @@ class RecyclerViewAdapter(
                     }
                 }
             }
+
+            THEME -> {
+                val view = inflater.inflate(R.layout.holder_text, parent, false)
+                view.findViewById<ConstraintLayout>(R.id.root_layout).addBottomSeparator(20.0F)
+                ThemeHolder(context, view, this)
+            }
         }
     }
 
@@ -302,6 +306,8 @@ class RecyclerViewAdapter(
                     is SpinnerHolder -> holder.bind(position)
                 }
             }
+
+            THEME -> (holder as ThemeHolder).bind(position)
         }
     }
 
@@ -341,6 +347,22 @@ class RecyclerViewAdapter(
 
                 }
             }
+
+            THEME -> {
+                val fromItem = list[fromPosition]
+                val toItem = list[toPosition]
+
+                if (fromItem is CopyTheme
+                    && toItem is CopyTheme) {
+                    swapItems(fromPosition, toPosition)
+                    val fromOrder = toItem.order
+                    val toOrder = fromItem.order
+
+                    fromItem.updateOrder(fromOrder)
+                    toItem.updateOrder(toOrder)
+                }
+            }
+
             else -> {}
         }
     }
