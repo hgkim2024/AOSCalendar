@@ -384,12 +384,33 @@ class FragmentAddEvent: Fragment() {
 
             if (selectedStartDate != null) {
                 selectDayList[0].date = selectedStartDate
+
+                if (selectDayList[0].date > selectDayList[1].date
+                    && selectedEndDate == null
+                ) {
+                    selectDayList[1].date = selectDayList[0].date
+                }
 //                Logger.d("selectedStartDate: ${selectedStartDate.toStringDay()}")
             }
 
             if (selectedEndDate != null) {
                 selectDayList[1].date = selectedEndDate
+
+                if (selectDayList[0].date > selectDayList[1].date
+                    && selectedStartDate == null
+                ) {
+                    selectDayList[0].date = selectDayList[1].date
+                }
 //                Logger.d("selectedEndDate: ${selectedEndDate.toStringDay()}")
+            }
+
+            if (selectedStartDate != null
+                && selectedEndDate != null
+                && selectDayList[0].date > selectDayList[1].date
+            ) {
+                val date = selectDayList[0].date
+                selectDayList[0].date = selectDayList[1].date
+                selectDayList[1].date = date
             }
 
             adapter.notifyDataSetChanged()

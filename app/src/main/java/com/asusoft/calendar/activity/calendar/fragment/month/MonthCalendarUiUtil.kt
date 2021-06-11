@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.asusoft.calendar.R
 import com.asusoft.calendar.activity.calendar.fragment.month.enums.WeekOfDayType
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.MonthItem
 import com.asusoft.calendar.activity.calendar.fragment.month.objects.WeekOfMonthItem
@@ -25,7 +24,6 @@ import com.asusoft.calendar.util.extension.addBottomSeparator
 import com.asusoft.calendar.util.extension.removeFromSuperView
 import com.asusoft.calendar.util.holiday.LunarCalendar
 import com.asusoft.calendar.util.objects.*
-import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -418,30 +416,33 @@ object MonthCalendarUiUtil {
     ) {
 
         val monthDate = date.startOfMonth
-        val startDate = monthDate.startOfWeek
+        val calendarStartDate = monthDate.startOfWeek
         val row = getMonthRow(monthDate)
 
+        var startDate = selectedStartDate
+        var endDate = selectedEndDate
+
         when {
-            selectedStartDate == null
-                    && selectedEndDate == null
+            startDate == null
+                    && endDate == null
             -> return
 
-            selectedStartDate != null
-                    && selectedEndDate == null
+            startDate != null
+                    && endDate == null
             -> {
-                if (monthDate.startOfMonth.time != selectedStartDate.startOfMonth.time) return
+                if (monthDate.startOfMonth.time != startDate.startOfMonth.time) return
 
                 for (idx in 0 until row) {
-                    val weekDate = startDate.getNextDay(idx * WEEK)
+                    val weekDate = calendarStartDate.getNextDay(idx * WEEK)
 
-                    if (weekDate.startOfWeek.time <= selectedStartDate.time
-                            && selectedStartDate.time  <= weekDate.endOfWeek.time) {
+                    if (weekDate.startOfWeek.time <= startDate.time
+                            && startDate.time  <= weekDate.endOfWeek.time) {
                         for (index in 0 until WEEK) {
                             val i = (idx * WEEK) + index
-                            val date = startDate.getNextDay(i)
+                            val date = calendarStartDate.getNextDay(i)
                             val dayView = dayViewList[i]
 
-                            if (date.time == selectedStartDate.time) {
+                            if (date.time == startDate.time) {
                                 CalendarUtil.setCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             }
                         }
@@ -449,20 +450,26 @@ object MonthCalendarUiUtil {
                 }
             }
 
-            selectedStartDate != null
-                    && selectedEndDate != null
+            startDate != null
+                    && endDate != null
             -> {
 
-                if (selectedStartDate.calendarYear > monthDate.calendarYear) return
-
-                if (selectedStartDate.calendarYear == monthDate.calendarYear) {
-                    if (selectedStartDate.calendarMonth > monthDate.calendarMonth) return
+                if (startDate > endDate) {
+                    val date = startDate
+                    startDate = endDate
+                    endDate = date
                 }
 
-                if (monthDate.calendarYear > selectedEndDate.calendarYear) return
+                if (startDate.calendarYear > monthDate.calendarYear) return
 
-                if (monthDate.calendarYear == selectedEndDate.calendarYear) {
-                    if (monthDate.calendarMonth > selectedEndDate.calendarMonth) return
+                if (startDate.calendarYear == monthDate.calendarYear) {
+                    if (startDate.calendarMonth > monthDate.calendarMonth) return
+                }
+
+                if (monthDate.calendarYear > endDate.calendarYear) return
+
+                if (monthDate.calendarYear == endDate.calendarYear) {
+                    if (monthDate.calendarMonth > endDate.calendarMonth) return
                 }
 
                 for (idx in 0 until row) {
@@ -471,14 +478,14 @@ object MonthCalendarUiUtil {
                         val dayView = dayViewList[i]
 
                         if (dayView.alpha != ALPHA) {
-                            val date = startDate.getNextDay(i)
-                            if (selectedStartDate < date && date < selectedEndDate) {
+                            val date = calendarStartDate.getNextDay(i)
+                            if (startDate < date && date < endDate) {
                                 dayView.setBackgroundColor(ThemeUtil.instance.today)
-                            } else if (selectedStartDate == date && selectedEndDate != date) {
+                            } else if (startDate == date && endDate != date) {
                                 CalendarUtil.setLeftCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
-                            } else if (selectedEndDate == date && selectedStartDate != date) {
+                            } else if (endDate == date && startDate != date) {
                                 CalendarUtil.setRightCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
-                            } else if (selectedEndDate == selectedStartDate && selectedStartDate == date) {
+                            } else if (endDate == startDate && startDate == date) {
                                 CalendarUtil.setCornerRadiusDrawable(dayView, ThemeUtil.instance.today, 200.0F)
                             }
                         }

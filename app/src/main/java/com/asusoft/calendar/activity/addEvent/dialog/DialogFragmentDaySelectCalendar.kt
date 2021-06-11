@@ -283,18 +283,10 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
                 selectedEndDate = date
 
                 selectedIsStart = true
-
-                if (selectedStartDate != null && selectedEndDate != null) {
-                    if (selectedStartDate!! < selectedEndDate) {
-                        val date = selectedStartDate
-                        selectedStartDate = selectedEndDate
-                        selectedEndDate = date
-                    }
-                }
             }
 
-//            Logger.d("start date: ${selectedStartDate?.toStringDay()}")
-//            Logger.d("end date: ${selectedEndDate?.toStringDay()}")
+            Logger.d("start date: ${selectedStartDate?.toStringDay()}")
+            Logger.d("end date: ${selectedEndDate?.toStringDay()}")
             adapter.notifyDataSetChanged()
         }
     }
