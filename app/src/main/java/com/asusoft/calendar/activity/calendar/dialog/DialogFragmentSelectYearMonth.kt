@@ -154,10 +154,7 @@ class DialogFragmentSelectYearMonth: DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        val windowManager = activity!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
+//        val size = CalendarApplication.getSize(requireActivity())
         val params: WindowManager.LayoutParams = dialog?.window?.attributes ?: return
 
         params.width = CalculatorUtil.dpToPx(300.0F)

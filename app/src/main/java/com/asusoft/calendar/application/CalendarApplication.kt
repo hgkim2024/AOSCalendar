@@ -1,9 +1,15 @@
 package com.asusoft.calendar.application
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Point
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.util.Size
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.asusoft.calendar.BuildConfig
 import com.asusoft.calendar.util.objects.*
@@ -47,6 +53,33 @@ class CalendarApplication: Application() {
 
         fun getDrawable(id: Int): Drawable? {
             return ContextCompat.getDrawable(getContext(), id)
+        }
+
+        fun getSize(activity: Activity): Size {
+            val wm = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val width: Int
+            val height: Int
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics = wm.currentWindowMetrics
+                val windowInsets: WindowInsets = windowMetrics.windowInsets
+
+                val insets = windowInsets.getInsetsIgnoringVisibility(
+                    WindowInsets.Type.navigationBars() or WindowInsets.Type.displayCutout())
+                val insetsWidth = insets.right + insets.left
+                val insetsHeight = insets.top + insets.bottom
+
+                val b = windowMetrics.bounds
+                width = b.width() - insetsWidth
+                height = b.height() - insetsHeight
+            } else {
+                val size = Point()
+                val display = wm.defaultDisplay // deprecated in API 30
+                display?.getSize(size) // deprecated in API 30
+                width = size.x
+                height = size.y
+            }
+
+            return Size(width, height)
         }
     }
 

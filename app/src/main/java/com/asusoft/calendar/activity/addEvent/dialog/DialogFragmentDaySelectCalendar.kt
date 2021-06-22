@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -243,20 +244,17 @@ class DialogFragmentDaySelectCalendar: DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        val windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
+        val size = CalendarApplication.getSize(requireActivity())
         val params: WindowManager.LayoutParams = dialog?.window?.attributes ?: return
 
         val maxWidth = CalculatorUtil.dpToPx((SELECT_DAY_HEIGHT * WEEK) + 4.0F + 16.0F)
-        params.width = (size.x * 0.9).toInt()
+        params.width = (size.width * 0.9).toInt()
         if (params.width > maxWidth) {
             params.width = maxWidth
         }
 
         val maxHeight = CalculatorUtil.dpToPx(500.0F)
-        params.height = (size.y * 0.9).toInt()
+        params.height = (size.height * 0.9).toInt()
         if (params.height > maxHeight) {
             params.height = maxHeight
         }

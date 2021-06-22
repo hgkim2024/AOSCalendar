@@ -157,20 +157,17 @@ class DialogFragmentFilter: DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        val windowManager = activity!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
+        val size = CalendarApplication.getSize(requireActivity())
         val params: WindowManager.LayoutParams = dialog?.window?.attributes ?: return
 
         val maxWidth = CalculatorUtil.dpToPx(300.0F)
-        params.width = (size.x * 0.9).toInt()
+        params.width = (size.width * 0.9).toInt()
         if (params.width > maxWidth) {
             params.width = maxWidth
         }
 
         val maxHeight = CalculatorUtil.dpToPx(60F * 2 + 40 * 2 + 18 * 2)
-        params.height = (size.y * 0.9).toInt()
+        params.height = (size.height * 0.9).toInt()
         if (params.height > maxHeight) {
             params.height = maxHeight
         }
