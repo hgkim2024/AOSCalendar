@@ -115,7 +115,7 @@ class FragmentMonthViewPager: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = AdapterMonthCalendar(activity!!, date)
+        adapter = AdapterMonthCalendar(requireActivity(), date)
         viewPager.adapter = adapter
         viewPager.setCurrentItem(AdapterMonthCalendar.START_POSITION, false)
         curPosition = AdapterMonthCalendar.START_POSITION

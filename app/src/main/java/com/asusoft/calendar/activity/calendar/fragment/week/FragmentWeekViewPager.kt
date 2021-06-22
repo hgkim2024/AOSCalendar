@@ -118,7 +118,7 @@ class FragmentWeekViewPager: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = AdapterWeekCalendar(activity!!, date)
+        adapter = AdapterWeekCalendar(requireActivity(), date)
         viewPager.adapter = adapter
         viewPager.setCurrentItem(AdapterWeekCalendar.START_POSITION, false)
         curPosition = AdapterWeekCalendar.START_POSITION
